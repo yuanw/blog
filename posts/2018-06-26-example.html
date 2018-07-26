@@ -32,7 +32,7 @@
 <h2 id="basics">Basics</h2>
 <p>First, let’s look what is <code>State</code>.</p>
 <p><code> newtype State s a = State { runState :: s-&gt; (a, s)} </code></p>
-In case you are not familiar with <a href="https://wiki.haskell.org/Newtype"><code>newtype</code></a>. It is just like <code>data</code> but it can only <em>has exactly one constructor with exactly one field in it.</em> In this case <code>State</code> is the constructor and <code>runState</code> is the single field. The type of <code>State</code> constructor is <code>(s -&gt;  a, s)) -&gt; State s a</code>, since <code>State</code> uses record syntax, we have a filed accessor <code>runState</code> and its type is State s a -&gt; s -&gt; (a, s).
+<p>In case you are not familiar with <a href="https://wiki.haskell.org/Newtype"><code>newtype</code></a>. It is just like <code>data</code> but it can only <em>has exactly one constructor with exactly one field in it.</em> In this case <code>State</code> is the constructor and <code>runState</code> is the single field. The type of <code>State</code> constructor is <code>(s -&gt;  a, s)) -&gt; State s a</code>, since <code>State</code> uses record syntax, we have a filed accessor <code>runState</code> and its type is State s a -&gt; s -&gt; (a, s).</p>
 <blockquote>
 A State is a function from a state value <em><strong>s</strong></em> to (a produced value <strong><em>a</em></strong>, and a resulting state <strong><em>s</em></strong>).
 </blockquote>
@@ -46,10 +46,17 @@ A State is a function from a state value <em><strong>s</strong></em> to (a produ
 <a class="sourceLine" id="cb1-2" data-line-number="2">exec f initial <span class="fu">=</span> (\ (_, y) <span class="ot">-&gt;</span> y) (runState f initial)</a></code></pre></div>
 <p>Since the state value <code>initial</code> appears on both sides of <code>=</code>, we rewrite it a little more point-free. <code>runState f</code> is a partial applied function takes <code>s</code> returns <code>(a,s)</code></p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb2-1" data-line-number="1">exec f <span class="fu">=</span> (\(_, y) <span class="ot">-&gt;</span> y) <span class="fu">.</span> runState f</a></code></pre></div>
-<p>In <code>Prelude</code>, there is a <a href="http://hackage.haskell.org/package/base-4.11.1.0/docs/Prelude.html#v:snd"><code>snd</code></a> function does exactly the same thing of <code>\(_, y) -&gt; y)</code>.</p>
+<p>In <code>Prelude</code>, there is a <a href="http://hackage.haskell.org/package/base-4.11.1.0/docs/Prelude.html#v:snd"><code>snd</code></a> function does exactly the same thing of <code>\(_, y) -&gt; y)</code>, and there is also a <a href="http://hackage.haskell.org/package/base-4.11.1.0/docs/Prelude.html#v:fst"><code>fst</code></a></p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb3-1" data-line-number="1">exec f <span class="fu">=</span> P.snd <span class="fu">.</span> runState f</a></code></pre></div>
 <p>We could also write <code>exec</code></p>
 <p><code>exec (State f) = P.snd . f</code></p>
+<h3 id="eval">eval</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="ot">eval ::</span> <span class="dt">State</span> s a <span class="ot">-&gt;</span> s <span class="ot">-&gt;</span> a</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">eval f <span class="fu">=</span> P.fst <span class="fu">.</span> runState f</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="ot">get ::</span> <span class="dt">State</span> s s</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">get <span class="fu">=</span> <span class="dt">State</span> (\ x <span class="ot">-&gt;</span> (x,x))</a></code></pre></div>
+<pre><code>put :: s -&gt; State s ()
+put x = State (\ _ -&gt; ((), x))</code></pre>
 
         </div>
         <div id="footer">
