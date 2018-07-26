@@ -1,0 +1,50 @@
+---
+title: State Course for data61 fp-course
+---
+
+data61 has an amazing haskell course [fp-course](https://github.com/data61/fp-course). Brian McKenna has a serial of wonderful [videos](https://www.youtube.com/playlist?list=PLly9WMAVMrayYo2c-1E_rIRwBXG_FbLBW) walk through the course.
+
+This post aims to cover <em>State</em> course which is skipped in videos.
+
+## Basics
+
+First, let's look what is <code>State</code>.
+
+<code>
+newtype State s a = State { runState :: s-> (a, s)}
+</code>
+
+In case you are not familiar with [<code>newtype</code>](https://wiki.haskell.org/Newtype). It is just like `data` but it can only *has exactly one constructor with exactly one field in it.* In this case `State` is the constructor and `runState` is the single field. The type of `State` constructor is `(s ->  a, s)) -> State s a`, since `State` uses record syntax, we have a filed accessor `runState` and its type is State s a -> s -> (a, s).
+<blockquote>A State is a function from a state value <em><strong>s</strong></em> to (a produced value <strong><em>a</em></strong>, and a resulting state <strong><em>s</em></strong>).</blockquote>
+An importance takeaway which might not so oblivious to Haskell beginner is that: `State` is merely a function with type `s -> (a,s)`, (a function wrapped inside constructor `State`, to be exact, and we can unwrap it using `runState`).
+
+Secondly, `State` function takes a `s`representing a state, and produces a tuple contains value `a` and new state `s`.
+
+### exec
+
+The first exercise is to implement `exec` function, it takes a `State` function and initial `state` value, returns the new state.
+
+It is pretty straightforward, we just need to apply `State` function with `state` value, and takes the second  element from the tuple.
+
+A simple solution can be
+
+```haskell
+exec :: State s a -> s -> s
+exec f initial = (\ (_, y) -> y) (runState f initial)
+```
+
+Since the state value `initial` appears on both sides of `=`, we rewrite it a little more point-free. `runState f` is a partial applied function takes `s` returns `(a,s)`
+
+```haskell
+exec f = (\(_, y) -> y) . runState f
+```
+
+In `Prelude`, there is a [`snd`](http://hackage.haskell.org/package/base-4.11.1.0/docs/Prelude.html#v:snd) function does exactly the same thing of `\(_, y) -> y)`.
+
+```haskell
+exec f = P.snd . runState f
+```
+
+We could also write `exec`
+
+`exec (State f) = P.snd . f`
