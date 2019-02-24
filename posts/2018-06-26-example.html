@@ -32,7 +32,7 @@
 <h2 id="basics">Basics</h2>
 <p>First, let’s look what is <code>State</code>.</p>
 <p><code> newtype State s a = State { runState :: s-&gt; (a, s)} </code></p>
-<p>In case you are not familiar with <a href="https://wiki.haskell.org/Newtype"><code>newtype</code></a>. It is just like <code>data</code> but it can only <em>has exactly one constructor with exactly one field in it.</em> In this case <code>State</code> is the constructor and <code>runState</code> is the single field. The type of <code>State</code> constructor is <code>(s -&gt;  a, s)) -&gt; State s a</code>, since <code>State</code> uses record syntax, we have a filed accessor <code>runState</code> and its type is State s a -&gt; s -&gt; (a, s).</p>
+In case you are not familiar with <a href="https://wiki.haskell.org/Newtype"><code>newtype</code></a>. It is just like <code>data</code> but it can only <em>has exactly one constructor with exactly one field in it.</em> In this case <code>State</code> is the constructor and <code>runState</code> is the single field. The type of <code>State</code> constructor is <code>(s -&gt;  a, s)) -&gt; State s a</code>, since <code>State</code> uses record syntax, we have a filed accessor <code>runState</code> and its type is State s a -&gt; s -&gt; (a, s).
 <blockquote>
 A State is a function from a state value <em><strong>s</strong></em> to (a produced value <strong><em>a</em></strong>, and a resulting state <strong><em>s</em></strong>).
 </blockquote>
@@ -46,17 +46,88 @@ A State is a function from a state value <em><strong>s</strong></em> to (a produ
 <a class="sourceLine" id="cb1-2" data-line-number="2">exec f initial <span class="fu">=</span> (\ (_, y) <span class="ot">-&gt;</span> y) (runState f initial)</a></code></pre></div>
 <p>Since the state value <code>initial</code> appears on both sides of <code>=</code>, we rewrite it a little more point-free. <code>runState f</code> is a partial applied function takes <code>s</code> returns <code>(a,s)</code></p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb2-1" data-line-number="1">exec f <span class="fu">=</span> (\(_, y) <span class="ot">-&gt;</span> y) <span class="fu">.</span> runState f</a></code></pre></div>
-<p>In <code>Prelude</code>, there is a <a href="http://hackage.haskell.org/package/base-4.11.1.0/docs/Prelude.html#v:snd"><code>snd</code></a> function does exactly the same thing of <code>\(_, y) -&gt; y)</code>, and there is also a <a href="http://hackage.haskell.org/package/base-4.11.1.0/docs/Prelude.html#v:fst"><code>fst</code></a></p>
+<p>In <code>Prelude</code>, there is a <a href="http://hackage.haskell.org/package/base-4.11.1.0/docs/Prelude.html#v:snd"><code>snd</code></a> function does exactly the same thing of <code>\(_, y) -&gt; y)</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb3-1" data-line-number="1">exec f <span class="fu">=</span> P.snd <span class="fu">.</span> runState f</a></code></pre></div>
 <p>We could also write <code>exec</code></p>
 <p><code>exec (State f) = P.snd . f</code></p>
-<h3 id="eval">eval</h3>
-<div class="sourceCode" id="cb4"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="ot">eval ::</span> <span class="dt">State</span> s a <span class="ot">-&gt;</span> s <span class="ot">-&gt;</span> a</a>
-<a class="sourceLine" id="cb4-2" data-line-number="2">eval f <span class="fu">=</span> P.fst <span class="fu">.</span> runState f</a></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="ot">get ::</span> <span class="dt">State</span> s s</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2">get <span class="fu">=</span> <span class="dt">State</span> (\ x <span class="ot">-&gt;</span> (x,x))</a></code></pre></div>
-<pre><code>put :: s -&gt; State s ()
-put x = State (\ _ -&gt; ((), x))</code></pre>
+<h3 id="basic-usage-of-state">Basic Usage of State</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw">module</span> <span class="dt">Dice</span> <span class="kw">where</span></a>
+<a class="sourceLine" id="cb4-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="kw">import</span> <span class="dt">Control.Applicative</span></a>
+<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="kw">import</span> <span class="dt">Control.Monad.Trans.State</span></a>
+<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="kw">import</span> <span class="dt">System.Random</span></a>
+<a class="sourceLine" id="cb4-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb4-7" data-line-number="7"><span class="ot">rollDiceIO ::</span> <span class="dt">IO</span> (<span class="dt">Int</span>, <span class="dt">Int</span>)</a>
+<a class="sourceLine" id="cb4-8" data-line-number="8">rollDiceIO <span class="fu">=</span> liftA2 (,) (randomRIO (<span class="dv">1</span>, <span class="dv">6</span>)) (randomRIO (<span class="dv">1</span>,<span class="dv">6</span>))</a>
+<a class="sourceLine" id="cb4-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb4-10" data-line-number="10"><span class="ot">rollNDiceIO ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> [<span class="dt">Int</span>]</a>
+<a class="sourceLine" id="cb4-11" data-line-number="11">rollNDiceIO <span class="dv">0</span> <span class="fu">=</span> pure []</a>
+<a class="sourceLine" id="cb4-12" data-line-number="12">rollNDiceIO count <span class="fu">=</span> liftA2 (<span class="fu">:</span>) (randomRIO (<span class="dv">1</span>, <span class="dv">6</span>)) (rollNDiceIO (count <span class="fu">-</span> <span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb4-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb4-14" data-line-number="14"><span class="ot">clumsyRollDice ::</span> (<span class="dt">Int</span>, <span class="dt">Int</span>)</a>
+<a class="sourceLine" id="cb4-15" data-line-number="15">clumsyRollDice <span class="fu">=</span> (n, m)</a>
+<a class="sourceLine" id="cb4-16" data-line-number="16">    <span class="kw">where</span></a>
+<a class="sourceLine" id="cb4-17" data-line-number="17">        (n, g) <span class="fu">=</span> randomR (<span class="dv">1</span>, <span class="dv">6</span>) (mkStdGen <span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb4-18" data-line-number="18">        (m, _) <span class="fu">=</span> randomR (<span class="dv">1</span>, <span class="dv">6</span>) g</a>
+<a class="sourceLine" id="cb4-19" data-line-number="19"></a>
+<a class="sourceLine" id="cb4-20" data-line-number="20"><span class="co">-- rollDice :: StdGen -&gt; ((Int, Int), StdGen)</span></a>
+<a class="sourceLine" id="cb4-21" data-line-number="21"><span class="co">-- rollDice g = ((n, m), g'')</span></a>
+<a class="sourceLine" id="cb4-22" data-line-number="22"><span class="co">--     where</span></a>
+<a class="sourceLine" id="cb4-23" data-line-number="23"><span class="co">--         (n, g') = randomR (1, 6) g</span></a>
+<a class="sourceLine" id="cb4-24" data-line-number="24"><span class="co">--         (m, g'') = randomR (1, 6) g'</span></a>
+<a class="sourceLine" id="cb4-25" data-line-number="25"></a>
+<a class="sourceLine" id="cb4-26" data-line-number="26"><span class="co">-- use state to construct</span></a>
+<a class="sourceLine" id="cb4-27" data-line-number="27"><span class="ot">rollDie ::</span> <span class="dt">State</span> <span class="dt">StdGen</span> <span class="dt">Int</span></a>
+<a class="sourceLine" id="cb4-28" data-line-number="28">rollDie <span class="fu">=</span> state <span class="fu">$</span> randomR (<span class="dv">1</span>, <span class="dv">6</span>)</a>
+<a class="sourceLine" id="cb4-29" data-line-number="29"></a>
+<a class="sourceLine" id="cb4-30" data-line-number="30"><span class="co">-- use State as Monad</span></a>
+<a class="sourceLine" id="cb4-31" data-line-number="31"><span class="ot">rollDieM ::</span> <span class="dt">State</span> <span class="dt">StdGen</span> <span class="dt">Int</span></a>
+<a class="sourceLine" id="cb4-32" data-line-number="32">rollDieM <span class="fu">=</span> <span class="kw">do</span> generator <span class="ot">&lt;-</span> get</a>
+<a class="sourceLine" id="cb4-33" data-line-number="33">              <span class="kw">let</span> (value, generator') <span class="fu">=</span> randomR (<span class="dv">1</span>, <span class="dv">6</span>) generator</a>
+<a class="sourceLine" id="cb4-34" data-line-number="34">              put generator'</a>
+<a class="sourceLine" id="cb4-35" data-line-number="35">              return value</a>
+<a class="sourceLine" id="cb4-36" data-line-number="36"></a>
+<a class="sourceLine" id="cb4-37" data-line-number="37"><span class="ot">rollDice ::</span> <span class="dt">State</span> <span class="dt">StdGen</span> (<span class="dt">Int</span>, <span class="dt">Int</span>)</a>
+<a class="sourceLine" id="cb4-38" data-line-number="38">rollDice <span class="fu">=</span> liftA2 (,) rollDieM rollDieM</a>
+<a class="sourceLine" id="cb4-39" data-line-number="39"></a>
+<a class="sourceLine" id="cb4-40" data-line-number="40"><span class="ot">rollNDice ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">State</span> <span class="dt">StdGen</span> [<span class="dt">Int</span>]</a>
+<a class="sourceLine" id="cb4-41" data-line-number="41">rollNDice <span class="dv">0</span> <span class="fu">=</span> state (\s <span class="ot">-&gt;</span> ([], s))</a>
+<a class="sourceLine" id="cb4-42" data-line-number="42">rollNDice count <span class="fu">=</span> liftA2 (<span class="fu">:</span>) rollDieM (rollNDice (count <span class="fu">-</span> <span class="dv">1</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw">module</span> <span class="dt">Deck</span> <span class="kw">where</span></a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="kw">import</span> <span class="dt">Control.Applicative</span></a>
+<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="kw">import</span> <span class="dt">Control.Monad.Trans.State</span></a>
+<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="kw">import</span> <span class="dt">Data.List</span></a>
+<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="kw">import</span> <span class="dt">System.Random</span></a>
+<a class="sourceLine" id="cb5-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb5-8" data-line-number="8"><span class="kw">data</span> <span class="dt">Rank</span> <span class="fu">=</span> <span class="dt">One</span> <span class="fu">|</span> <span class="dt">Two</span> <span class="fu">|</span> <span class="dt">Three</span> <span class="fu">|</span> <span class="dt">Four</span> <span class="fu">|</span> <span class="dt">Five</span> <span class="fu">|</span> <span class="dt">Six</span> <span class="fu">|</span> <span class="dt">Seven</span> <span class="fu">|</span> <span class="dt">Eight</span> <span class="fu">|</span> <span class="dt">Nine</span> <span class="fu">|</span> <span class="dt">Ten</span> <span class="fu">|</span> <span class="dt">Jack</span> <span class="fu">|</span> <span class="dt">Queue</span> <span class="fu">|</span> <span class="dt">King</span> <span class="kw">deriving</span> (<span class="dt">Bounded</span>, <span class="dt">Enum</span>, <span class="dt">Show</span>, <span class="dt">Eq</span>, <span class="dt">Ord</span>)</a>
+<a class="sourceLine" id="cb5-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb5-10" data-line-number="10"><span class="kw">data</span> <span class="dt">Suit</span> <span class="fu">=</span> <span class="dt">Diamonds</span> <span class="fu">|</span> <span class="dt">Clubs</span> <span class="fu">|</span> <span class="dt">Hearts</span> <span class="fu">|</span> <span class="dt">Spades</span> <span class="kw">deriving</span> (<span class="dt">Bounded</span>, <span class="dt">Enum</span>, <span class="dt">Show</span>, <span class="dt">Eq</span>, <span class="dt">Ord</span>)</a>
+<a class="sourceLine" id="cb5-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb5-12" data-line-number="12"><span class="kw">data</span> <span class="dt">Card</span> <span class="fu">=</span> <span class="dt">Card</span> <span class="dt">Suit</span> <span class="dt">Rank</span> <span class="kw">deriving</span> (<span class="dt">Show</span>, <span class="dt">Eq</span>, <span class="dt">Ord</span>)</a>
+<a class="sourceLine" id="cb5-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb5-14" data-line-number="14"><span class="kw">type</span> <span class="dt">Deck</span> <span class="fu">=</span> [<span class="dt">Card</span>]</a>
+<a class="sourceLine" id="cb5-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb5-16" data-line-number="16"><span class="ot">fullDeck ::</span> <span class="dt">Deck</span></a>
+<a class="sourceLine" id="cb5-17" data-line-number="17">fullDeck <span class="fu">=</span> [<span class="dt">Card</span> suit rank  <span class="fu">|</span> suit <span class="ot">&lt;-</span> enumFrom minBound,</a>
+<a class="sourceLine" id="cb5-18" data-line-number="18">                              rank <span class="ot">&lt;-</span> enumFrom minBound]</a>
+<a class="sourceLine" id="cb5-19" data-line-number="19"></a>
+<a class="sourceLine" id="cb5-20" data-line-number="20"><span class="ot">removeCard ::</span> <span class="dt">Deck</span> <span class="ot">-&gt;</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Deck</span></a>
+<a class="sourceLine" id="cb5-21" data-line-number="21">removeCard [] _ <span class="fu">=</span> []</a>
+<a class="sourceLine" id="cb5-22" data-line-number="22">removeCard deck index <span class="fu">=</span> deck' <span class="fu">++</span> deck''</a>
+<a class="sourceLine" id="cb5-23" data-line-number="23">    <span class="kw">where</span> (deck', remain) <span class="fu">=</span> splitAt (index <span class="fu">+</span> <span class="dv">1</span>) deck</a>
+<a class="sourceLine" id="cb5-24" data-line-number="24">          deck''    <span class="fu">=</span> drop <span class="dv">1</span> remain</a>
+<a class="sourceLine" id="cb5-25" data-line-number="25"></a>
+<a class="sourceLine" id="cb5-26" data-line-number="26"></a>
+<a class="sourceLine" id="cb5-27" data-line-number="27"><span class="ot">drawCard ::</span> <span class="dt">State</span> (<span class="dt">StdGen</span>, <span class="dt">Deck</span>) <span class="dt">Card</span></a>
+<a class="sourceLine" id="cb5-28" data-line-number="28">drawCard <span class="fu">=</span> <span class="kw">do</span> (generator, deck) <span class="ot">&lt;-</span> get</a>
+<a class="sourceLine" id="cb5-29" data-line-number="29">              <span class="kw">let</span> (index, generator') <span class="fu">=</span> randomR (<span class="dv">0</span>, length deck ) generator</a>
+<a class="sourceLine" id="cb5-30" data-line-number="30">              put (generator', removeCard deck index)</a>
+<a class="sourceLine" id="cb5-31" data-line-number="31">              return <span class="fu">$</span> deck <span class="fu">!!</span> index</a>
+<a class="sourceLine" id="cb5-32" data-line-number="32"></a>
+<a class="sourceLine" id="cb5-33" data-line-number="33"><span class="ot">drawNCard ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">State</span> (<span class="dt">StdGen</span>, <span class="dt">Deck</span>) [<span class="dt">Card</span>]</a>
+<a class="sourceLine" id="cb5-34" data-line-number="34">drawNCard <span class="dv">0</span> <span class="fu">=</span> state (\s <span class="ot">-&gt;</span> ([], s))</a>
+<a class="sourceLine" id="cb5-35" data-line-number="35">drawNCard count <span class="fu">=</span> liftA2 (<span class="fu">:</span>) drawCard (drawNCard <span class="fu">$</span> count <span class="fu">-</span> <span class="dv">1</span>)</a></code></pre></div>
 
         </div>
         <div id="footer">

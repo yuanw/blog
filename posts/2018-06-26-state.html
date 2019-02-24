@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <title>My Hakyll Blog - State Course for data61 fp-course</title>
+        <title>My Hakyll Blog - 2018-06-26-state</title>
         <link rel="stylesheet" type="text/css" href="../css/default.css" />
     </head>
     <body>
@@ -20,45 +20,72 @@
         </div>
 
         <div id="content">
-            <h1>State Course for data61 fp-course</h1>
+            <h1>2018-06-26-state</h1>
 
             <div class="info">
     Posted on June 26, 2018
     
 </div>
 
+<div id="header">
+<div id="logo">
+<a href="../">Yuan</a>
+</div>
+<div id="navigation">
+<a href="../">Home</a> <a href="../about.html">About</a> <a href="../contact.html">Contact</a> <a href="../archive.html">Archive</a>
+</div>
+</div>
+<div id="content">
+<h1 id="state-course-for-data61-fp-course">State Course for data61 fp-course</h1>
+<div class="info">
+Posted on June 26, 2018
+</div>
 <p>data61 has an amazing haskell course <a href="https://github.com/data61/fp-course">fp-course</a>. Brian McKenna has a serial of wonderful <a href="https://www.youtube.com/playlist?list=PLly9WMAVMrayYo2c-1E_rIRwBXG_FbLBW">videos</a> walk through the course.</p>
 <p>This post aims to cover <em>State</em> course which is skipped in videos.</p>
 <h2 id="what-is-state">What is State</h2>
 <p>First, let’s look how <code>State</code> is defined:</p>
+<div id="cb1" class="sourceCode">
 <div class="sourceCode" id="cb1"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">newtype</span> <span class="dt">State</span> s a <span class="fu">=</span> <span class="dt">State</span> {<span class="ot"> runState ::</span> s<span class="ot">-&gt;</span> (a, s)}</a></code></pre></div>
+</div>
 <p>In case you are not familiar with <a href="https://wiki.haskell.org/Newtype"><code>newtype</code></a>. It is just like <code>data</code> but it can only <em>has exactly one constructor with exactly one field in it.</em> In this case <code>State</code> is the constructor and <code>runState</code> is the single field. The type of <code>State</code> constructor is <code>(s -&gt;  a, s)) -&gt; State s a</code>, since <code>State</code> uses record syntax, we have a field accessor <code>runState</code> and its type is <code>State s a -&gt; s -&gt; (a, s)</code>.</p>
 <p>An important takeaway which might not so oblivious to Haskell beginner is that: <code>State</code> is merely a function with type <code>s -&gt; (a,s)</code>, (a function wrapped inside constructor <code>State</code>, to be exact, and we can unwrap the function using <code>runState</code>).</p>
 <p>Secondly, <code>State</code> function takes a <code>s</code> representing a state, and produces a tuple contains value <code>a</code> and new state <code>s</code>.</p>
 <h2 id="basic">Basic</h2>
 <p>The first exercise is to implement <code>exec</code> function, it takes a <code>State</code> function and initial <code>state</code> value, returns the new state. It is pretty straightforward, we just need to apply <code>State</code> function with <code>state</code> value, and takes the second element from the tuple.</p>
 <p>A simple solution can be written as</p>
+<div id="cb2" class="sourceCode">
 <div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="ot">exec ::</span> <span class="dt">State</span> s a <span class="ot">-&gt;</span> s <span class="ot">-&gt;</span> s</a>
 <a class="sourceLine" id="cb2-2" data-line-number="2">exec f v <span class="fu">=</span> (\ (_, y) <span class="ot">-&gt;</span> y) (runState f v)</a></code></pre></div>
+</div>
 <p>Since the state value <code>v</code> appears on both sides of <code>=</code>, we rewrite it a little more point-free.</p>
+<div id="cb3" class="sourceCode">
 <div class="sourceCode" id="cb3"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb3-1" data-line-number="1">exec f <span class="fu">=</span> (\(_, y) <span class="ot">-&gt;</span> y) <span class="fu">.</span> runState f</a></code></pre></div>
+</div>
 <p><code>runState f</code> is a partial applied function takes <code>s</code> returns <code>(a,s)</code></p>
 <p>In <code>Prelude</code>, there is a <a href="http://hackage.haskell.org/package/base-4.11.1.0/docs/Prelude.html#v:snd"><code>snd</code></a> function does exactly the same thing of <code>\(_, y) -&gt; y)</code>, and there is also a <a href="http://hackage.haskell.org/package/base-4.11.1.0/docs/Prelude.html#v:fst"><code>fst</code></a> function.</p>
 <p>Therefore, <code>exec</code> can be written as</p>
+<div id="cb4" class="sourceCode">
 <div class="sourceCode" id="cb4"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb4-1" data-line-number="1">exec f <span class="fu">=</span> P.snd <span class="fu">.</span> runState f</a></code></pre></div>
+</div>
 <p>We could also write <code>exec</code> as</p>
 <p><code>exec (State f) = P.snd . f</code></p>
 <p>In this case <code>f</code> is the function <code>s -&gt; (a,s)</code> wrapped inside <code>State</code>.</p>
 <p>Second exercise is <code>eval</code>: takes a <code>State</code> function and initial <code>state</code> value, returns the computed value <code>a</code>. <code>eval</code> is pretty familiar with <code>exec</code>, but in stead of taking the second element of the tuple, we want to the first one.</p>
+<div id="cb5" class="sourceCode">
 <div class="sourceCode" id="cb5"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="ot">eval ::</span> <span class="dt">State</span> s a <span class="ot">-&gt;</span> s <span class="ot">-&gt;</span> a</a>
 <a class="sourceLine" id="cb5-2" data-line-number="2">eval (<span class="dt">State</span> f) <span class="fu">=</span> P.fst <span class="fu">.</span> f</a></code></pre></div>
+</div>
 <p>Next exercise is <code>get</code></p>
+<div id="cb6" class="sourceCode">
 <div class="sourceCode" id="cb6"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="ot">get ::</span> <span class="dt">State</span> s s</a>
 <a class="sourceLine" id="cb6-2" data-line-number="2">get <span class="fu">=</span> <span class="dt">State</span> (\ x <span class="ot">-&gt;</span> (x,x))</a></code></pre></div>
+</div>
 <p>If we want to be really clever, we can write <code>get</code> as <code>get = State $ (join (,))</code>.</p>
 <p>We met <code>join</code> function the first time in the <code>monad</code> chapter:</p>
+<div id="cb7" class="sourceCode">
 <div class="sourceCode" id="cb7"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="ot">join ::</span> <span class="dt">Monad</span> f <span class="ot">=&gt;</span> f (f a)<span class="ot">-&gt;</span> f a</a>
 <a class="sourceLine" id="cb7-2" data-line-number="2">join <span class="fu">=</span> (<span class="fu">=&lt;&lt;</span>) id</a></code></pre></div>
+</div>
 <p>Basically, <code>join</code> flattens the nested monad context into single layer context. In the case of function (or Read Monad), it turns a binary function into an unary function by applying the argument twice.</p>
 <pre><code>&gt;&gt;&gt; join (+) 7
 14</code></pre>
@@ -78,9 +105,12 @@ put x = State (\ _ -&gt; ((), x))</code></pre>
 <pre><code>put = State . const . (,) ()</code></pre>
 <h2 id="functor-applicative-monad">Functor, Applicative, Monad</h2>
 <p>Following the pattern of pervious chapters, we need define <code>State</code> as instance of Functor, Applicative, Monad, the classical members of the functor family.</p>
+<div id="cb14" class="sourceCode">
 <div class="sourceCode" id="cb14"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="kw">instance</span> <span class="dt">Functor</span> (<span class="dt">State</span> s) <span class="kw">where</span></a>
 <a class="sourceLine" id="cb14-2" data-line-number="2"><span class="ot">  (&lt;$&gt;) ::</span> (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> <span class="dt">State</span> s a <span class="ot">-&gt;</span> <span class="dt">State</span> s b</a>
 <a class="sourceLine" id="cb14-3" data-line-number="3">  f <span class="fu">&lt;$&gt;</span> <span class="dt">State</span> x <span class="fu">=</span> <span class="dt">State</span> (\ s <span class="ot">-&gt;</span> <span class="kw">let</span> (y, s') <span class="fu">=</span> x s <span class="kw">in</span> (f y, s'))</a></code></pre></div>
+</div>
+<div id="cb15" class="sourceCode">
 <div class="sourceCode" id="cb15"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="kw">instance</span> <span class="dt">Applicative</span> (<span class="dt">State</span> s) <span class="kw">where</span></a>
 <a class="sourceLine" id="cb15-2" data-line-number="2"><span class="ot">  pure ::</span> a <span class="ot">-&gt;</span> <span class="dt">State</span> s a</a>
 <a class="sourceLine" id="cb15-3" data-line-number="3">  pure a <span class="fu">=</span> <span class="dt">State</span> (\ s <span class="ot">-&gt;</span> (a, s))</a>
@@ -88,10 +118,17 @@ put x = State (\ _ -&gt; ((), x))</code></pre>
 <a class="sourceLine" id="cb15-5" data-line-number="5"><span class="ot">  (&lt;*&gt;) ::</span> <span class="dt">State</span> s (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> <span class="dt">State</span> s a <span class="ot">-&gt;</span> <span class="dt">State</span> s b</a>
 <a class="sourceLine" id="cb15-6" data-line-number="6">  (<span class="dt">State</span> h) <span class="fu">&lt;*&gt;</span> (<span class="dt">State</span> g) <span class="fu">=</span> <span class="dt">State</span> (\ s <span class="ot">-&gt;</span> <span class="kw">let</span> (f, s') <span class="fu">=</span> h s</a>
 <a class="sourceLine" id="cb15-7" data-line-number="7">                                              (a, s'') <span class="fu">=</span> g s' <span class="kw">in</span> (f a, s''))</a></code></pre></div>
+</div>
+<div id="cb16" class="sourceCode">
 <div class="sourceCode" id="cb16"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="kw">instance</span> <span class="dt">Monad</span> (<span class="dt">State</span> s) <span class="kw">where</span></a>
 <a class="sourceLine" id="cb16-2" data-line-number="2"><span class="ot">  (=&lt;&lt;) ::</span> (a <span class="ot">-&gt;</span> <span class="dt">State</span> s b) <span class="ot">-&gt;</span> <span class="dt">State</span> s a <span class="ot">-&gt;</span> <span class="dt">State</span> s b</a>
 <a class="sourceLine" id="cb16-3" data-line-number="3">  mf <span class="fu">=&lt;&lt;</span> (<span class="dt">State</span> g) <span class="fu">=</span> <span class="dt">State</span> (\ s <span class="ot">-&gt;</span> <span class="kw">let</span> (a, s') <span class="fu">=</span> g s</a>
 <a class="sourceLine" id="cb16-4" data-line-number="4">                                       (b, s'') <span class="fu">=</span> runState (mf a) s' <span class="kw">in</span> (b, s''))</a></code></pre></div>
+</div>
+</div>
+<div id="footer">
+Site proudly generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+</div>
 
         </div>
         <div id="footer">
