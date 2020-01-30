@@ -22,6 +22,7 @@ haskellPackages.shellFor {
       ghcid
       cabal2nix
       stylish-haskell
+      wai-app-static
       (all-hies.selection {selector = p: {inherit (p) ghc865; };})
     ] ++ [pinnedPkgs.cabal-install];
 }

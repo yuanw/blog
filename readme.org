@@ -14,7 +14,7 @@ cabal2nix . > default.nix
 
 #+begin_src sh
 ./dist/build/site/site build
-nix-shell -p python3 --command "python -m http.server"
+cd _site && warp
 #+end_src
 * References:
 https://deptype.com/posts/2019-02-21-create-blog-nix-hakyll-aws.html
@@ -22,7 +22,6 @@ https://deptype.com/posts/2019-02-21-create-blog-nix-hakyll-aws.html
 https://gist.github.com/willurd/5720255#gistcomment-2754054
 
 
-nix-shell -p python3 --command "python -m http.server"
 
 * items
 ** TODO delete default posts
