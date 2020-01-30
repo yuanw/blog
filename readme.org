@@ -1,0 +1,37 @@
+#+TITLE: blog 
+
+https://all-hies.cachix.org/
+
+#+begin_src sh
+nix-shell -p haskellPackages.hakyll
+which hakyll-init
+hakyll blog
+exit
+cd blog
+nix-shell -p cabal2nix
+cabal2nix . > default.nix
+#+end_src
+
+#+begin_src sh
+./dist/build/site/site build
+nix-shell -p python3 --command "python -m http.server"
+#+end_src
+* References:
+https://deptype.com/posts/2019-02-21-create-blog-nix-hakyll-aws.html
+
+https://gist.github.com/willurd/5720255#gistcomment-2754054
+
+
+nix-shell -p python3 --command "python -m http.server"
+
+* items
+** TODO delete default posts
+** DONE wire org-mode
+   CLOSED: [2020-01-28 Tue 22:16]
+https://www.reddit.com/r/emacs/comments/5jjnri/org_mode_in_hakyll/
+https://turbomack.github.io/posts/2016-12-21-org-mode-in-hakyll.html
+https://github.com/chfin/hakyll-notes/blob/master/hakyll-notes.cabal
+** TODO integrate with shake
+https://shakebuild.com/manual
+https://github.com/mstksg/cv-static
+** TODO wire theme

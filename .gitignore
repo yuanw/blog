@@ -1,7 +1,9 @@
 # Created by https://www.gitignore.io/api/haskell
+.DS_Store
 
 ### Haskell ###
 dist
+dist-newstyle
 cabal-dev
 *.o
 *.hi

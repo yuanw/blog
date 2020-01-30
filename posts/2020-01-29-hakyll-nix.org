@@ -1,0 +1,6 @@
+#+TITLE: Using Hakyll with Github Pages (Nix Edition)
+
+* Setup
+** Install nix
+** enable all-hies cachix
+https://github.com/katychuang/hakyll-cssgarden
