@@ -1,40 +1,46 @@
-<!doctype html>
-<html lang="en">
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <head>
-        <meta charset="utf-8">
-        <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <script id="dsq-count-scr" src="//blog-jsxz1bprob.disqus.com/count.js" async></script>
-        <meta name="author" content="Yuan Wang">
-        
-        <meta name="keywords" content="nix, haskell">
-        
-        <title>Yuan Wang's Blog - Setup a haskell development enivronment using nix (Working Process)</title>
-        <link rel="stylesheet" href="../css/default.css" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>My Hakyll Blog - 2019-11-30-haskell-nix</title>
+        <link rel="stylesheet" type="text/css" href="../css/default.css" />
     </head>
     <body>
-        <header>
-            <div class="logo">
-                <a href="../">Yuan Wang's  Blog</a>
+        <div id="header">
+            <div id="logo">
+                <a href="../">Yuan</a>
             </div>
-            <nav>
+            <div id="navigation">
                 <a href="../">Home</a>
                 <a href="../about.html">About</a>
+                <a href="../contact.html">Contact</a>
                 <a href="../archive.html">Archive</a>
-            </nav>
-        </header>
+            </div>
+        </div>
 
-        <main role="main">
-            <h1>Setup a haskell development enivronment using nix (Working Process)</h1>
-            <article>
-    <section class="header">
-        Posted on November 30, 2019
-        
-            by Yuan Wang
-        
-    </section>
-    <section>
-        <h1 id="disclaimers">Disclaimers</h1>
+        <div id="content">
+            <h1>2019-11-30-haskell-nix</h1>
+
+            <div class="info">
+    Posted on November 30, 2019
+    
+</div>
+
+<header>
+<div class="logo">
+<a href="../">Yuan Wang’s Blog</a>
+</div>
+<nav> <a href="../">Home</a> <a href="../about.html">About</a> <a href="../archive.html">Archive</a> </nav>
+</header>
+<div role="main">
+<h1 id="setup-a-haskell-development-enivronment-using-nix-working-process">Setup a haskell development enivronment using nix (Working Process)</h1>
+<article>
+<section class="header">
+Posted on November 30, 2019 by Yuan Wang
+</section>
+<section>
+<h1 id="disclaimers">Disclaimers</h1>
 <p>I am still learning nix and haskell in general, please take it with a grain of salt on everthing mentioned here.</p>
 <h1 id="environments">Environments</h1>
 <ul>
@@ -50,9 +56,13 @@
 <p>The last thing I want to do is to drag anyone into build tool war. If It Ain’t Broke, Don’t Nix it <a href="https://www.youtube.com/watch?v=G9yiJ7d5LeI" class="uri">https://www.youtube.com/watch?v=G9yiJ7d5LeI</a></p>
 <h1 id="nix-basics">Nix Basics</h1>
 <h2 id="install-nix">Install nix</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb1-1" title="1"><span class="ex">curl</span> https://nixos.org/nix/install <span class="kw">|</span> <span class="fu">sh</span></a></code></pre></div>
+<div id="cb1" class="sourceCode">
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="ex">curl</span> https://nixos.org/nix/install <span class="kw">|</span> <span class="fu">sh</span></span></code></pre></div>
+</div>
 <h2 id="upgrade-nix"><a href="https://nixos.org/nix/manual/#ch-upgrading-nix">Upgrade nix</a></h2>
-<div class="sourceCode" id="cb2"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb2-1" title="1"><span class="ex">nix-channel</span> --update<span class="kw">;</span> <span class="ex">nix-env</span> -iA nixpkgs</a></code></pre></div>
+<div id="cb2" class="sourceCode">
+<div class="sourceCode" id="cb2"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="ex">nix-channel</span> --update<span class="kw">;</span> <span class="ex">nix-env</span> -iA nixpkgs</span></code></pre></div>
+</div>
 <h2 id="uninstall-nix">Uninstall nix</h2>
 <pre class="shell"><code>rm -rf /nix</code></pre>
 <pre class="shell"><code>nix-prefetch-git https://github.com/NixOS/nixpkgs.git 19.09 &gt; nixpkgs-19-09.json</code></pre>
@@ -88,17 +98,19 @@ nix-env -iA selection --arg selector 'p: { inherit (p) ghc865; }' -f https://git
 <p>you can verify cabal version by <code>cabal --version</code></p>
 <h2 id="setup-local-dev-tools">Setup local Dev tools</h2>
 <p><a href="https://hoogle.haskell.org/">Hoogle</a></p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode nix"><code class="sourceCode bash"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">{</span> <span class="ex">nixpkgs</span> ? import <span class="op">&lt;</span>nixpkgs<span class="op">&gt;</span> {<span class="kw">}</span> , <span class="ex">compiler</span> ? <span class="st">&quot;ghc865&quot;</span> }:</a>
-<a class="sourceLine" id="cb6-2" title="2"><span class="bu">let</span></a>
-<a class="sourceLine" id="cb6-3" title="3">  <span class="ex">inherit</span> (nixpkgs) <span class="ex">haskellPackages</span><span class="kw">;</span></a>
-<a class="sourceLine" id="cb6-4" title="4">  <span class="ex">myPackages</span> = import ./release.nix {inherit nixpkgs compiler<span class="kw">;</span> };</a>
-<a class="sourceLine" id="cb6-5" title="5"><span class="kw">in</span></a>
-<a class="sourceLine" id="cb6-6" title="6">  <span class="ex">haskellPackages.shellFor</span> {</a>
-<a class="sourceLine" id="cb6-7" title="7">    <span class="ex">withHoogle</span> = true<span class="kw">;</span></a>
-<a class="sourceLine" id="cb6-8" title="8">    <span class="ex">packages</span> = p: [myPackages]<span class="kw">;</span></a>
-<a class="sourceLine" id="cb6-9" title="9">    <span class="ex">buildInputs</span> =  with nixpkgs.haskellPackages<span class="kw">;</span></a>
-<a class="sourceLine" id="cb6-10" title="10">     [ <span class="ex">hlint</span> stylish-haskell ghcid hoogle]<span class="kw">;</span></a>
-<a class="sourceLine" id="cb6-11" title="11">}</a></code></pre></div>
+<div id="cb6" class="sourceCode">
+<div class="sourceCode" id="cb6"><pre class="sourceCode nix"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">{</span> <span class="ex">nixpkgs</span> ? import <span class="op">&lt;</span>nixpkgs<span class="op">&gt;</span> {<span class="kw">}</span> , <span class="ex">compiler</span> ? <span class="st">&quot;ghc865&quot;</span> }:</span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="bu">let</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a>  <span class="ex">inherit</span> (nixpkgs) <span class="ex">haskellPackages</span><span class="kw">;</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a>  <span class="ex">myPackages</span> = import ./release.nix {inherit nixpkgs compiler<span class="kw">;</span> };</span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="kw">in</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a>  <span class="ex">haskellPackages.shellFor</span> {</span>
+<span id="cb6-7"><a href="#cb6-7"></a>    <span class="ex">withHoogle</span> = true<span class="kw">;</span></span>
+<span id="cb6-8"><a href="#cb6-8"></a>    <span class="ex">packages</span> = p: [myPackages]<span class="kw">;</span></span>
+<span id="cb6-9"><a href="#cb6-9"></a>    <span class="ex">buildInputs</span> =  with nixpkgs.haskellPackages<span class="kw">;</span></span>
+<span id="cb6-10"><a href="#cb6-10"></a>     [ <span class="ex">hlint</span> stylish-haskell ghcid hoogle]<span class="kw">;</span></span>
+<span id="cb6-11"><a href="#cb6-11"></a>}</span></code></pre></div>
+</div>
 <p>formatter</p>
 <p><a href="https://github.com/tweag/ormolu" class="uri">https://github.com/tweag/ormolu</a> hlint stylish-haskell</p>
 <p>workflow</p>
@@ -108,18 +120,22 @@ ghcid -c 'cabal new-repl beam-servant-tutorial' -T API.main</code></pre>
 <p>cabal new-repl seems only one package to to load</p>
 <p>need to figure the limitation of this approach <a href="https://www.parsonsmatt.org/2018/05/19/ghcid_for_the_win.html" class="uri">https://www.parsonsmatt.org/2018/05/19/ghcid_for_the_win.html</a> <a href="https://binarin.ru/post/auto-reload-threepenny-gui/" class="uri">https://binarin.ru/post/auto-reload-threepenny-gui/</a></p>
 <p>we still need beam-servant-tutorial.cabal, b/c</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb8-1" title="1"><span class="ex">unpacking</span> sources</a>
-<a class="sourceLine" id="cb8-2" title="2"><span class="ex">unpacking</span> source archive /nix/store/nf9hhcmb9a0s6qr2y1zd3lj5d36shjyj-beam-servant-tutorial.cabal</a>
-<a class="sourceLine" id="cb8-3" title="3"><span class="kw">do</span> <span class="ex">not</span> know how to unpack source archive /nix/store/nf9hhcmb9a0s6qr2y1zd3lj5d36shjyj-beam-servant-tutorial.cabal</a></code></pre></div>
+<div id="cb8" class="sourceCode">
+<div class="sourceCode" id="cb8"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1"></a><span class="ex">unpacking</span> sources</span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="ex">unpacking</span> source archive /nix/store/nf9hhcmb9a0s6qr2y1zd3lj5d36shjyj-beam-servant-tutorial.cabal</span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="kw">do</span> <span class="ex">not</span> know how to unpack source archive /nix/store/nf9hhcmb9a0s6qr2y1zd3lj5d36shjyj-beam-servant-tutorial.cabal</span></code></pre></div>
+</div>
 <h1 id="aeson-tutorial">Aeson Tutorial</h1>
 <p><a href="https://artyom.me/aeson" class="uri">https://artyom.me/aeson</a></p>
 <p>customsing field name</p>
 <h1 id="servant-tutorial"><a href="https://haskell-servant.readthedocs.io/en/v0.8/tutorial/index.html">Servant Tutorial</a></h1>
 <p>Outter level we need (<a href="https://hackage.haskell.org/package/warp">warp</a> package)</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">import</span> <span class="dt">Network.Wai.Handler.Warp</span> (run)</a>
-<a class="sourceLine" id="cb9-2" title="2"></a>
-<a class="sourceLine" id="cb9-3" title="3"><span class="ot">main ::</span> <span class="dt">IO</span> ()</a>
-<a class="sourceLine" id="cb9-4" title="4">main <span class="fu">=</span> run <span class="dv">8081</span> app</a></code></pre></div>
+<div id="cb9" class="sourceCode">
+<div class="sourceCode" id="cb9"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw">import</span> <span class="dt">Network.Wai.Handler.Warp</span> (run)</span>
+<span id="cb9-2"><a href="#cb9-2"></a></span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="ot">main ::</span> <span class="dt">IO</span> ()</span>
+<span id="cb9-4"><a href="#cb9-4"></a>main <span class="ot">=</span> run <span class="dv">8081</span> app</span></code></pre></div>
+</div>
 <p><code>run :: Port -&gt; Application -&gt; IO ()</code></p>
 <p><a href="https://www.stackage.org/haddock/nightly-2019-11-17/warp-3.3.4/Network-Wai-Handler-Warp.html#v:run">run</a></p>
 <h1 id="beam-tutorial"><a href="https://tathougies.github.io/beam/tutorials/tutorial1/">Beam Tutorial</a></h1>
@@ -134,9 +150,11 @@ ghcid -c 'cabal new-repl beam-servant-tutorial' -T API.main</code></pre>
 <li><a href="https://github.com/cah6/haskell-nix-skeleton-1" class="uri">https://github.com/cah6/haskell-nix-skeleton-1</a></li>
 <li><a href="https://nixos.org/nixpkgs/manual/#haskell" class="uri">https://nixos.org/nixpkgs/manual/#haskell</a></li>
 </ul>
-    </section>
+</section>
 </article>
-<div id="disqus_thread"></div>
+<div id="disqus_thread">
+
+</div>
 <script>
 
 /**
@@ -155,12 +173,18 @@ s.setAttribute('data-timestamp', +new Date());
 (d.head || d.body).appendChild(s);
 })();
 </script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<noscript>
+Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+</div>
+<footer>
+Site proudly generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+</footer>
 
-        </main>
-        <footer>
+        </div>
+        <div id="footer">
             Site proudly generated by
             <a href="http://jaspervdj.be/hakyll">Hakyll</a>
-        </footer>
+        </div>
     </body>
 </html>

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>My Hakyll Blog - 2020-01-29-hakyll-nix</title>
+        <link rel="stylesheet" type="text/css" href="../css/default.css" />
+    </head>
+    <body>
+        <div id="header">
+            <div id="logo">
+                <a href="../">Yuan</a>
+            </div>
+            <div id="navigation">
+                <a href="../">Home</a>
+                <a href="../about.html">About</a>
+                <a href="../contact.html">Contact</a>
+                <a href="../archive.html">Archive</a>
+            </div>
+        </div>
+
+        <div id="content">
+            <h1>2020-01-29-hakyll-nix</h1>
+
+            <div class="info">
+    Posted on January 29, 2020
+    
+</div>
+
+<!-- <!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>My Hakyll Blog - Using Hakyll with Github Pages (Nix Edition)</title>
+        <link rel="stylesheet" href="/css/default.css" />
+    </head>
+    <body>
+        <main role="main">
+            <h1>Using Hakyll with Github Pages (Nix Edition)</h1>
+            <article>
+    <section class="header">
+        Posted on January 29, 2020
+        
+    </section>
+    <section>
+        <p>Last Modified on January 29, 2020</p>
+<h1 id="why">Why</h1>
+<p>So I have been learning nix, and want to write down my experinces.</p>
+<h1 id="setup">Setup</h1>
+<h2 id="install-nix">Install nix</h2>
+<h2 id="enable-all-hies-cachix"><a href="https://all-hies.cachix.org/">enable all-hies cachix</a></h2>
+<h1 id="boostrap-the-project">Boostrap the project</h1>
+<div class="sourceCode" id="cb1" data-org-language="sh"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="ex">nix-shell</span> -p haskellPackages.hakyll</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="ex">hakyll-init</span> <span class="op">&lt;</span>siteName<span class="op">&gt;</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="bu">cd</span> <span class="op">&lt;</span>siteName<span class="op">&gt;</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="ex">nix-shell</span> -p cabal2nix <span class="co"># unless you already installed cabal2nix</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="ex">cabal2nix</span> . <span class="op">&gt;</span> default.nix</span></code></pre></div>
+<h1 id="references">References</h1>
+<ul>
+<li><a href="https://jaspervdj.be/hakyll/tutorials/github-pages-tutorial.html">https://jaspervdj.be/hakyll/tutorials/github-pages-tutorial.html</a></li>
+<li><a href="https://deptype.com/posts/2019-02-21-create-blog-nix-hakyll-aws.html">https://deptype.com/posts/2019-02-21-create-blog-nix-hakyll-aws.html</a></li>
+</ul>
+    </section>
+</article>
+
+        </main>
+    </body>
+</html> -->
+<div class="pure-menu pure-menu-horizontal">
+<ul>
+<li><a href="../" class="pure-menu-link">Home</a></li>
+<li><a href="../archive.html" class="pure-menu-link">Archive</a></li>
+<li><a href="../about.html" class="pure-menu-link">About</a></li>
+<li><a href="../contact.html" class="pure-menu-link">Contact</a></li>
+</ul>
+</div>
+<div>
+<div class="content">
+<div class="pure-g">
+<div class="pure-u-md-1-5">
+
+</div>
+<div class="pure-u-1 pure-u-md-3-5">
+<h1 id="using-hakyll-with-github-pages-nix-edition" class="post-title is-center">Using Hakyll with Github Pages (Nix Edition)</h1>
+<div class="slot-content">
+<article>
+<article>
+<section class="header">
+Posted on January 29, 2020
+</section>
+<section>
+<p>Last Modified on January 29, 2020</p>
+<h1 id="why">Why</h1>
+<p>So I have been learning nix, and want to write down my experinces.</p>
+<h1 id="setup">Setup</h1>
+<h2 id="install-nix">Install nix</h2>
+<h2 id="enable-all-hies-cachix"><a href="https://all-hies.cachix.org/">enable all-hies cachix</a></h2>
+<h1 id="boostrap-the-project">Boostrap the project</h1>
+<div id="cb1" class="sourceCode" data-org-language="sh">
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="ex">nix-shell</span> -p haskellPackages.hakyll</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="ex">hakyll-init</span> <span class="op">&lt;</span>siteName<span class="op">&gt;</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="bu">cd</span> <span class="op">&lt;</span>siteName<span class="op">&gt;</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="ex">nix-shell</span> -p cabal2nix <span class="co"># unless you already installed cabal2nix</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="ex">cabal2nix</span> . <span class="op">&gt;</span> default.nix</span></code></pre></div>
+</div>
+<h1 id="references">References</h1>
+<ul>
+<li><a href="https://jaspervdj.be/hakyll/tutorials/github-pages-tutorial.html">https://jaspervdj.be/hakyll/tutorials/github-pages-tutorial.html</a></li>
+<li><a href="https://deptype.com/posts/2019-02-21-create-blog-nix-hakyll-aws.html">https://deptype.com/posts/2019-02-21-create-blog-nix-hakyll-aws.html</a></li>
+</ul>
+</section>
+</article>
+</article>
+</div>
+</div>
+<div class="pure-u-md-1-5">
+
+</div>
+</div>
+</div>
+<div class="footer">
+<div class="pure-g">
+<div class="pure-u-md-3-5">
+
+</div>
+<div class="pure-u-md-2-5">
+<p>Site proudly generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a></p>
+</div>
+</div>
+</div>
+</div>
+
+        </div>
+        <div id="footer">
+            Site proudly generated by
+            <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+        </div>
+    </body>
+</html>
