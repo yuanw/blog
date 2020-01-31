@@ -1,6 +1,0 @@
-#+TITLE: Nixify your dotfiles
-
-learning dotfiles
-
-* Amazing!
-

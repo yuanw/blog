@@ -1,6 +1,27 @@
-#+TITLE: Using Hakyll with Github Pages (Nix Edition)
+---
+title: Using Hakyll with Github Pages (Nix Edition)
+date: January 29, 2020
+comment:  This is a comment intended to demonstrate  
+          metadata that spans multiple lines, yet  
+          is treated as a single value.  
+---
+Last Modified on January 29, 2020
 
+* Why
+So I have been learning nix, and want to write down my experinces.
 * Setup
 ** Install nix
-** enable all-hies cachix
-https://github.com/katychuang/hakyll-cssgarden
+** [[https://all-hies.cachix.org/][enable all-hies cachix]]
+* Boostrap the project
+#+begin_src sh
+nix-shell -p haskellPackages.hakyll
+hakyll-init <siteName>
+cd <siteName>
+nix-shell -p cabal2nix # unless you already installed cabal2nix
+cabal2nix . > default.nix
+#+end_src
+
+
+* References
+- https://jaspervdj.be/hakyll/tutorials/github-pages-tutorial.html
+- https://deptype.com/posts/2019-02-21-create-blog-nix-hakyll-aws.html
