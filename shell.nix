@@ -24,5 +24,5 @@ haskellPackages.shellFor {
       stylish-haskell
       wai-app-static
       (all-hies.selection {selector = p: {inherit (p) ghc865; };})
-    ] ++ [pinnedPkgs.cabal-install];
+    ] ++ [pinnedPkgs.cabal-install] ++ [nixpkgs.nodejs nixpkgs.nodePackages.node2nix];
 }
