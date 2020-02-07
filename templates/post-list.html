@@ -1,7 +1,17 @@
-<ul>
-    $for(posts)$
-        <li>
-            <a href="$url$">$title$</a> - $date$
-        </li>
-    $endfor$
-</ul>
+$for(posts)$
+<section class="post">
+    <header class="post-header">
+        <h2 class="post-title">
+            <a href="$url$">$title$</a>
+        </h2>
+        <p class="post-meta">
+            on $date$
+        </p>
+    </header>
+    $if(summary)$
+    <div class="post-description">
+        <p>$summary$</p>
+    </div>
+    $endif$
+</section>
+$endfor$

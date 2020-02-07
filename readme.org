@@ -34,3 +34,4 @@ https://github.com/chfin/hakyll-notes/blob/master/hakyll-notes.cabal
 https://shakebuild.com/manual
 https://github.com/mstksg/cv-static
 ** TODO wire theme
+** TODO trying on https://cloud.google.com/storage/docs/hosting-static-website#specialty-pages

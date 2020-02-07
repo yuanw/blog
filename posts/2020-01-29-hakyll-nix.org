@@ -1,22 +1,22 @@
 ---
-title: Using Hakyll with Github Pages (Nix Edition)
+title: Using Hakyll with firebase (Nix Edition)
 date: January 29, 2020
-comment:  This is a comment intended to demonstrate  
-          metadata that spans multiple lines, yet  
-          is treated as a single value.  
+summary: static site generation using haskell and nix  
 ---
 Last Modified on January 30, 2020
 
 * Why
-So I have been learning nix, and want to write down my experinces. I had a simple github page generated using Hakyll.
+So I have been learning nix, and want to write down my experinces. I had a simple github page blob generated using Hakyll.
 Nothing fancy, I just followed Erik Stevenson's [[https://jaspervdj.be/hakyll/tutorials/github-pages-tutorial.html][tutorial]]. 
 
 The tutorial assumes you use [[https://docs.haskellstack.org/en/stable/README/][Stack]]. So I gave a try to nixify my github page repo as a practice.
-I did find a [[https://deptype.com/posts/2019-02-21-create-blog-nix-hakyll-aws.html][blog]] post about using Hakyll with Nix.
+I did find some blogposts about using Hakyll with Nix. ([[https://deptype.com/posts/2019-02-21-create-blog-nix-hakyll-aws.html][aws]] and [[https://terrorjack.com/posts/2018-11-18-hello-world.html][netlify]])
+** Why Nix
+** Why firebase
 
 * Setup
 ** Install nix
-** [[https://all-hies.cachix.org/][enable all-hies cachix]]
+** [[https://all-hies.cachix.org/][enable all-hies cachix]] (optional)
 * Boostrap the project
 #+begin_src sh
 nix-shell -p haskellPackages.hakyll
@@ -26,8 +26,11 @@ nix-shell -p cabal2nix # unless you already installed cabal2nix
 cabal2nix . > default.nix
 #+end_src
 * Write shell.nix
-
-
+* Disqus Comment 
 * References
 - https://jaspervdj.be/hakyll/tutorials/github-pages-tutorial.html
 - https://deptype.com/posts/2019-02-21-create-blog-nix-hakyll-aws.html
+- https://terrorjack.com/posts/2018-11-18-hello-world.html
+
+
+
