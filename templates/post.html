@@ -1,8 +1,16 @@
-<div class="info">
-    Posted on $date$
-    $if(author)$
-        by $author$
-    $endif$
-</div>
-
-$body$
+<section>
+    <header class="post-header">
+        <h2 class="post-title">
+            $title$
+        </h2>
+        <p class="post-meta">
+            Posted on $date$
+            $if(author)$
+            by $author$
+            $endif$
+        </p>
+    </header>
+    <div class="post-description">
+        $body$
+    </div>
+</section>

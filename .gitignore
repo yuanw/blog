@@ -1,9 +1,12 @@
 # Created by https://www.gitignore.io/api/haskell
+.DS_Store
+
+node_modules/
 
 .DS_Store
 ### Haskell ###
 dist
-dist-newstyle/
+dist-newstyle
 cabal-dev
 *.o
 *.hi
@@ -21,3 +24,6 @@ cabal.sandbox.config
 .stack-work/
 _cache/
 _site/
+
+# Local Netlify folder
+.netlify
