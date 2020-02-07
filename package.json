@@ -4,7 +4,7 @@
   "description": "https://all-hies.cachix.org/",
   "main": "index.js",
   "dependencies": {
-    "netlify-cli": "^2.30.0"
+    "firebase-tools": "^7.12.1"
   },
   "devDependencies": {},
   "scripts": {
