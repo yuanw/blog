@@ -1,26 +1,34 @@
 ---
 title: Using Hakyll with firebase (Nix Edition)
 date: January 29, 2020
-summary: static site generation using haskell and nix  
+summary: static site generation using Haskell and nix  
 ---
 Last Modified on January 30, 2020
 
 * Why
-So I have been learning nix, and want to write down my experinces. I had a simple github page blob generated using Hakyll.
+So I have been learning nix, and want to write down my experiences. I had a simple github page blob generated using Hakyll.
 Nothing fancy, I just followed Erik Stevenson's [[https://jaspervdj.be/hakyll/tutorials/github-pages-tutorial.html][tutorial]]. 
 
 The tutorial assumes you use [[https://docs.haskellstack.org/en/stable/README/][Stack]]. So I gave a try to nixify my github page repo as a practice.
-I did find some blogposts about using Hakyll with Nix. ([[https://deptype.com/posts/2019-02-21-create-blog-nix-hakyll-aws.html][aws]] and [[https://terrorjack.com/posts/2018-11-18-hello-world.html][netlify]])
-** Why Nix
-** Why firebase
+I did find some blog posts about using Hakyll with Nix. ([[https://deptype.com/posts/2019-02-21-create-blog-nix-hakyll-aws.html][aws]] and [[https://terrorjack.com/posts/2018-11-18-hello-world.html][netlify]])
+netlify seems really nice, but the pages load speed seems inconsistent in my experience.
+So I want to give [[https://firebase.google.com/docs/hosting/quickstart][firebase]] a try. One can also use google cloud storage to [[https://cloud.google.com/storage/docs/hosting-static-website][host]] a static site, but currently it does not 
+suppport SSL. 
 
 * Setup
-** Install nix
+** [[https://nixos.org/nix/download.html][Install]] nix (single user or multiple user mode)
 ** [[https://all-hies.cachix.org/][enable all-hies cachix]] (optional)
+
 * Boostrap the project
+stack has a project template for Hakyll. In nix, we need *hakyll-init* to boostrap our project.
+The easist way to do that is 
 #+begin_src sh
-nix-shell -p haskellPackages.hakyll
+nix-shell -p haskellPackages.hakyll # this would start a nix-shell with hakyll package
 hakyll-init <siteName>
+#+end_src
+
+siteName is a normal cabal project, we can use normal nix-haskell development workflow on this project.
+#+begin_src sh
 cd <siteName>
 nix-shell -p cabal2nix # unless you already installed cabal2nix
 cabal2nix . > default.nix

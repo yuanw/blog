@@ -1,0 +1,4 @@
+---
+title: About
+---
+My name is Yuan Wang. I am software developer live in Canada. My email is me@yuanwang.ca
