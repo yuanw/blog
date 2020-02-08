@@ -1,0 +1,24 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: terrorjack/pixie:latest
+    steps:
+      - run:
+          name: Install dependencies
+          command: |
+            nix-channel --add https://nixos.org/channels/nixpkgs-unstable
+            nix-channel --update
+            nix-env -u
+            nix-env -iA \
+              nixpkgs.gitMinimal \
+              nixpkgs.nodejs-10_x \
+              nixpkgs.openssh \
+              nixpkgs.yarn
+            yarn global add firebase-cli
+      - checkout
+      - run:
+          name: Build the blog
+          command: |
+            nix-build --cores 2 release.nix
