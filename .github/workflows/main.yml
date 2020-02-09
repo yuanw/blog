@@ -14,3 +14,8 @@ jobs:
       run: |
         nix-build release.nix
         result/bin/site build
+    - name: Archive Production Artifact
+      uses: actions/upload-artifact@master
+      with:
+          name: _site
+          path: _site
