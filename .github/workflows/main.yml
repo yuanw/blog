@@ -1,12 +1,14 @@
 name: CI
 
-on: [push]
+on:
+  push:
+    branches:
+      - master
 
 jobs:
   build:
-
+    name: Build
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - uses: cachix/install-nix-action@v6
@@ -19,3 +21,21 @@ jobs:
       with:
           name: _site
           path: _site
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: Download Artifact
+        uses: actions/download-artifact@master
+        with:
+          name: _site
+      - name: Deploy to Firebase
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
