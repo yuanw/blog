@@ -1,9 +1,9 @@
 ---
-title: Using Hakyll with firebase (Nix Edition)
+title: Using Hakyll with Github Action and firebase (Nix Edition)
 date: January 29, 2020
 summary: static site generation using Haskell and nix  
 ---
-Last Modified on January 30, 2020
+Last Modified on February  8, 2020
 
 * Why
 So I have been learning nix, and want to write down my experiences. I had a simple github page blob generated using Hakyll.
