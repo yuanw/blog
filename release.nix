@@ -2,7 +2,7 @@
 
 let
   inherit (nixpkgs) pkgs;
-  f = import ./default.nix; 
+  f = import ./default.nix;
   haskellPackages = if compiler == "default"
                     then pkgs.haskellPackages
                     else pkgs.haskell.packages.${compiler};

@@ -10,5 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: cachix/install-nix-action@v6
-    - name: Run a one-line script
-      run: nix-build release.nix
+    - name: Nix build
+      run: |
+        nix-build release.nix
+        ./dist/build/site/site build
