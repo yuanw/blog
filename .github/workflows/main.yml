@@ -13,4 +13,4 @@ jobs:
     - name: Nix build
       run: |
         nix-build release.nix
-        ./dist/build/site/site build
+        result/bin/site build
