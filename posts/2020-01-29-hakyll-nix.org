@@ -3,7 +3,8 @@ title: Using Hakyll with Github Action and firebase (Nix Edition)
 date: January 29, 2020
 summary: static site generation using Haskell and nix  
 ---
-Last Modified on February 8, 2020
+Last Modified on February 16, 2020
+
 
 * Why
 So I have been learning nix, and want to write down my experiences. I had a simple github page blob generated using Hakyll.
@@ -15,6 +16,7 @@ Using github page with Hakyll is a little awkward. netlify seems really nice, bu
 So I want to give [[https://firebase.google.com/docs/hosting/quickstart][firebase]] a try. One can also use google cloud storage to [[https://cloud.google.com/storage/docs/hosting-static-website][host]] a static site, but currently it does not 
 suppport SSL. 
 
+Setting up a CI tool for publish blog is probably overkill.  
 Right now, I use [[https://help.github.com/en/actions/automating-your-workflow-with-github-actions][Github Actions]] as CI tool. It works reasonable well. You can checkout the code [[https://github.com/yuanw/blog/blob/819329bef87f6019f1444dd0744d89a0e034c1c8/.github/workflows/main.yml][here]].
 
 * Setup
@@ -33,17 +35,35 @@ The project is a plain cabal project, we can use normal nix-haskell development 
 #+begin_src sh
 cd <siteName>
 nix-shell -p cabal2nix # unless you already installed cabal2nix
-cabal2nix . > default.nix
+cabal2nix . > blog.nix
 #+end_src
 * Write shell.nix for local development
 I like to use [[https://github.com/target/lorri][lorri]] to enable all the nix shell.
 
+* default.nix for CI
+
+#+begin_src nix
+{ nixpkgs ? import <nixpkgs> {}, compiler ? "ghc865" }:
+
+let
+  inherit (nixpkgs) pkgs;
+  f = import ./blog.nix;
+  haskellPackages = if compiler == "default"
+                    then pkgs.haskellPackages
+                    else pkgs.haskell.packages.${compiler};
+
+  drv = haskellPackages.callPackage f {};
+in
+  drv
+#+end_src
 * Enable Disqus Comment 
 Since the site is static, we cannot support native comments.
-https://disqus.com/features/engage
-https://muut.com/tour/
+- https://disqus.com/features/engage
+- https://muut.com/tour/
+- https://vssue.js.org/
 * Github Action
-
+** Store firebase token
+https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets
 * References
 - https://jaspervdj.be/hakyll/tutorials/github-pages-tutorial.html
 - https://deptype.com/posts/2019-02-21-create-blog-nix-hakyll-aws.html

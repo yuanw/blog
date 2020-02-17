@@ -1,7 +1,5 @@
 #+TITLE: personal blog 
 
-https://all-hies.cachix.org/
-
 #+begin_src sh
 nix-shell -p haskellPackages.hakyll
 which hakyll-init
@@ -14,7 +12,7 @@ cabal2nix . > default.nix
 
 #+begin_src sh
 ./dist/build/site/site build
-cd _site && warp
+warp -d _site &
 #+end_src
 * References:
 https://deptype.com/posts/2019-02-21-create-blog-nix-hakyll-aws.html
@@ -24,17 +22,10 @@ https://gist.github.com/willurd/5720255#gistcomment-2754054
 
 
 * items
-** DONE delete default posts
-   CLOSED: [2020-02-07 Fri 13:46]
-** DONE wire org-mode
-   CLOSED: [2020-01-28 Tue 22:16]
-https://www.reddit.com/r/emacs/comments/5jjnri/org_mode_in_hakyll/
-https://turbomack.github.io/posts/2016-12-21-org-mode-in-hakyll.html
-https://github.com/chfin/hakyll-notes/blob/master/hakyll-notes.cabal
+** TODO wire org-mode meta
+https://github.com/jaspervdj/hakyll/issues/700
+
 ** TODO integrate with shake
 https://shakebuild.com/manual
 https://github.com/mstksg/cv-static
-** DONE wire theme
-   CLOSED: [2020-02-07 Fri 13:46]
-** DONE trying on https://cloud.google.com/storage/docs/hosting-static-website#specialty-pages
-   CLOSED: [2020-02-07 Fri 13:46]
+

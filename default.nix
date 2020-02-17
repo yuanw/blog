@@ -1,11 +1,12 @@
-{ mkDerivation, base, hakyll, stdenv }:
-mkDerivation {
-  pname = "blog";
-  version = "0.1.0.0";
-  src = ./.;
-  isLibrary = false;
-  isExecutable = true;
-  executableHaskellDepends = [ base hakyll ];
-  license = "unknown";
-  hydraPlatforms = stdenv.lib.platforms.none;
-}
+{ nixpkgs ? import <nixpkgs> {}, compiler ? "ghc865" }:
+
+let
+  inherit (nixpkgs) pkgs;
+  f = import ./blog.nix;
+  haskellPackages = if compiler == "default"
+                    then pkgs.haskellPackages
+                    else pkgs.haskell.packages.${compiler};
+
+  drv = haskellPackages.callPackage f {};
+in
+  drv

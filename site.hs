@@ -1,8 +1,17 @@
 --------------------------------------------------------------------------------
 {-# LANGUAGE OverloadedStrings #-}
-import           Data.Monoid (mappend)
+import           Data.Monoid         (mappend)
 import           Hakyll
+import           Text.Pandoc.Options (WriterOptions (..))
 
+
+withTOC :: WriterOptions
+withTOC = defaultHakyllWriterOptions
+          { writerNumberSections = True
+          , writerTableOfContents = True
+          , writerTOCDepth = 2
+          , writerTemplate = Just "$toc$\n$body$"
+          }
 
 --------------------------------------------------------------------------------
 main :: IO ()
@@ -23,7 +32,7 @@ main = hakyll $ do
 
     match "posts/*" $ do
         route $ setExtension "html"
-        compile $ pandocCompiler
+        compile $ pandocCompilerWith defaultHakyllReaderOptions withTOC
             >>= loadAndApplyTemplate "templates/post.html"    postCtx
             >>= loadAndApplyTemplate "templates/default.html" postCtx
             >>= relativizeUrls
