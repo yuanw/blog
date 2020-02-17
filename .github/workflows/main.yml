@@ -14,7 +14,7 @@ jobs:
     - uses: cachix/install-nix-action@v6
     - uses: cachix/cachix-action@v3
       with:
-        name: blogcache
+        name: yuanw
         signingKey: ${{ secrets.CACHIX_SIGNING_KEY }}
     - name: Nix build
       run: |
@@ -40,7 +40,7 @@ jobs:
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
-          args: deploy -m '${{github.event.head_commit.message}}' --only hosting
+          args: deploy --message '${{github.event.head_commit.message}}' --only hosting
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           PROJECT_ID: ${{secrets.FIREBASE_PROJECT_ID}}
