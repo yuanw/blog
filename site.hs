@@ -13,6 +13,15 @@ withTOC = defaultHakyllWriterOptions
           , writerTemplate = Just "$toc$\n$body$"
           }
 
+myFeedConfiguration :: FeedConfiguration
+myFeedConfiguration = FeedConfiguration
+    { feedTitle       = "Yuan Wang's blog"
+    , feedDescription = "Yuan Wang's blog feed"
+    , feedAuthorName  = "Yuan Wang"
+    , feedAuthorEmail = "me@yuanwang.ca"
+    , feedRoot        = "https://yuanwang.ca"
+    }
+
 --------------------------------------------------------------------------------
 main :: IO ()
 main = hakyll $ do
@@ -36,6 +45,13 @@ main = hakyll $ do
             >>= loadAndApplyTemplate "templates/post.html"    postCtx
             >>= loadAndApplyTemplate "templates/default.html" postCtx
             >>= relativizeUrls
+
+    create ["atom.xml"] $ do
+        route idRoute
+        compile $ do
+            let feedCtx = postCtx
+            posts <- fmap (take 10) . recentFirst =<< loadAll "posts/*"
+            renderAtom myFeedConfiguration feedCtx posts
 
     create ["archive.html"] $ do
         route idRoute
