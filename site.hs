@@ -43,6 +43,7 @@ main = hakyll $ do
         route $ setExtension "html"
         compile $ pandocCompilerWith defaultHakyllReaderOptions withTOC
             >>= loadAndApplyTemplate "templates/post.html"    postCtx
+            >>= saveSnapshot "content"
             >>= loadAndApplyTemplate "templates/default.html" postCtx
             >>= relativizeUrls
 
@@ -50,7 +51,8 @@ main = hakyll $ do
         route idRoute
         compile $ do
             let feedCtx = postCtx
-            posts <- fmap (take 10) . recentFirst =<< loadAll "posts/*"
+            posts <- fmap (take 10) . recentFirst =<<
+              loadAll  "posts/*"
             renderAtom myFeedConfiguration feedCtx posts
 
     create ["archive.html"] $ do
