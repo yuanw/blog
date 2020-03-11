@@ -14,8 +14,7 @@ jobs:
     - uses: cachix/install-nix-action@v7
     - uses: cachix/cachix-action@v5
       with:
-        name: yuanw
-        skipNixBuild: true
+        name: yuanw-blog
         signingKey: ${{ secrets.CACHIX_SIGNING_KEY }}
     - name: Nix build
       run: |
