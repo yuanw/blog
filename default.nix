@@ -13,4 +13,4 @@ let
   pkgs = import src { };
 
 in
-  pkgs.haskellPackages.callPackage ./blog.nix {};
+  pkgs.haskellPackages.callPackage ./blog.nix {}
