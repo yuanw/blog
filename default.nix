@@ -1,4 +1,4 @@
-
+{ nixpkgs ? import <nixpkgs> {}, compiler ? "ghc865" }:
 let
   bootstrap = import <nixpkgs> { };
 
@@ -12,5 +12,9 @@ let
 
   pkgs = import src { };
 
+  haskellPackages = if compiler == "default"
+                    then pkgs.haskellPackages
+                    else pkgs.haskell.packages.${compiler};
+
 in
-  pkgs.haskellPackages.callPackage ./blog.nix {}
+  haskellPackages.callPackage ./blog.nix {}
