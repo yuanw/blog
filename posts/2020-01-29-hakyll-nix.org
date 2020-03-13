@@ -2,8 +2,8 @@
 title: Using Hakyll with Github Action and firebase (Nix Edition)
 date: January 29, 2020
 summary: static site generation using Haskell and nix
-lastModified: February 16, 2020
-description: write blog using Hakyll
+lastModified: March 12, 2020
+description: write blog using Hakyll, publish using nix, github action, and firebase
 ---
 
 * Why
@@ -26,7 +26,6 @@ Right now, I use [[https://help.github.com/en/actions/automating-your-workflow-w
 * Setup
 ** [[https://nixos.org/nix/download.html][Install]] nix (single user or multiple user mode)
 ** [[https://all-hies.cachix.org/][enable all-hies cachix]] (optional)
-
 * Boostrap the project
 stack has a project template for Hakyll. In nix, we need *hakyll-init* to boostrap our project.
 The easist way to do that is 
@@ -35,10 +34,10 @@ nix-shell -p haskellPackages.hakyll
 hakyll-init <siteName>
 #+end_src
 This would start a nix-shell with hakyll package.
-The project is a plain cabal project, we can use normal nix-haskell development workflow on this project.
+The project is a plain cabal project, we can use normal nix-haskell development workflow.
 #+begin_src sh
 cd <siteName>
-nix-shell -p cabal2nix # unless you already installed cabal2nix
+nix-shell -p cabal2nix # unless you already installed cabal2nix globally
 cabal2nix . > blog.nix
 #+end_src
 * Write shell.nix for local development
@@ -71,6 +70,7 @@ Since the site is static, we cannot support native comments.
 - https://commento.io/
 
 * Github Action
+** Pin down nixpkgs for CI
 ** Store firebase token
 https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets
 ** cachix cache
