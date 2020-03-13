@@ -1,6 +1,17 @@
-{ mkDerivation, base, base-compat, base-orphans, deepseq, fetchgit
-, HUnit, QuickCheck, stdenv, tagged, tasty, tasty-hunit
-, tasty-quickcheck, time
+{ mkDerivation
+, base
+, base-compat
+, base-orphans
+, deepseq
+, fetchgit
+, HUnit
+, QuickCheck
+, stdenv
+, tagged
+, tasty
+, tasty-hunit
+, tasty-quickcheck
+, time
 }:
 mkDerivation {
   pname = "time-compat";
@@ -13,8 +24,16 @@ mkDerivation {
   };
   libraryHaskellDepends = [ base base-orphans deepseq time ];
   testHaskellDepends = [
-    base base-compat deepseq HUnit QuickCheck tagged tasty tasty-hunit
-    tasty-quickcheck time
+    base
+    base-compat
+    deepseq
+    HUnit
+    QuickCheck
+    tagged
+    tasty
+    tasty-hunit
+    tasty-quickcheck
+    time
   ];
   homepage = "https://github.com/phadej/time-compat";
   description = "Compatibility package for time";

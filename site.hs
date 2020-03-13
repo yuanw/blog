@@ -1,16 +1,16 @@
 --------------------------------------------------------------------------------
 {-# LANGUAGE OverloadedStrings #-}
-import           Data.Monoid         (mappend)
+import           Data.Monoid           (mappend)
 import           Hakyll
-import           Text.Pandoc.Options (WriterOptions (..))
+import           Text.Pandoc.Options   (WriterOptions (..))
+import           Text.Pandoc.Templates
 
-
+-- https://stackoverflow.com/questions/39815375/creating-a-document-with-pandoc/39862759#39862759
 withTOC :: WriterOptions
 withTOC = defaultHakyllWriterOptions
           { writerNumberSections = True
           , writerTableOfContents = True
           , writerTOCDepth = 2
-          --, writerTemplate = Just "$toc$\n$body$"
           }
 
 myFeedConfiguration :: FeedConfiguration

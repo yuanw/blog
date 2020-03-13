@@ -1,29 +1,36 @@
-{ nixpkgs ? import <nixpkgs> {} , compiler ? "ghc865" }:
+{ nixpkgs ? import <nixpkgs> {}, compiler ? "ghc882" }:
 let
-  inherit (nixpkgs) haskellPackages;
-  myPackages = haskellPackages.callCabal2nix "project" ./blog.cabal  {};
+  bootstrap = import <nixpkgs> {};
 
-  bootstrap = import <nixpkgs> { };
+  nixpkgs = builtins.fromJSON (builtins.readFile ./nixpkgs.json);
+
   src = bootstrap.fetchFromGitHub {
     owner = "NixOS";
-    repo  = "nixpkgs";
-    rev = "7f35ed9df40f12a79a242e6ea79b8a472cf74d42";
-    sha256 = "1wr6dzy99rfx8s399zjjjcffppsbarxl2960wgb0xjzr7v65pikz";
+    repo = "nixpkgs";
+    inherit (nixpkgs) rev sha256;
   };
 
-  pinnedPkgs = import src { };
+  pkgs = import src {};
+  myHaskellPackages = pkgs.haskell.packages."${compiler}".override {
+    overrides = self: super: rec {
+      time-compat = self.callPackage ./time-compat.nix {};
+    };
+  };
+
+  myPackages = myHaskellPackages.callCabal2nix "project" ./blog.cabal {};
   all-hies = import (fetchTarball "https://github.com/infinisil/all-hies/tarball/master") {};
 in
-haskellPackages.shellFor {
+myHaskellPackages.shellFor {
   withHoogle = true;
-  packages = p: [myPackages];
-  buildInputs = with nixpkgs.haskellPackages;
-    [ hlint
+  packages = p: [ myPackages ];
+  buildInputs = with myHaskellPackages;
+    [
+      hlint
       ghcid
       cabal2nix
       stylish-haskell
       cabal-install
       wai-app-static
-      (all-hies.selection {selector = p: {inherit (p) ghc865; };})
-    ] ++ [nixpkgs.nodejs];
+      (all-hies.selection { selector = p: { inherit (p) ghc882; }; })
+    ] ++ [ bootstrap.nodejs ];
 }

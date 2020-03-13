@@ -26,6 +26,10 @@ Right now, I use [[https://help.github.com/en/actions/automating-your-workflow-w
 * Setup
 ** [[https://nixos.org/nix/download.html][Install]] nix (single user or multiple user mode)
 ** [[https://all-hies.cachix.org/][enable all-hies cachix]] (optional)
+#+begin_src shell
+nix-env -iA cachix -f https://cachix.org/api/v1/install #only for the first time
+cachix use all-hies
+#+end_src
 * Boostrap the project
 stack has a project template for Hakyll. In nix, we need *hakyll-init* to boostrap our project.
 The easist way to do that is 
@@ -71,14 +75,15 @@ Since the site is static, we cannot support native comments.
 
 * Github Action
 ** Pin down nixpkgs for CI
+For a stable CI experience, I decided to [[https://github.com/Gabriel439/haskell-nix/tree/master/project0#pinning-nixpkgs][pin]] down *nixpkgs*.  
 ** Store firebase token
 https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets
-** cachix cache
+** Enable cachix cache
 https://github.com/cachix/cachix-action
 * References
 - https://jaspervdj.be/hakyll/tutorials/github-pages-tutorial.html
 - https://deptype.com/posts/2019-02-21-create-blog-nix-hakyll-aws.html
 - https://terrorjack.com/posts/2018-11-18-hello-world.html
-
+- https://github.com/Gabriel439/haskell-nix/
 
 
