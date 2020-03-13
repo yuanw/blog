@@ -1,5 +1,7 @@
-{ nixpkgs ? import <nixpkgs> {}, compiler ? "ghc865" }:
+{ nixpkgs ? import <nixpkgs> {}, compiler ? "ghc882" } :
+
 let
+  
   bootstrap = import <nixpkgs> { };
 
   nixpkgs = builtins.fromJSON (builtins.readFile ./nixpkgs.json);
@@ -11,10 +13,12 @@ let
   };
 
   pkgs = import src { };
-
-  haskellPackages = if compiler == "default"
-                    then pkgs.haskellPackages
-                    else pkgs.haskell.packages.${compiler};
-
-in
-  haskellPackages.callPackage ./blog.nix {}
+  myHaskellPackages = pkgs.haskell.packages."${compiler}".override {
+    overrides = self: super: rec {
+      time-compat =  self.callPackage ./time-compat.nix { };
+      blog = self.callPackage ./blog.nix {};
+    };
+  };
+in {
+  blog = myHaskellPackages.blog;
+}
