@@ -10,7 +10,7 @@ withTOC = defaultHakyllWriterOptions
           { writerNumberSections = True
           , writerTableOfContents = True
           , writerTOCDepth = 2
-          , writerTemplate = Just "$toc$\n$body$"
+          --, writerTemplate = Just "$toc$\n$body$"
           }
 
 myFeedConfiguration :: FeedConfiguration

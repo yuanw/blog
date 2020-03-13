@@ -3,6 +3,7 @@ title: Using Hakyll with Github Action and firebase (Nix Edition)
 date: January 29, 2020
 summary: static site generation using Haskell and nix
 lastModified: February 16, 2020
+description: write blog using Hakyll
 ---
 
 * Why
