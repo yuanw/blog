@@ -66,11 +66,10 @@ let
 in
   drv
 #+end_src
-* Enable Disqus Comment 
-Since the site is static, we cannot support native comments.
+* Wire 3rd party javascript for comments 
+Since the site is static, "native" comments cannot be supportted.
 - https://disqus.com/features/engage
 - https://muut.com/tour/
-- https://vssue.js.org/
 - https://commento.io/
 
 * Github Action

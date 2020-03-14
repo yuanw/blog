@@ -1,4 +1,7 @@
-#+TITLE: personal blog 
+#+TITLE: Personal blog 
+
+
+[[[[https://github.com/yuanw/blog/workflows/CI/badge.svg]]]]
 
 #+begin_src sh
 nix-shell -p haskellPackages.hakyll
@@ -12,7 +15,7 @@ cabal2nix . > default.nix
 
 #+begin_src sh
 ./dist/build/site/site build
-warp -d _site &
+warp -d _site &q
 #+end_src
 * References:
 https://deptype.com/posts/2019-02-21-create-blog-nix-hakyll-aws.html
@@ -29,3 +32,4 @@ https://github.com/jaspervdj/hakyll/issues/700
 https://shakebuild.com/manual
 https://github.com/mstksg/cv-static
 
+** TODO try integrate with purescript
