@@ -33,13 +33,13 @@ cachix use all-hies
 * Boostrap the project
 stack has a project template for Hakyll. In nix, we need *hakyll-init* to boostrap our project.
 The easist way to do that is 
-#+begin_src sh
+#+begin_src shell
 nix-shell -p haskellPackages.hakyll
 hakyll-init <siteName>
 #+end_src
 This would start a nix-shell with hakyll package.
 The project is a plain cabal project, we can use normal nix-haskell development workflow.
-#+begin_src sh
+#+begin_src shell
 cd <siteName>
 nix-shell -p cabal2nix # unless you already installed cabal2nix globally
 cabal2nix . > blog.nix
@@ -53,7 +53,7 @@ https://svejcar.dev/posts/2019/11/27/table-of-contents-in-hakyll/
 * default.nix for CI
 
 #+begin_src nix
-{ nixpkgs ? import <nixpkgs> {}, compiler ? "ghc865" }:
+{ nixpkgs ? import <nixpkgs> {}, compiler ? "ghc882" }:
 
 let
   inherit (nixpkgs) pkgs;
@@ -66,12 +66,12 @@ let
 in
   drv
 #+end_src
-* Wire 3rd party javascript for comments 
+* Wire 3rd party javascript for comments
 Since the site is static, "native" comments cannot be supportted.
 - https://disqus.com/features/engage
 - https://muut.com/tour/
 - https://commento.io/
-
+- https://staticman.net/
 * Github Action
 ** Pin down nixpkgs for CI
 For a stable CI experience, I decided to [[https://github.com/Gabriel439/haskell-nix/tree/master/project0#pinning-nixpkgs][pin]] down *nixpkgs*.  

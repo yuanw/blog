@@ -22,9 +22,11 @@ https://deptype.com/posts/2019-02-21-create-blog-nix-hakyll-aws.html
 
 https://gist.github.com/willurd/5720255#gistcomment-2754054
 
-
+https://github.com/abhin4v/abhin4v.github.io/tree/source
 
 * items
+** TODO implement draft folders
+** TODO implement TOC
 ** TODO wire org-mode meta
 https://github.com/jaspervdj/hakyll/issues/700
 
