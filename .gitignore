@@ -8,6 +8,7 @@ result
 dist
 dist-newstyle
 cabal-dev
+.pre-commit-config.yaml
 *.o
 *.hi
 *.chi
@@ -24,6 +25,4 @@ cabal.sandbox.config
 .stack-work/
 _cache/
 _site/
-
-# Local Netlify folder
-.netlify
+.firebase
