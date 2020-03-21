@@ -23,13 +23,13 @@ in
 myHaskellPackages.shellFor {
   withHoogle = true;
   packages = p: [ myPackages ];
-  inherit ((import ./pre-commit.nix).pre-commit-check) shellHook;
+  inherit ((import ./default.nix).pre-commit-check) shellHook;
   buildInputs = with myHaskellPackages;
     [
       hlint
       ghcid
       cabal2nix
-      stylish-haskell
+      ormolu
       cabal-install
       wai-app-static
       (all-hies.selection { selector = p: { inherit (p) ghc882; }; })

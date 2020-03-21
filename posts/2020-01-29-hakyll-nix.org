@@ -44,12 +44,13 @@ cd <siteName>
 nix-shell -p cabal2nix # unless you already installed cabal2nix globally
 cabal2nix . > blog.nix
 #+end_src
-* Write shell.nix for local development
+** Write shell.nix for local development
 I like to use [[https://github.com/target/lorri][lorri]] to enable all the nix shell.
 
-** Add ToC for our blog
+*** Add ToC for our blog
 https://svejcar.dev/posts/2019/11/27/table-of-contents-in-hakyll/
 
+** Wire [[https://github.com/cachix/pre-commit-hooks.nix][pre-commit]] hook (optional)
 * default.nix for CI
 
 #+begin_src nix

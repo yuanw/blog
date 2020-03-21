@@ -1,25 +1,14 @@
-{ nixpkgs ? import <nixpkgs> {}, compiler ? "ghc882" }:
-
 let
-
-  bootstrap = import <nixpkgs> {};
-
-  nixpkgs = builtins.fromJSON (builtins.readFile ./nixpkgs.json);
-
-  src = bootstrap.fetchFromGitHub {
-    owner = "NixOS";
-    repo = "nixpkgs";
-    inherit (nixpkgs) rev sha256;
-  };
-
-  pkgs = import src {};
-  myHaskellPackages = pkgs.haskell.packages."${compiler}".override {
-    overrides = self: super: rec {
-      time-compat = self.callPackage ./time-compat.nix {};
-      blog = self.callPackage ./blog.nix {};
-    };
-  };
+  nix-pre-commit-hooks = import (builtins.fetchTarball "https://github.com/cachix/pre-commit-hooks.nix/tarball/master");
 in
 {
-  blog = myHaskellPackages.blog;
+  pre-commit-check = nix-pre-commit-hooks.run {
+    src = ./.;
+    hooks = {
+      nixpkgs-fmt.enable = true;
+      hlint.enable = true;
+      cabal-fmt.enable = true;
+      ormolu.enable = true;
+    };
+  };
 }
