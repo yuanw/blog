@@ -1,22 +1,8 @@
 #+TITLE: Personal blog 
 
+[[https://github.com/yuanw/blog/workflows/CI/badge.svg]]
 
-[[[[https://github.com/yuanw/blog/workflows/CI/badge.svg]]]]
 
-#+begin_src sh
-nix-shell -p haskellPackages.hakyll
-which hakyll-init
-hakyll blog
-exit
-cd blog
-nix-shell -p cabal2nix
-cabal2nix . > default.nix
-#+end_src
-
-#+begin_src sh
-./dist/build/site/site build
-warp -d _site &q
-#+end_src
 * References:
 https://deptype.com/posts/2019-02-21-create-blog-nix-hakyll-aws.html
 
@@ -24,7 +10,7 @@ https://gist.github.com/willurd/5720255#gistcomment-2754054
 
 https://github.com/abhin4v/abhin4v.github.io/tree/source
 
-* items
+* Items
 ** TODO implement draft folders
 ** TODO implement TOC
 ** TODO wire org-mode meta

@@ -32,7 +32,6 @@ myHaskellPackages.shellFor {
       ormolu
       cabal-install
       cabal-fmt
-      ormolu
       wai-app-static
       (all-hies.selection { selector = p: { inherit (p) ghc882; }; })
     ] ++ [
