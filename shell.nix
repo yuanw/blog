@@ -23,7 +23,7 @@ in
 myHaskellPackages.shellFor {
   withHoogle = true;
   packages = p: [ myPackages ];
-  inherit ((import ./default.nix).pre-commit-check) shellHook;
+  inherit ((import ./pre-commit.nix).pre-commit-check) shellHook;
   buildInputs = with myHaskellPackages;
     [
       hlint
@@ -31,7 +31,11 @@ myHaskellPackages.shellFor {
       cabal2nix
       ormolu
       cabal-install
+      cabal-fmt
+      ormolu
       wai-app-static
       (all-hies.selection { selector = p: { inherit (p) ghc882; }; })
-    ] ++ [ bootstrap.nodejs ];
+    ] ++ [
+      bootstrap.nodejs
+    ];
 }
