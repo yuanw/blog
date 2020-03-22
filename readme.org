@@ -11,10 +11,12 @@
 - https://github.com/kowainik/kowainik.github.io/blob/develop/src/Kowainik.hs
 * Items
 ** TODO implement draft folders
-** TODO implement TOC
+http://limansky.me/posts/2015-10-31-Draft-posts-with-Hakyll.html
+https://jip.dev/posts/drafts-in-hakyll/
+** DONE implement TOC
 ** TODO wire org-mode meta
 https://github.com/jaspervdj/hakyll/issues/700
-
+https://github.com/nasyxx/NasyMoe/blob/master/src/Site.hs#L102
 ** TODO integrate with shake
 https://shakebuild.com/manual
 https://github.com/mstksg/cv-static
