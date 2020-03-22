@@ -4,18 +4,19 @@
 
 
 * References:
-https://deptype.com/posts/2019-02-21-create-blog-nix-hakyll-aws.html
-
-https://gist.github.com/willurd/5720255#gistcomment-2754054
-
-https://github.com/abhin4v/abhin4v.github.io/tree/source
-
+- https://deptype.com/posts/2019-02-21-create-blog-nix-hakyll-aws.html
+- https://gist.github.com/willurd/5720255#gistcomment-2754054
+- https://github.com/abhin4v/abhin4v.github.io/tree/source
+- https://github.com/sdiehl/stephendiehl.com
+- https://github.com/kowainik/kowainik.github.io/blob/develop/src/Kowainik.hs
 * Items
 ** TODO implement draft folders
-** TODO implement TOC
+http://limansky.me/posts/2015-10-31-Draft-posts-with-Hakyll.html
+https://jip.dev/posts/drafts-in-hakyll/
+** DONE implement TOC
 ** TODO wire org-mode meta
 https://github.com/jaspervdj/hakyll/issues/700
-
+https://github.com/nasyxx/NasyMoe/blob/master/src/Site.hs#L102
 ** TODO integrate with shake
 https://shakebuild.com/manual
 https://github.com/mstksg/cv-static
