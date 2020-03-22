@@ -11,11 +11,7 @@ let
   };
 
   pkgs = import src {};
-  myHaskellPackages = pkgs.haskell.packages."${compiler}".override {
-    overrides = self: super: rec {
-      time-compat = self.callPackage ./time-compat.nix {};
-    };
-  };
+  myHaskellPackages = pkgs.haskellPackages;
 
   myPackages = myHaskellPackages.callCabal2nix "project" ./blog.cabal {};
   all-hies = import (fetchTarball "https://github.com/infinisil/all-hies/tarball/master") {};
