@@ -81,3 +81,8 @@ pre .cl {
 .codeButton:active {
 	top: 1px;
 }
+.toc {
+    float: right;
+    margin: 0 0 25px 25px;
+    font-size: .9em;
+}

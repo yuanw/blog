@@ -4,12 +4,11 @@
 
 
 * References:
-https://deptype.com/posts/2019-02-21-create-blog-nix-hakyll-aws.html
-
-https://gist.github.com/willurd/5720255#gistcomment-2754054
-
-https://github.com/abhin4v/abhin4v.github.io/tree/source
-
+- https://deptype.com/posts/2019-02-21-create-blog-nix-hakyll-aws.html
+- https://gist.github.com/willurd/5720255#gistcomment-2754054
+- https://github.com/abhin4v/abhin4v.github.io/tree/source
+- https://github.com/sdiehl/stephendiehl.com
+- https://github.com/kowainik/kowainik.github.io/blob/develop/src/Kowainik.hs
 * Items
 ** TODO implement draft folders
 ** TODO implement TOC
