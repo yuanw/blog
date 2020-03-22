@@ -114,6 +114,7 @@ For a stable CI experience, I decided to [[https://github.com/Gabriel439/haskell
 nix-prefetch-git https://github.com/NixOS/nixpkgs.git 50e7173b959562680103edb476ce55f971d8293e > nixpkgs.json
 #+end_src
 So my local machine and CI is using the same nixpkgs.
+
 ** Store firebase token
 https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets
 ** Enable cachix cache

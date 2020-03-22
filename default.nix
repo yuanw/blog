@@ -13,13 +13,7 @@ let
   };
 
   pkgs = import src {};
-  myHaskellPackages = pkgs.haskell.packages."${compiler}".override {
-    overrides = self: super: rec {
-      time-compat = self.callPackage ./time-compat.nix {};
-      blog = self.callPackage ./blog.nix {};
-    };
-  };
 in
 {
-  blog = myHaskellPackages.blog;
+  blog = pkgs.haskellPackages.callPackage /blog.nix {};
 }
