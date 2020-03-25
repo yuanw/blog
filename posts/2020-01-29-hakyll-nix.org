@@ -84,6 +84,8 @@ haskellPackages.shellFor {
 #+end_src
 
 I use all-hies
+
+~hoogle serve~
 ** Add TOC
 https://hackage.haskell.org/package/pandoc-2.9.2/docs/src/Text.Pandoc.Templates.html#WithDefaultPartials
 https://svejcar.dev/posts/2019/11/27/table-of-contents-in-hakyll/
