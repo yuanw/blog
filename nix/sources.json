@@ -1,0 +1,50 @@
+{
+    "gitignore.nix": {
+        "branch": "master",
+        "description": "Nix function for filtering local git sources",
+        "homepage": "",
+        "owner": "hercules-ci",
+        "repo": "gitignore.nix",
+        "rev": "c4662e662462e7bf3c2a968483478a665d00e717",
+        "sha256": "1npnx0h6bd0d7ql93ka7azhj40zgjp815fw2r6smg8ch9p7mzdlx",
+        "type": "tarball",
+        "url": "https://github.com/hercules-ci/gitignore.nix/archive/c4662e662462e7bf3c2a968483478a665d00e717.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "niv": {
+        "branch": "master",
+        "description": "Easy dependency management for Nix projects",
+        "homepage": "https://github.com/nmattia/niv",
+        "owner": "nmattia",
+        "repo": "niv",
+        "rev": "dd13098d01eaa6be68237e7e38f96782b0480755",
+        "sha256": "1cfjdbsn0219fjzam1k7nqzkz8fb1ypab50rhyj026qbklqq2kvq",
+        "type": "tarball",
+        "url": "https://github.com/nmattia/niv/archive/dd13098d01eaa6be68237e7e38f96782b0480755.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nixpkgs": {
+        "branch": "nixpkgs-unstable",
+        "description": "Nix Packages collection",
+        "homepage": null,
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "3c0e3697520cbe7d9eb3a64bfd87de840bf4aa77",
+        "sha256": "1vx7kyaq0i287dragjgfdj94ggwr3ky2b7bq32l8rkd2k3vc3gl5",
+        "type": "tarball",
+        "url": "https://github.com/NixOS/nixpkgs/archive/3c0e3697520cbe7d9eb3a64bfd87de840bf4aa77.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "pre-commit-hooks.nix": {
+        "branch": "master",
+        "description": "Seamless integration of https://pre-commit.com git hooks with Nix.",
+        "homepage": "",
+        "owner": "cachix",
+        "repo": "pre-commit-hooks.nix",
+        "rev": "a3f7609ba73eb9ce3fe434d4339101017a430912",
+        "sha256": "05mi3s7c30wylfyxfb3hab0w9cbjahskmz4abidbxsmchjyici6a",
+        "type": "tarball",
+        "url": "https://github.com/cachix/pre-commit-hooks.nix/archive/a3f7609ba73eb9ce3fe434d4339101017a430912.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    }
+}
