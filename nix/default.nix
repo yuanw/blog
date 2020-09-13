@@ -23,18 +23,19 @@ in
       cabal2nix
       cabal-install
       ;
-    #inherit (pkgs.haskellPackages) wai-app-static;
-    haskell-language-server = pkgs.haskellPackages.haskell-language-server;
+    inherit (pkgs.haskellPackages) wai-app-static;
   };
+
 
   # to be built by github actions
   ci = {
+    blog = pkgs.haskellPackages.callPackage ../blog.nix {};
     pre-commit-check = (import sources."pre-commit-hooks.nix").run {
       inherit src;
       hooks = {
         shellcheck.enable = true;
         nixpkgs-fmt.enable = true;
-        nix-linter.enable = true;
+        nix-linter.enable = false;
       };
       # generated files
       excludes = [ "^nix/sources\.nix$" ];
