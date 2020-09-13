@@ -4,21 +4,22 @@
   "description": "https://all-hies.cachix.org/",
   "main": "index.js",
   "dependencies": {
-    "firebase-tools": "^7.12.1"
+    "@fullhuman/postcss-purgecss": "^2.3.0",
+    "autoprefixer": "^9.8.6",
+    "firebase-tools": "^7.12.1",
+    "postcss-cli": "^7.1.2",
+    "tailwindcss": "^1.8.9"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "postcss tailwind/tailwind.css -o css/tailwind.css"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yuanw/yuanw.github.io.git"
+    "url": "git+https://github.com/yuanw/blob.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/yuanw/yuanw.github.io/issues"
-  },
-  "homepage": "https://github.com/yuanw/yuanw.github.io#readme"
+  "homepage": "https://github.com/yuanw/blog#readme"
 }

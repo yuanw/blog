@@ -9,16 +9,12 @@ import Text.Pandoc.Options (WriterOptions (..))
 import Text.Pandoc.Templates
 
 -- https://stackoverflow.com/questions/39815375/creating-a-document-with-pandoc/39862759#39862759
-withToc :: IO WriterOptions
-withToc = compileTemplate "myToc.txt" "\n<div class=\"toc\"><h2>Table of Contents</h2>\n$toc$\n</div>\n$body$" >>= \case
-  Left err -> error $ show err
-  Right template ->
-    pure $
-      defaultHakyllWriterOptions
+withToc :: WriterOptions
+withToc =  defaultHakyllWriterOptions
         { writerNumberSections = True,
           writerTableOfContents = True,
           writerTOCDepth = 2,
-          writerTemplate = Just template
+          writerTemplate = Just "\n<div class=\"toc\"><h2>Table of Contents</h2>\n$toc$\n</div>\n$body$"
         }
 
 myFeedConfiguration :: FeedConfiguration
@@ -33,8 +29,7 @@ myFeedConfiguration =
 
 main :: IO ()
 main = do
-  writeOptions <- withToc
-  _main writeOptions
+  _main withToc
 
 --------------------------------------------------------------------------------
 _main :: WriterOptions -> IO ()

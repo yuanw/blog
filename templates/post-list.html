@@ -1,17 +1,15 @@
 $for(posts)$
-<section class="post">
-    <header class="post-header">
-        <h2 class="post-title">
+<div class="flex items-center rounded-lg bg-white shadow-lg overflow-hidden">
+    <div class="px-6 py-3">
+        <h3 class="text-lg font-semibold text-gray-800">
             <a href="$url$">$title$</a>
-        </h2>
-        <p class="post-meta">
-            on $date$
-        </p>
-    </header>
-    $if(summary)$
-    <div class="post-description">
-        <p>$summary$</p>
+        </h3>
+        <p class="text-gray-600">on $date$</p>
+        $if(summary)$
+        <div class="mt-4">
+            <p class="text-indigo-500 hover:text-indigo-400 font-semibold text-s">$summary$</p>
+        </div>
+        $endif$
     </div>
-    $endif$
-</section>
+</div>
 $endfor$

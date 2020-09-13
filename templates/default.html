@@ -1,36 +1,34 @@
-<html>
-    $partial("templates/post-header.html")$
-    <body>
-        <div id="layout" class=pure-g"">
-            <div class="sidebar pure-u-1 pure-u-md-1-5">
-                <div class="header">
-                    <nav class="nav">
-                        <ul class="nav-list">
-                            <li>
-                                <a href="/" class="pure-menu-link">Home</a>
-                            </li>
-                            <li>
-                                <a href="/archive.html" class="pure-menu-link">Archive</a>
-                            </li>
-                            <li>
-                                <a href="/about.html" class="pure-menu-link">About</a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div> 
+<html lang="en" class="text-gray-900 antialiased leading-tight">
+    <head>
+    <meta charset="utf-8">
+    <title>$title$</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta property="og:title" content="$title$" />
+    <meta property="og:type" content="website" />
+    <link rel="stylesheet" href="/css/tailwind.css">
+ </head>
+    <body class="min-h-screen bg-gray-100">
+      <nav class="flex items-center justify-between flex-wrap bg-teal p-6">
+        <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
+          <div class="text-sm lg:flex-grow">
+            <a href="/" class="block mt-4 lg:inline-block lg:mt-0 text-teal-lighter hover:text-white mr-4">Home</a>
+            <a href="/archive.html" class="block mt-4 lg:inline-block lg:mt-0 text-teal-lighter hover:text-white mr-4">Archive</a>
+            <a href="/about.html" class="block mt-4 lg:inline-block lg:mt-0 text-teal-lighter hover:text-white"> About</a>
           </div>
-          <div class="content pure-u-1 pure-u-md-4-5">
+        </div>
+      </nav>
+          <div class="px-8 py-12">
               <div>
                       $body$
               </div>
-              <div class="footer">
-                  <p>
-                      Powered by
-                      <a href="http://jaspervdj.be/hakyll">Hakyll</a>, based on <a href="https://purecss.io/layouts/"> Pure</a>.
-                    </p>
+              <div>
+                  <p class="mt-2 text-gray-600 text-center">
+                      Powered by <a href="http://jaspervdj.be/hakyll">Hakyll</a> and <a href="https://tailwindcss.com/">tailwindcss</a>
+                  </p>
               </div>
             </div>
-        </div>
     </body>
 </html>
 
