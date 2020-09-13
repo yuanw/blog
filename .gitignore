@@ -3,6 +3,7 @@
 .direnv
 node_modules/
 result
+result-2
 .DS_Store
 ### Haskell ###
 dist

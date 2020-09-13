@@ -31,10 +31,16 @@ main :: IO ()
 main = do
   _main withToc
 
+config :: Configuration
+config = defaultConfiguration
+    { destinationDirectory = "dist"
+    , previewPort          = 5000
+    }
+
 --------------------------------------------------------------------------------
 _main :: WriterOptions -> IO ()
 _main writeOptions =
-  hakyll $ do
+  hakyllWith config $ do
     match "images/*" $ do
       route idRoute
       compile copyFileCompiler
