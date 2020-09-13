@@ -1,9 +1,8 @@
 ---
-title: Using Hakyll with GitHub Action and Firebase (Nix Edition)
+title: Publish static site with Hakyll, GitHub Action and Firebase (Nix Edition)
 date: January 29, 2020
-summary: static site generation using Haskell and nix
-lastModified: March 21, 2020
-description: write blog using Hakyll, publish using nix, github action, and Firebase
+modified: March 21, 2020
+description: publish blog using Hakyll, nix, github action, and Firebase
 ---
 
 Write down my experience using Hakyll with Nix.
@@ -34,6 +33,7 @@ Right now, I use [[https://help.github.com/en/actions/automating-your-workflow-w
 nix-env -iA cachix -f https://cachix.org/api/v1/install #only for the first time
 cachix use all-hies
 #+end_src
+
 * Bootstrap the project
 stack has a project template for Hakyll. In nix, we need *hakyll-init* to bootstrap our project.
 The easiest way to do that is
@@ -127,10 +127,11 @@ So my local machine and CI is using the same nixpkgs.
 https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets
 ** Enable cachix cache
 https://github.com/cachix/cachix-action
+
 * References
+- https://robertwpearce.com/hakyll-pt-6-pure-builds-with-nix.html
 - https://jaspervdj.be/hakyll/tutorials/github-pages-tutorial.html
 - https://deptype.com/posts/2019-02-21-create-blog-nix-hakyll-aws.html
 - https://terrorjack.com/posts/2018-11-18-hello-world.html
 - https://github.com/Gabriel439/haskell-nix/
-
-
+- https://nix.dev/
