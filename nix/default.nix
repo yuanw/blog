@@ -22,6 +22,8 @@ in
       hlint
       cabal2nix
       cabal-install
+      yarn
+      yarn2nix
       ;
     inherit (pkgs.haskellPackages) wai-app-static;
   };
