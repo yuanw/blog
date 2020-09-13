@@ -10,15 +10,17 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: cachix/install-nix-action@v7
-    - uses: cachix/cachix-action@v5
+    - uses: actions/checkout@v2.3.2
+    - uses: cachix/install-nix-action@v10
+      with:
+        skip_adding_nixpkgs_channel: true
+    - uses: cachix/cachix-action@v6
       with:
         name: yuanw-blog
         signingKey: ${{ secrets.CACHIX_SIGNING_KEY }}
     - name: Nix build
       run: |
-        nix-build --attr blog
+        nix-build
         result/bin/site build
     - name: Archive Production Artifact
       uses: actions/upload-artifact@master
