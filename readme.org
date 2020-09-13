@@ -1,7 +1,12 @@
-#+TITLE: Personal blog 
+#+TITLE: Repo for personal blog @ https://yuanwang.ca/
 
 [[https://github.com/yuanw/blog/workflows/CI/badge.svg]]
 
+* How to develop
+`./result/bin/site watch`
+
+* How to compile css
+`yarn run build`
 
 * References:
 - https://deptype.com/posts/2019-02-21-create-blog-nix-hakyll-aws.html
@@ -14,7 +19,6 @@
 ** TODO implement draft folders
 http://limansky.me/posts/2015-10-31-Draft-posts-with-Hakyll.html
 https://jip.dev/posts/drafts-in-hakyll/
-** DONE implement TOC
 ** TODO wire org-mode meta
 https://github.com/jaspervdj/hakyll/issues/700
 https://github.com/nasyxx/NasyMoe/blob/master/src/Site.hs#L102
