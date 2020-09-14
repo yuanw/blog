@@ -10,12 +10,13 @@ import Text.Pandoc.Templates
 
 -- https://stackoverflow.com/questions/39815375/creating-a-document-with-pandoc/39862759#39862759
 withToc :: WriterOptions
-withToc =  defaultHakyllWriterOptions
-        { writerNumberSections = True,
-          writerTableOfContents = True,
-          writerTOCDepth = 2,
-          writerTemplate = Just "\n<div class=\"toc\"><h2>Table of Contents</h2>\n$toc$\n</div>\n$body$"
-        }
+withToc =
+  defaultHakyllWriterOptions
+    { writerNumberSections = True,
+      writerTableOfContents = True,
+      writerTOCDepth = 2,
+      writerTemplate = Just "\n<div class=\"toc\"><h2>Table of Contents</h2>\n$toc$\n</div>\n$body$"
+    }
 
 myFeedConfiguration :: FeedConfiguration
 myFeedConfiguration =
@@ -34,8 +35,8 @@ main = do
 config :: Configuration
 config =
   defaultConfiguration
-    { destinationDirectory = "dist"
-    , previewPort = 5000
+    { destinationDirectory = "dist",
+      previewPort = 5000
     }
 
 --------------------------------------------------------------------------------
