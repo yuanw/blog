@@ -14,7 +14,7 @@
 ** [[https://github.com/nix-community/nix-direnv#manually-re-triggering-evaluation][Manually re-triggering evaluation]]
 ~$ touch .envrc~
 
-* Some Sites built by Hakyll
+* Some sites built by Hakyll
 - https://github.com/abhin4v/abhin4v.github.io/tree/source
 - https://github.com/sdiehl/stephendiehl.com
 - https://github.com/kowainik/kowainik.github.io/blob/develop/src/Kowainik.hs
