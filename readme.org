@@ -1,7 +1,8 @@
 #+TITLE: Repo for personal blog @ https://yuanwang.ca/
 
 [[https://github.com/yuanw/blog/workflows/CI/badge.svg]]
-https://builtwithnix.org/badge.svg
+
+[![Built with Nix](https://builtwithnix.org/badge.svg)](https://builtwithnix.org)
 
 * How to develop
 ~./result/bin/site watch~
