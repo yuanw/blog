@@ -2,7 +2,7 @@
 
 [[https://github.com/yuanw/blog/workflows/CI/badge.svg]]
 
-[![Built with Nix](https://builtwithnix.org/badge.svg)](https://builtwithnix.org)
+[[https://builtwithnix.org/badge.svg]]
 
 * How to develop
 ~./result/bin/site watch~
