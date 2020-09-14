@@ -32,9 +32,10 @@ main = do
   _main withToc
 
 config :: Configuration
-config = defaultConfiguration
+config =
+  defaultConfiguration
     { destinationDirectory = "dist"
-    , previewPort          = 5000
+    , previewPort = 5000
     }
 
 --------------------------------------------------------------------------------
