@@ -1,12 +1,13 @@
 #+TITLE: Repo for personal blog @ https://yuanwang.ca/
 
 [[https://github.com/yuanw/blog/workflows/CI/badge.svg]]
+https://builtwithnix.org/badge.svg
 
 * How to develop
-`./result/bin/site watch`
+~./result/bin/site watch~
 
 * How to compile css
-`yarn run build`
+~yarn run build~
 
 * Known Issues
 ** [[https://github.com/nix-community/nix-direnv#manually-re-triggering-evaluation][Manually re-triggering evaluation]]
