@@ -5,7 +5,9 @@ modified: Sep 13, 2020
 description: publish blog using Hakyll, nix, github action, and Firebase
 ---
 
-Write down my experience using Hakyll with Nix.
+[[https://builtwithnix.org/badge.svg]]
+
+
 
 * Why
 So I have been learning nix, and want to write down my experiences. 
@@ -28,10 +30,11 @@ Right now, I use [[https://help.github.com/en/actions/automating-your-workflow-w
 
 * Setup
 ** [[https://nixos.org/nix/download.html][Install]] nix (single user or multiple user mode)
-** [[https://all-hies.cachix.org/][enable all-hies cachix]] (optional)
+** direnv and lorri
+
+https://github.com/cachix/pre-commit-hooks.nix#direnv--lorri
 #+begin_src shell
-nix-env -iA cachix -f https://cachix.org/api/v1/install #only for the first time
-cachix use all-hies
+
 #+end_src
 
 * Bootstrap the project

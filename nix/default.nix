@@ -38,6 +38,8 @@ in
         shellcheck.enable = true;
         nixpkgs-fmt.enable = true;
         nix-linter.enable = false;
+        cabal-fmt.enable = true;
+        ormolu.enable = true;
       };
       # generated files
       excludes = [ "^nix/sources\.nix$" ];
