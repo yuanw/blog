@@ -13,9 +13,9 @@ withToc :: WriterOptions
 withToc =
   defaultHakyllWriterOptions
     { writerNumberSections = True,
-      writerTableOfContents = True,
+      writerTableOfContents = False,
       writerTOCDepth = 2,
-      writerTemplate = Just "\n<div class=\"toc\"><h2>Table of Contents</h2>\n$toc$\n</div>\n$body$"
+      writerTemplate = Nothing
     }
 
 myFeedConfiguration :: FeedConfiguration
@@ -28,10 +28,6 @@ myFeedConfiguration =
       feedRoot = "https://yuanwang.ca"
     }
 
-main :: IO ()
-main = do
-  _main withToc
-
 config :: Configuration
 config =
   defaultConfiguration
@@ -40,9 +36,9 @@ config =
     }
 
 --------------------------------------------------------------------------------
-_main :: WriterOptions -> IO ()
-_main writeOptions =
-  hakyllWith config $ do
+main :: IO ()
+main =
+  hakyll $ do
     match "images/*" $ do
       route idRoute
       compile copyFileCompiler
@@ -55,12 +51,12 @@ _main writeOptions =
         pandocCompiler
           >>= loadAndApplyTemplate "templates/default.html" defaultContext
           >>= relativizeUrls
-    match "posts/*" $ do
+    match "posts/*.org" $ do
       route $ setExtension "html"
       compile $
-        pandocCompilerWith defaultHakyllReaderOptions writeOptions
-          >>= loadAndApplyTemplate "templates/post.html" postCtx
+        pandocCompiler
           >>= saveSnapshot "content"
+          >>= loadAndApplyTemplate "templates/post.html" postCtx
           >>= loadAndApplyTemplate "templates/default.html" postCtx
           >>= relativizeUrls
     create ["atom.xml"] $ do

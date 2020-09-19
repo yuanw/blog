@@ -25,7 +25,6 @@ in
       yarn
       yarn2nix
       ;
-    inherit (pkgs.haskellPackages) wai-app-static;
   };
 
 

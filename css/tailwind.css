@@ -87,10 +87,6 @@ a {
  * Remove the border on images inside links in IE 10.
  */
 
-img {
-  border-style: none;
-}
-
 /* Forms
    ========================================================================== */
 
@@ -272,10 +268,6 @@ html {
  * https://github.com/tailwindcss/tailwindcss/issues/362
  */
 
-img {
-  border-style: solid;
-}
-
 
 h2,
 h3 {
@@ -316,12 +308,6 @@ a {
  * https://github.com/mozdevs/cssremedy/issues/14
  */
 
-img,
-svg {
-  display: block;
-  vertical-align: middle;
-}
-
 /**
  * Constrain images and videos to the parent width and preserve
  * their instrinsic aspect ratio.
@@ -329,25 +315,17 @@ svg {
  * https://github.com/mozdevs/cssremedy/issues/14
  */
 
-img {
-  max-width: 100%;
-  height: auto;
-}
-
-h2 {
-  font-size: 1.25rem;
+a {
+  --text-opacity: 1;
+  color: #3182ce;
+  color: rgba(49, 130, 206, var(--text-opacity));
+  text-decoration: underline;
 }
 
 .bg-white {
   --bg-opacity: 1;
   background-color: #fff;
   background-color: rgba(255, 255, 255, var(--bg-opacity));
-}
-
-.bg-gray-100 {
-  --bg-opacity: 1;
-  background-color: #f7fafc;
-  background-color: rgba(247, 250, 252, var(--bg-opacity));
 }
 
 .rounded-lg {
@@ -398,10 +376,6 @@ h2 {
   font-size: 2.25rem;
 }
 
-.leading-tight {
-  line-height: 1.25;
-}
-
 .mt-2 {
   margin-top: 0.5rem;
 }
@@ -416,16 +390,6 @@ h2 {
 
 .min-h-screen {
   min-height: 100vh;
-}
-
-.object-none {
-  -o-object-fit: none;
-     object-fit: none;
-}
-
-.object-center {
-  -o-object-position: center;
-     object-position: center;
 }
 
 .overflow-hidden {
@@ -504,11 +468,6 @@ h2 {
   color: rgba(127, 156, 245, var(--text-opacity));
 }
 
-.antialiased {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
 .w-full {
   width: 100%;
 }
@@ -572,3 +531,4 @@ h2 {
     width: auto;
   }
 }
+
