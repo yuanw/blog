@@ -38,7 +38,7 @@ config =
 --------------------------------------------------------------------------------
 main :: IO ()
 main =
-  hakyll $ do
+  hakyllWith config $ do
     match "images/*" $ do
       route idRoute
       compile copyFileCompiler
