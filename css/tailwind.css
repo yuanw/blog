@@ -170,10 +170,6 @@ a {
  * Add the correct display in all browsers.
  */
 
-summary {
-  display: list-item;
-}
-
 /* Misc
    ========================================================================== */
 
@@ -319,20 +315,17 @@ a {
  * https://github.com/mozdevs/cssremedy/issues/14
  */
 
-h2 {
-  font-size: 1.25rem;
+a {
+  --text-opacity: 1;
+  color: #3182ce;
+  color: rgba(49, 130, 206, var(--text-opacity));
+  text-decoration: underline;
 }
 
 .bg-white {
   --bg-opacity: 1;
   background-color: #fff;
   background-color: rgba(255, 255, 255, var(--bg-opacity));
-}
-
-.bg-gray-100 {
-  --bg-opacity: 1;
-  background-color: #f7fafc;
-  background-color: rgba(247, 250, 252, var(--bg-opacity));
 }
 
 .rounded-lg {
@@ -381,10 +374,6 @@ h2 {
 
 .text-4xl {
   font-size: 2.25rem;
-}
-
-.leading-tight {
-  line-height: 1.25;
 }
 
 .mt-2 {
@@ -479,11 +468,6 @@ h2 {
   color: rgba(127, 156, 245, var(--text-opacity));
 }
 
-.antialiased {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
 .w-full {
   width: 100%;
 }
@@ -547,3 +531,4 @@ h2 {
     width: auto;
   }
 }
+

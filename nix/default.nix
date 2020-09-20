@@ -25,7 +25,6 @@ in
       yarn
       yarn2nix
       ;
-    inherit (pkgs.haskellPackages) wai-app-static;
   };
 
 
@@ -38,6 +37,8 @@ in
         shellcheck.enable = true;
         nixpkgs-fmt.enable = true;
         nix-linter.enable = false;
+        cabal-fmt.enable = true;
+        ormolu.enable = true;
       };
       # generated files
       excludes = [ "^nix/sources\.nix$" ];

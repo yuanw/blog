@@ -1,25 +1,34 @@
-#+TITLE: Personal blog 
+#+TITLE: Repo for personal blog @ https://yuanwang.ca/
 
 [[https://github.com/yuanw/blog/workflows/CI/badge.svg]]
 
+[[https://builtwithnix.org/badge.svg]]
 
-* References:
-- https://deptype.com/posts/2019-02-21-create-blog-nix-hakyll-aws.html
-- https://gist.github.com/willurd/5720255#gistcomment-2754054
+* How to develop
+~./result/bin/site watch~
+
+* How to compile css
+~yarn run build~
+
+* Known Issues
+** [[https://github.com/nix-community/nix-direnv#manually-re-triggering-evaluation][Manually re-triggering evaluation]]
+~$ touch .envrc~
+
+* Some sites built by Hakyll
 - https://github.com/abhin4v/abhin4v.github.io/tree/source
 - https://github.com/sdiehl/stephendiehl.com
 - https://github.com/kowainik/kowainik.github.io/blob/develop/src/Kowainik.hs
 - https://github.com/ysndr/blog
+- https://github.com/patrickt/patrickt.github.io
+  
 * Items
 ** TODO implement draft folders
 http://limansky.me/posts/2015-10-31-Draft-posts-with-Hakyll.html
 https://jip.dev/posts/drafts-in-hakyll/
-** DONE implement TOC
 ** TODO wire org-mode meta
 https://github.com/jaspervdj/hakyll/issues/700
 https://github.com/nasyxx/NasyMoe/blob/master/src/Site.hs#L102
 ** TODO integrate with shake
 https://shakebuild.com/manual
 https://github.com/mstksg/cv-static
-
 ** TODO try integrate with purescript

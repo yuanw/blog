@@ -1,21 +1,12 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TypeApplications #-}
 
 --------------------------------------------------------------------------------
 
 import Data.Monoid (mappend)
 import Hakyll
 import Text.Pandoc.Options (WriterOptions (..))
-import Text.Pandoc.Templates
-
--- https://stackoverflow.com/questions/39815375/creating-a-document-with-pandoc/39862759#39862759
-withToc :: WriterOptions
-withToc =  defaultHakyllWriterOptions
-        { writerNumberSections = True,
-          writerTableOfContents = True,
-          writerTOCDepth = 2,
-          writerTemplate = Just "\n<div class=\"toc\"><h2>Table of Contents</h2>\n$toc$\n</div>\n$body$"
-        }
 
 myFeedConfiguration :: FeedConfiguration
 myFeedConfiguration =
@@ -27,19 +18,16 @@ myFeedConfiguration =
       feedRoot = "https://yuanwang.ca"
     }
 
-main :: IO ()
-main = do
-  _main withToc
-
 config :: Configuration
-config = defaultConfiguration
-    { destinationDirectory = "dist"
-    , previewPort          = 5000
+config =
+  defaultConfiguration
+    { destinationDirectory = "dist",
+      previewPort = 5000
     }
 
 --------------------------------------------------------------------------------
-_main :: WriterOptions -> IO ()
-_main writeOptions =
+main :: IO ()
+main =
   hakyllWith config $ do
     match "images/*" $ do
       route idRoute
@@ -53,14 +41,17 @@ _main writeOptions =
         pandocCompiler
           >>= loadAndApplyTemplate "templates/default.html" defaultContext
           >>= relativizeUrls
-    match "posts/*" $ do
+    match "posts/*.org" $ do
       route $ setExtension "html"
       compile $
-        pandocCompilerWith defaultHakyllReaderOptions writeOptions
-          >>= loadAndApplyTemplate "templates/post.html" postCtx
+        pandocCompiler
           >>= saveSnapshot "content"
+          >>= loadAndApplyTemplate "templates/post.html" postCtx
           >>= loadAndApplyTemplate "templates/default.html" postCtx
           >>= relativizeUrls
+    create ["CNAME"] $ do
+      route idRoute
+      compile $ makeItem @String "blog.sumtypeofway.com"
     create ["atom.xml"] $ do
       route idRoute
       compile $ do
