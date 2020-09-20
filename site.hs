@@ -6,7 +6,36 @@
 
 import Data.Monoid (mappend)
 import Hakyll
-import Text.Pandoc.Options (WriterOptions (..))
+  ( Configuration (destinationDirectory, previewPort),
+    Context,
+    FeedConfiguration (..),
+    applyAsTemplate,
+    compile,
+    compressCssCompiler,
+    constField,
+    copyFileCompiler,
+    create,
+    dateField,
+    defaultConfiguration,
+    defaultContext,
+    fromList,
+    getResourceBody,
+    hakyllWith,
+    idRoute,
+    listField,
+    loadAll,
+    loadAndApplyTemplate,
+    makeItem,
+    match,
+    pandocCompiler,
+    recentFirst,
+    relativizeUrls,
+    renderAtom,
+    route,
+    saveSnapshot,
+    setExtension,
+    templateBodyCompiler,
+  )
 
 myFeedConfiguration :: FeedConfiguration
 myFeedConfiguration =
@@ -51,7 +80,7 @@ main =
           >>= relativizeUrls
     create ["CNAME"] $ do
       route idRoute
-      compile $ makeItem @String "blog.sumtypeofway.com"
+      compile $ makeItem @String "yuanwang.ca"
     create ["atom.xml"] $ do
       route idRoute
       compile $ do
