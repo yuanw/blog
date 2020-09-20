@@ -315,11 +315,14 @@ a {
  * https://github.com/mozdevs/cssremedy/issues/14
  */
 
+h2 {
+  font-size: 1.5rem;
+}
+
 a {
   --text-opacity: 1;
-  color: #3182ce;
-  color: rgba(49, 130, 206, var(--text-opacity));
-  text-decoration: underline;
+  color: #4299e1;
+  color: rgba(66, 153, 225, var(--text-opacity));
 }
 
 .bg-white {
@@ -531,4 +534,3 @@ a {
     width: auto;
   }
 }
-
