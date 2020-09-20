@@ -55,47 +55,30 @@ hakyll-init .
 
 The project is a plain cabal project, we can use normal Nix-Haskell development workflow.
 
+* Add Haskell into the project
 #+begin_src shell
-cd <siteName>
 nix-shell -p cabal2nix # unless you already installed cabal2nix globally
 cabal2nix . > blog.nix
 #+end_src
-** Write shell.nix for local development
-I like to use [[https://github.com/target/lorri][lorri]] to watch the nix shell configuration. To use lorri, we need
-install `direnv` and `lorri` either using `nix-env` or home-manager.
-#+begin_src shell
-lorri init # init .envrc and shell.nix
-direnv allow # enable direnv
-lorri daemon & # or lorri daemon & disown
-#+end_src
-On Linux, you can start [[https://github.com/target/lorri#setup-on-nixos-or-with-home-manager-on-Linux][lorri daemon]] way easier
+
 
 #+begin_src nix
-{ nixpkgs ? import <nixpkgs> {} , compiler ? "ghc882" }:
+{ project ? import ./nix {}
+}:
 let
-  inherit (nixpkgs) haskellPackages;
-  myPackages = haskellPackages.callCabal2nix "project" ./blog.cabal  {};
-
-  bootstrap = import <nixpkgs> { };
-  all-hies = import (fetchTarball "https://github.com/infinisil/all-hies/tarball/master") {};
+  haskellPackages = project.pkgs.haskellPackages;
+  packages = haskellPackages.callCabal2nix "blog" ./blog.cabal {};
 in
 haskellPackages.shellFor {
   withHoogle = true;
-  packages = p: [myPackages];
-  buildInputs = with nixpkgs.haskellPackages;
-    [ hlint
-      ghcid
-      ormolu
-      cabal2nix
-      cabal-fmt
-      cabal-install
-      wai-app-static
-      (all-hies.selection {selector = p: {inherit (p) ghc882; };})
-    ] ++ [nixpkgs.nodejs
-         ];
+  packages = p: [ packages ];
+  buildInputs = builtins.attrValues project.devTools;
+  shellHook = ''
+    ${project.ci.pre-commit-check.shellHook}
+  '';
 }
 #+end_src
-
+https://discourse.nixos.org/t/nix-haskell-development-2020/6170
 ~hoogle server --local -p 3000 -n~
 
 ** How to find certain package's version
