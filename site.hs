@@ -1,22 +1,12 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TypeApplications #-}
 
 --------------------------------------------------------------------------------
 
 import Data.Monoid (mappend)
 import Hakyll
 import Text.Pandoc.Options (WriterOptions (..))
-import Text.Pandoc.Templates
-
--- https://stackoverflow.com/questions/39815375/creating-a-document-with-pandoc/39862759#39862759
-withToc :: WriterOptions
-withToc =
-  defaultHakyllWriterOptions
-    { writerNumberSections = True,
-      writerTableOfContents = False,
-      writerTOCDepth = 2,
-      writerTemplate = Nothing
-    }
 
 myFeedConfiguration :: FeedConfiguration
 myFeedConfiguration =
@@ -59,6 +49,9 @@ main =
           >>= loadAndApplyTemplate "templates/post.html" postCtx
           >>= loadAndApplyTemplate "templates/default.html" postCtx
           >>= relativizeUrls
+    create ["CNAME"] $ do
+      route idRoute
+      compile $ makeItem @String "blog.sumtypeofway.com"
     create ["atom.xml"] $ do
       route idRoute
       compile $ do
