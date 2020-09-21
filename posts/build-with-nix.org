@@ -4,35 +4,35 @@
 * Vision
 
 I have been learning nix for a while. Overall, I am really happy with Nix ecosystem. With Nix, home-manager,
-cachix, you have setup a reliable and efficent development environment and CI.
+cachix, you have setup a reliable and efficient development environment and CI.
 For demonstration, I want to show you how I use nix to publish my blog:
  - build a [[https://jaspervdj.be/hakyll/][Hakyll]] program
  - generate the content
- - publish to firebase
+ - publish to Firebase
 
 I hope you find something useful in this article.
 
 ** Why Nix ecosystem
 
-If you are not familar with nix, please check out [[nix.dev][nix.dev]]
+If you are not familiar with nix, please check out [[nix.dev][nix.dev]]
 
 ** Why Hakyll
 
 Because I love Haskell
 
-** Why firebase
+** Why Firebase
 - [[https://deptype.com/posts/2019-02-21-create-blog-nix-hakyll-aws.html][aws]] s3
 - [[https://terrorjack.com/posts/2018-11-18-hello-world.html][netlify]] seems really nice. probably worth trying out
 - Google cloud storage can [[https://cloud.google.com/storage/docs/hosting-static-website][host]] a static site, but currently it does not support SSL.
 
 * Required Tools
-- [[https://nixos.org/manual/nix/stable/#chap-installation][nix]] (either sinal user or multi-user installation would work)
+- [[https://nixos.org/manual/nix/stable/#chap-installation][nix]] (either single user or multi-user installation would work)
 - [[https://direnv.net/][direnv]] or [[https://github.com/nix-community/nix-direnv][nix-direnv]] recommend using [[https://github.com/nix-community/home-manager][home-manager]] to get [[https://github.com/nix-community/home-manager/blob/master/modules/programs/direnv.nix][it]])
 - [[https://github.com/target/lorri][lorri]] (optional, only if direnv by itself doesn't work well enough for you)
 - [[https://cachix.org/][cachix]]
 
 
-* Bootstrap a new repo using [[https://github.com/nix-dot-dev/getting-started-nix-template][getting-started-nix-template]]
+* Start with [[https://github.com/nix-dot-dev/getting-started-nix-template][getting-started-nix-template]]
 ~gh repo create hakyll-blog -p nix-dot-dev/getting-started-nix-template~
 
 
@@ -53,7 +53,26 @@ hakyll-init .
 ~hakyll-init .~
 
 
-The project is a plain cabal project, we can use normal Nix-Haskell development workflow.
+* scaffold hakyll project using ~hakyll-init~
+#+begin_src shell
+nix-shell -p pkgs.haskellPackages.hakyll
+
+error: Package ‘hakyll-4.13.4.0’ in /nix/store/bbdw33ilm0x8vznxq00xz90dbkyzi6cs-nixpkgs-21.03pre243353.6d4b93323e7/nixpkgs/pkgs/development/haskell-modules/hackage-packages.nix:112535 is marked as broken, refusing to evaluate.
+
+a) For `nixos-rebuild` you can set
+  { nixpkgs.config.allowBroken = true; }
+in configuration.nix to override this.
+
+b) For `nix-env`, `nix-build`, `nix-shell` or any other Nix command you can add
+  { allowBroken = true; }
+to ~/.config/nixpkgs/config.nix.
+
+(use '--show-trace' to show detailed location information)
+#+end_src
+
+~nix-shell -p pkgs.haskellPackages.hakyll -I nixpkgs=https://github.com/NixOS/nixpkgs-channels/archive/14006b724f3d1f25ecf38238ee723d38b0c2f4ce.tar.gz~
+
+The project is just a plain cabal project, we can use normal Nix-Haskell development workflow.
 
 * Add Haskell into the project
 #+begin_src shell
@@ -91,8 +110,8 @@ nix-repl> pkgs.haskellPackages.hakyll.version
 nix-repl> :q
 #+end_src
 
-** How to use Hakyll
-
+* How to customize Hakyll
+https://robertwpearce.com/hakyll-pt-1-setup-and-initial-customization.html
 * GitHub Action
 ** Pin down nixpkgs for CI
 For a stable CI experience, I decided to [[https://github.com/Gabriel439/haskell-nix/tree/master/project0#pinning-nixpkgs][pin]] down *nixpkgs*.

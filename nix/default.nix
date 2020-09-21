@@ -9,6 +9,11 @@ let
   gitignoreSource = (import sources."gitignore.nix" { inherit (pkgs) lib; }).gitignoreSource;
 
   src = gitignoreSource ./..;
+  blog = pkgs.haskellPackages.callPackage ../blog.nix {};
+  haskell-env = pkgs.haskellPackages.ghcWithHoogle (
+    hp: with hp; [ cabal-install ]
+    ++ blog.buildInputs
+  );
 in
 {
   inherit pkgs src;
@@ -20,8 +25,6 @@ in
       pre-commit
       nodejs
       hlint
-      cabal2nix
-      cabal-install
       yarn
       yarn2nix
       ;
@@ -30,7 +33,6 @@ in
 
   # to be built by github actions
   ci = {
-    blog = pkgs.haskellPackages.callPackage ../blog.nix {};
     pre-commit-check = (import sources."pre-commit-hooks.nix").run {
       inherit src;
       hooks = {
@@ -43,5 +45,6 @@ in
       # generated files
       excludes = [ "^nix/sources\.nix$" ];
     };
+    blog = blog;
   };
 }
