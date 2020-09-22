@@ -1,6 +1,5 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TypeApplications #-}
 
 --------------------------------------------------------------------------------
 
@@ -21,6 +20,7 @@ import Hakyll
     defaultContext,
     fromList,
     getResourceBody,
+    getResourceLBS,
     hakyllWith,
     idRoute,
     listField,
@@ -53,7 +53,7 @@ config :: Configuration
 config =
   defaultConfiguration
     { destinationDirectory = "dist",
-      previewPort = 7000,
+      previewPort = 5000,
       providerDirectory = "content"
     }
 
@@ -67,6 +67,9 @@ main = do
           then "posts/*.org" .||. "drafts/*.org"
           else "posts/*.org"
   hakyllWith config $ do
+    match "et-book/**" $ do
+      route idRoute
+      compile getResourceLBS
     match "images/*" $ do
       route idRoute
       compile copyFileCompiler
@@ -89,7 +92,7 @@ main = do
           >>= relativizeUrls
     create ["CNAME"] $ do
       route idRoute
-      compile $ makeItem @String "yuanwang.ca"
+      compile $ makeItem ("yuanwang.ca" :: String)
     create ["atom.xml"] $ do
       route idRoute
       compile $ do
