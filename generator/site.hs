@@ -6,7 +6,7 @@
 
 import Data.Monoid (mappend)
 import Hakyll
-  ( Configuration (destinationDirectory, previewPort),
+  ( Configuration (destinationDirectory, previewPort, providerDirectory),
     Context,
     FeedConfiguration (..),
     applyAsTemplate,
@@ -51,7 +51,8 @@ config :: Configuration
 config =
   defaultConfiguration
     { destinationDirectory = "dist",
-      previewPort = 5000
+      previewPort = 7000,
+      providerDirectory = "content"
     }
 
 --------------------------------------------------------------------------------

@@ -12,7 +12,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "build": "postcss tailwind/tailwind.css -o css/tailwind.css"
+    "build": "postcss tailwind/tailwind.css -o content/css/tailwind.css"
   },
   "repository": {
     "type": "git",
