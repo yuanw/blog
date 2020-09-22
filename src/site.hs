@@ -6,7 +6,8 @@
 
 import Data.Monoid (mappend)
 import Hakyll
-  ( Configuration (destinationDirectory, previewPort, providerDirectory),
+  ( (.||.),
+    Configuration (destinationDirectory, previewPort, providerDirectory),
     Context,
     FeedConfiguration (..),
     applyAsTemplate,
@@ -36,6 +37,7 @@ import Hakyll
     setExtension,
     templateBodyCompiler,
   )
+import System.Environment (getArgs)
 
 myFeedConfiguration :: FeedConfiguration
 myFeedConfiguration =
@@ -57,7 +59,13 @@ config =
 
 --------------------------------------------------------------------------------
 main :: IO ()
-main =
+main = do
+  (action : _) <- getArgs
+  let previewMode = action == "watch"
+      postsPattern =
+        if previewMode
+          then "posts/*.org" .||. "drafts/*.org"
+          else "posts/*.org"
   hakyllWith config $ do
     match "images/*" $ do
       route idRoute
@@ -71,7 +79,7 @@ main =
         pandocCompiler
           >>= loadAndApplyTemplate "templates/default.html" defaultContext
           >>= relativizeUrls
-    match "posts/*.org" $ do
+    match postsPattern $ do
       route $ setExtension "html"
       compile $
         pandocCompiler
@@ -88,12 +96,12 @@ main =
         let feedCtx = postCtx
         posts <-
           fmap (take 10) . recentFirst
-            =<< loadAll "posts/*"
+            =<< loadAll postsPattern
         renderAtom myFeedConfiguration feedCtx posts
     create ["archive.html"] $ do
       route idRoute
       compile $ do
-        posts <- recentFirst =<< loadAll "posts/*"
+        posts <- recentFirst =<< loadAll postsPattern
         let archiveCtx =
               listField "posts" postCtx (return posts)
                 `mappend` constField "title" "Archives"
@@ -105,7 +113,7 @@ main =
     match "index.html" $ do
       route idRoute
       compile $ do
-        posts <- recentFirst =<< loadAll "posts/*"
+        posts <- recentFirst =<< loadAll postsPattern
         let indexCtx =
               listField "posts" postCtx (return posts)
                 `mappend` constField "title" "Home"

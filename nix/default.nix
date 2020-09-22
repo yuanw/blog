@@ -10,7 +10,7 @@ let
 
   src = gitignoreSource ./..;
 
-  blog = pkgs.haskellPackages.callCabal2nix "blog" ../generator {};
+  blog = pkgs.haskellPackages.callCabal2nix "blog" ../src {};
 
   haskell-env = pkgs.haskellPackages.ghcWithHoogle (
     hp: with hp; [ cabal-install ] ++ blog.buildInputs
