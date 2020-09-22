@@ -14,7 +14,7 @@ I hope you find something useful in this article.
 
 ** Why Nix ecosystem
 
-If you are not familiar with nix, please check out [[nix.dev][nix.dev]]
+If you are not familiar with nix, please check out [[https://nix.dev][nix.dev]]
 
 ** Why Hakyll
 
@@ -34,24 +34,6 @@ Because I love Haskell
 
 * Start with [[https://github.com/nix-dot-dev/getting-started-nix-template][getting-started-nix-template]]
 ~gh repo create hakyll-blog -p nix-dot-dev/getting-started-nix-template~
-
-
-stack has a project template for Hakyll. In nix, we need *hakyll-init* to bootstrap our project.
-The easiest way to do that is
-#+begin_src shell
-nix-shell -p haskellPackages.hakyll
-hakyll-init .
-#+end_src
-
-#+begin_src nix
-  # provided by shell.nix
-  devTools = {
-    inherit (pkgs) niv pre-commit;
-    inherit (pkgs.haskellPackages) hakyll;
-  };
-#+end_src
-~hakyll-init .~
-
 
 * scaffold hakyll project using ~hakyll-init~
 #+begin_src shell
