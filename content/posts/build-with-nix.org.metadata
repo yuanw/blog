@@ -1,4 +1,4 @@
 title: Build a blog with Nix
 date: Sep 13, 2020
 modified: Sep 19, 2020
-description: build blog with nix. Using Hakyll, github action, and Firebase
+description: Using Hakyll, github action, and Firebase

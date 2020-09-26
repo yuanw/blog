@@ -1,12 +1,12 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TypeApplications #-}
 
 --------------------------------------------------------------------------------
 
 import Data.Monoid (mappend)
 import Hakyll
-  ( Configuration (destinationDirectory, previewPort, providerDirectory),
+  ( (.||.),
+    Configuration (destinationDirectory, previewPort, providerDirectory),
     Context,
     FeedConfiguration (..),
     applyAsTemplate,
@@ -20,6 +20,7 @@ import Hakyll
     defaultContext,
     fromList,
     getResourceBody,
+    getResourceLBS,
     hakyllWith,
     idRoute,
     listField,
@@ -36,6 +37,7 @@ import Hakyll
     setExtension,
     templateBodyCompiler,
   )
+import System.Environment (getArgs)
 
 myFeedConfiguration :: FeedConfiguration
 myFeedConfiguration =
@@ -51,14 +53,23 @@ config :: Configuration
 config =
   defaultConfiguration
     { destinationDirectory = "dist",
-      previewPort = 7000,
+      previewPort = 5000,
       providerDirectory = "content"
     }
 
 --------------------------------------------------------------------------------
 main :: IO ()
-main =
+main = do
+  (action : _) <- getArgs
+  let previewMode = action == "watch"
+      postsPattern =
+        if previewMode
+          then "posts/*.org" .||. "drafts/*.org"
+          else "posts/*.org"
   hakyllWith config $ do
+    match "et-book/**" $ do
+      route idRoute
+      compile getResourceLBS
     match "images/*" $ do
       route idRoute
       compile copyFileCompiler
@@ -71,7 +82,7 @@ main =
         pandocCompiler
           >>= loadAndApplyTemplate "templates/default.html" defaultContext
           >>= relativizeUrls
-    match "posts/*.org" $ do
+    match postsPattern $ do
       route $ setExtension "html"
       compile $
         pandocCompiler
@@ -81,19 +92,19 @@ main =
           >>= relativizeUrls
     create ["CNAME"] $ do
       route idRoute
-      compile $ makeItem @String "yuanwang.ca"
+      compile $ makeItem ("yuanwang.ca" :: String)
     create ["atom.xml"] $ do
       route idRoute
       compile $ do
         let feedCtx = postCtx
         posts <-
           fmap (take 10) . recentFirst
-            =<< loadAll "posts/*"
+            =<< loadAll postsPattern
         renderAtom myFeedConfiguration feedCtx posts
     create ["archive.html"] $ do
       route idRoute
       compile $ do
-        posts <- recentFirst =<< loadAll "posts/*"
+        posts <- recentFirst =<< loadAll postsPattern
         let archiveCtx =
               listField "posts" postCtx (return posts)
                 `mappend` constField "title" "Archives"
@@ -105,7 +116,7 @@ main =
     match "index.html" $ do
       route idRoute
       compile $ do
-        posts <- recentFirst =<< loadAll "posts/*"
+        posts <- recentFirst =<< loadAll postsPattern
         let indexCtx =
               listField "posts" postCtx (return posts)
                 `mappend` constField "title" "Home"
