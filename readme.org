@@ -4,6 +4,11 @@
 
 [[https://builtwithnix.org/badge.svg]]
 
+* CSS resources
+- https://github.com/edwardtufte/tufte-css
+- https://highlightjs.org/usage/ with darcula.css
+- tailwinds css
+
 * How to develop
 ~./result/bin/site watch~
 
@@ -31,5 +36,9 @@
 ** TODO integrate with shake
 - https://shakebuild.com/manual
 - https://github.com/mstksg/cv-static
+
+  compile https://highlightjs.org/usage/ maybe
+  copy tufte css assets
+  
 ** TODO try integrate with purescript
 ** TODO implement tags
