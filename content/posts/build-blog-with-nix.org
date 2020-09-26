@@ -138,7 +138,19 @@ Hakyll website has a more comphersive [[https://jaspervdj.be/hakyll/examples.htm
 
 * GitHub Action
 ** Build Step
-Most of the YAML configuration is copied from getting-started-nix-template. My ~default.nix~ only build the Hakyll program, it doesn't generate the site. So I added ~result/bin/site build~ in run command. (~site~ is the name of my Hakyll executable).
+Most of the YAML configuration is copied from getting-started-nix-template. My ~default.nix~ only build the Hakyll program, it doesn't generate the site. So I added ~result/bin/site build~ in run command. (~site~ is the name of my Hakyll executable). We need pass generated site directory as [[https://docs.github.com/en/free-pro-team@latest/actions/guides/storing-workflow-data-as-artifacts][artifacts]] between build steps
+
+#+begin_src yaml
+ - name: Archive Production Artifact
+   uses: actions/upload-artifact@master
+    with:
+        name: dist
+        path: dist
+#+end_src
+
+~dist~ is the directory name for the generated site, by default Hakyll uses ~_site~.
+
+
 
 ** Publish to Firebase
 I use [[https://github.com/w9jds/firebase-action][w9jds firebase action]] to publish the generated static site directory to Firebase. There are publish actions for netlify and Github Page.
@@ -204,7 +216,11 @@ jobs:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           PROJECT_ID: ${{secrets.FIREBASE_PROJECT_ID}}
 #+end_src
+
 * Result
+Right now, the whole CI steps averagely takes 4 min to run. I am pretty happy with the setup.
+
+
 
 * References
 ** About Nix in general
@@ -218,3 +234,4 @@ jobs:
 ** Github Action
 - https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions
 - https://nix.dev/tutorials/continuous-integration-github-actions.html
+- https://docs.github.com/en/free-pro-team@latest/actions/guides/storing-workflow-data-as-artifacts
