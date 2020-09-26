@@ -1,0 +1,6 @@
+#+TITLE: Hakyll Draft Directory
+
+* References
+
+ - http://limansky.me/posts/2015-10-31-Draft-posts-with-Hakyll.html
+ - https://jip.dev/posts/drafts-in-hakyll/

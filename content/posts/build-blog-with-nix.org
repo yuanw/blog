@@ -1,4 +1,3 @@
-
 [[https://builtwithnix.org/badge.svg]]
 
 * Vision
@@ -38,6 +37,11 @@ There are lots of decent alternative to Firebase for hosting a static site. Just
 * Consider using nix project template
  - [[https://github.com/nix-dot-dev/getting-started-nix-template][getting-started-nix-template]]
  - [[https://github.com/rpearce/hakyll-nix-template][hakyll-nix-template]]
+
+Both templates are very opinionated. [[https://github.com/nix-dot-dev/getting-started-nix-template][getting-started-nix-template]] is a more generic nix template.
+hakyll-nix-template is Hakyll specified, it has sitemap, tag support.
+
+
 
 #+begin_src shell
 .

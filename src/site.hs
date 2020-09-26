@@ -9,7 +9,9 @@ import Hakyll
     Configuration (destinationDirectory, previewPort, providerDirectory),
     Context,
     FeedConfiguration (..),
+    Tags,
     applyAsTemplate,
+    buildTags,
     compile,
     compressCssCompiler,
     constField,
@@ -18,6 +20,7 @@ import Hakyll
     dateField,
     defaultConfiguration,
     defaultContext,
+    fromCapture,
     fromList,
     getResourceBody,
     getResourceLBS,
@@ -35,6 +38,8 @@ import Hakyll
     route,
     saveSnapshot,
     setExtension,
+    tagsField,
+    tagsRules,
     templateBodyCompiler,
   )
 import System.Environment (getArgs)
@@ -84,6 +89,20 @@ main = do
       compile $
         pandocCompiler
           >>= loadAndApplyTemplate "templates/default.html" defaultContext
+          >>= relativizeUrls
+    tags <- buildTags postsPattern (fromCapture "tags/*.html")
+    tagsRules tags $ \tag pattern -> do
+      let title = "Posts tagged \"" ++ tag ++ "\""
+      route idRoute
+      compile $ do
+        posts <- recentFirst =<< loadAll pattern
+        let ctx =
+              constField "title" title
+                `mappend` listField "posts" (postCtxWithTags tags) (return posts)
+                `mappend` defaultContext
+        makeItem ""
+          >>= loadAndApplyTemplate "templates/tags.html" ctx
+          >>= loadAndApplyTemplate "templates/default.html" ctx
           >>= relativizeUrls
     match postsPattern $ do
       route $ setExtension "html"
@@ -135,3 +154,6 @@ postCtx :: Context String
 postCtx =
   dateField "date" "%B %e, %Y"
     `mappend` defaultContext
+
+postCtxWithTags :: Tags -> Context String
+postCtxWithTags tags = tagsField "tags" tags `mappend` postCtx
