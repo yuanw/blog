@@ -1,7 +1,6 @@
-<section>
-    <header>
-        <h2 class="text-4xl font-bold text-center">$title$</h2>
-        <p class="p-4 text-center">
+<artice>
+    <h1>$title$</h1>
+    <p class="subtitle">
             Posted on $date$
             $if(author)$
             by $author$
@@ -10,10 +9,7 @@
             $if(modified)$
             , Last modified on $modified$
             $endif$
-        </p>
-    </header>
-    <div class="post">
-        $body$
-    </div>
+    </p>
+    $body$
     <div id="commento"></div>
-</section>
+</artice>
