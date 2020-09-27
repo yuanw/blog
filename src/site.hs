@@ -3,13 +3,16 @@
 
 --------------------------------------------------------------------------------
 
+import Data.List (intercalate)
 import Data.Monoid (mappend)
 import Hakyll
   ( (.||.),
     Configuration (destinationDirectory, previewPort, providerDirectory),
     Context,
     FeedConfiguration (..),
+    Tags,
     applyAsTemplate,
+    buildTags,
     compile,
     compressCssCompiler,
     constField,
@@ -18,12 +21,18 @@ import Hakyll
     dateField,
     defaultConfiguration,
     defaultContext,
+    field,
+    fromCapture,
     fromList,
     getResourceBody,
     getResourceLBS,
+    getTags,
     hakyllWith,
     idRoute,
+    itemBody,
+    itemIdentifier,
     listField,
+    listFieldWith,
     loadAll,
     loadAndApplyTemplate,
     makeItem,
@@ -35,6 +44,8 @@ import Hakyll
     route,
     saveSnapshot,
     setExtension,
+    tagsField,
+    tagsRules,
     templateBodyCompiler,
   )
 import System.Environment (getArgs)
@@ -67,9 +78,6 @@ main = do
           then "posts/*.org" .||. "drafts/*.org"
           else "posts/*.org"
   hakyllWith config $ do
-    match "et-book/**" $ do
-      route idRoute
-      compile getResourceLBS
     match "images/*" $ do
       route idRoute
       compile copyFileCompiler
@@ -85,13 +93,27 @@ main = do
         pandocCompiler
           >>= loadAndApplyTemplate "templates/default.html" defaultContext
           >>= relativizeUrls
+    tags <- buildTags postsPattern (fromCapture "tags/*.html")
+    tagsRules tags $ \tag pattern -> do
+      let title = "Posts with \"" ++ tag ++ "\""
+      route idRoute
+      compile $ do
+        posts <- recentFirst =<< loadAll pattern
+        let ctx =
+              constField "title" title
+                `mappend` listField "posts" (postCtxWithTags tags) (return posts)
+                `mappend` defaultContext
+        makeItem ""
+          >>= loadAndApplyTemplate "templates/tags.html" ctx
+          >>= loadAndApplyTemplate "templates/default.html" ctx
+          >>= relativizeUrls
     match postsPattern $ do
       route $ setExtension "html"
       compile $
         pandocCompiler
           >>= saveSnapshot "content"
-          >>= loadAndApplyTemplate "templates/post.html" postCtx
-          >>= loadAndApplyTemplate "templates/default.html" postCtx
+          >>= loadAndApplyTemplate "templates/post.html" (postCtxWithTags tags)
+          >>= loadAndApplyTemplate "templates/default.html" (postCtxWithTags tags)
           >>= relativizeUrls
     create ["CNAME"] $ do
       route idRoute
@@ -134,4 +156,20 @@ main = do
 postCtx :: Context String
 postCtx =
   dateField "date" "%B %e, %Y"
-    `mappend` defaultContext
+    <> dateField "date_num" "%Y-%m-%d"
+    <> field "tags_str" tagsStr
+    <> listFieldWith "tags_list" tagCtx tagsList
+    <> defaultContext
+  where
+    tagsStr item = do
+      tags <- getTags $ itemIdentifier item
+      case tags of
+        [] -> fail "No tags found"
+        _ -> return $ intercalate ", " tags
+    tagsList item = do
+      tags <- getTags $ itemIdentifier item
+      mapM makeItem tags
+    tagCtx = field "tag" (return . itemBody)
+
+postCtxWithTags :: Tags -> Context String
+postCtxWithTags tags = tagsField "tags" tags <> postCtx

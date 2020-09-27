@@ -15,7 +15,7 @@ jobs:
     - run: GITHUB_PATH= nix-shell --run "niv update"
     - uses: cachix/cachix-action@v6
       with:
-        name: nix-getting-started-template
+        name: yuanw-blog
         signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
         # Only needed for private caches
         #authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
