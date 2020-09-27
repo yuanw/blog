@@ -3,6 +3,7 @@
 
 --------------------------------------------------------------------------------
 
+import Data.List
 import Data.Monoid (mappend)
 import Hakyll
   ( (.||.),
@@ -20,13 +21,18 @@ import Hakyll
     dateField,
     defaultConfiguration,
     defaultContext,
+    field,
     fromCapture,
     fromList,
     getResourceBody,
     getResourceLBS,
+    getTags,
     hakyllWith,
     idRoute,
+    itemBody,
+    itemIdentifier,
     listField,
+    listFieldWith,
     loadAll,
     loadAndApplyTemplate,
     makeItem,
@@ -72,9 +78,6 @@ main = do
           then "posts/*.org" .||. "drafts/*.org"
           else "posts/*.org"
   hakyllWith config $ do
-    match "et-book/**" $ do
-      route idRoute
-      compile getResourceLBS
     match "images/*" $ do
       route idRoute
       compile copyFileCompiler
@@ -92,7 +95,7 @@ main = do
           >>= relativizeUrls
     tags <- buildTags postsPattern (fromCapture "tags/*.html")
     tagsRules tags $ \tag pattern -> do
-      let title = "Posts tagged \"" ++ tag ++ "\""
+      let title = "Posts with \"" ++ tag ++ "\""
       route idRoute
       compile $ do
         posts <- recentFirst =<< loadAll pattern
@@ -109,8 +112,8 @@ main = do
       compile $
         pandocCompiler
           >>= saveSnapshot "content"
-          >>= loadAndApplyTemplate "templates/post.html" postCtx
-          >>= loadAndApplyTemplate "templates/default.html" postCtx
+          >>= loadAndApplyTemplate "templates/post.html" (postCtxWithTags tags)
+          >>= loadAndApplyTemplate "templates/default.html" (postCtxWithTags tags)
           >>= relativizeUrls
     create ["CNAME"] $ do
       route idRoute
@@ -153,7 +156,20 @@ main = do
 postCtx :: Context String
 postCtx =
   dateField "date" "%B %e, %Y"
-    `mappend` defaultContext
+    <> dateField "date_num" "%Y-%m-%d"
+    <> field "tags_str" tagsStr
+    <> listFieldWith "tags_list" tagCtx tagsList
+    <> defaultContext
+  where
+    tagsStr item = do
+      tags <- getTags $ itemIdentifier item
+      case tags of
+        [] -> fail "No tags found"
+        _ -> return $ intercalate ", " tags
+    tagsList item = do
+      tags <- getTags $ itemIdentifier item
+      mapM makeItem tags
+    tagCtx = field "tag" (return . itemBody)
 
 postCtxWithTags :: Tags -> Context String
-postCtxWithTags tags = tagsField "tags" tags `mappend` postCtx
+postCtxWithTags tags = tagsField "tags" tags <> postCtx
