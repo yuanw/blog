@@ -3,7 +3,7 @@
 
 --------------------------------------------------------------------------------
 
-import Data.List
+import Data.List (intercalate)
 import Data.Monoid (mappend)
 import Hakyll
   ( (.||.),
