@@ -4,8 +4,8 @@ module.exports = {
         require('autoprefixer'),
         require('@fullhuman/postcss-purgecss')({
            content: [
-            './templates/*.html',
-            './index.html',
+            './content/templates/*.html',
+            './content/index.html',
            ],
         defaultExtractor: content => content.match(/[A-Za-z0-9-_:/]+/g) || []
     })

@@ -33,6 +33,11 @@ body {
  * `article` contexts in Chrome, Firefox, and Safari.
  */
 
+h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+}
+
 /* Grouping content
    ========================================================================== */
 
@@ -192,6 +197,7 @@ a {
  */
 
 
+h1,
 h2,
 h3,
 p {
@@ -268,7 +274,7 @@ html {
  * https://github.com/tailwindcss/tailwindcss/issues/362
  */
 
-
+h1,
 h2,
 h3 {
   font-size: inherit;
@@ -308,6 +314,12 @@ a {
  * https://github.com/mozdevs/cssremedy/issues/14
  */
 
+
+svg {
+  display: block;
+  vertical-align: middle;
+}
+
 /**
  * Constrain images and videos to the parent width and preserve
  * their instrinsic aspect ratio.
@@ -315,20 +327,23 @@ a {
  * https://github.com/mozdevs/cssremedy/issues/14
  */
 
-h2 {
+h1 {
   font-size: 1.5rem;
+}
+
+h2 {
+  font-size: 1.25rem;
+}
+
+h3 {
+  font-size: 1.125rem;
 }
 
 a {
   --text-opacity: 1;
-  color: #4299e1;
-  color: rgba(66, 153, 225, var(--text-opacity));
-}
-
-.bg-white {
-  --bg-opacity: 1;
-  background-color: #fff;
-  background-color: rgba(255, 255, 255, var(--bg-opacity));
+  color: #3182ce;
+  color: rgba(49, 130, 206, var(--text-opacity));
+  text-decoration: underline;
 }
 
 .rounded-lg {
@@ -337,6 +352,10 @@ a {
 
 .block {
   display: block;
+}
+
+.inline {
+  display: inline;
 }
 
 .flex {
@@ -363,8 +382,8 @@ a {
   font-weight: 600;
 }
 
-.font-bold {
-  font-weight: 700;
+.h-8 {
+  height: 2rem;
 }
 
 .text-sm {
@@ -373,10 +392,6 @@ a {
 
 .text-lg {
   font-size: 1.125rem;
-}
-
-.text-4xl {
-  font-size: 2.25rem;
 }
 
 .mt-2 {
@@ -397,10 +412,6 @@ a {
 
 .overflow-hidden {
   overflow: hidden;
-}
-
-.p-4 {
-  padding: 1rem;
 }
 
 .p-6 {
@@ -469,6 +480,10 @@ a {
   --text-opacity: 1;
   color: #7f9cf5;
   color: rgba(127, 156, 245, var(--text-opacity));
+}
+
+.w-8 {
+  width: 2rem;
 }
 
 .w-full {
