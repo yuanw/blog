@@ -1,0 +1,36 @@
+#    -*- mode: org -*-
+
+
+Archived entries from file /Users/yuanwang/workspace/blog/readme.org
+
+
+* DONE implement draft folders
+  :PROPERTIES:
+  :ARCHIVE_TIME: 2020-09-27 Sun 15:34
+  :ARCHIVE_FILE: ~/workspace/blog/readme.org
+  :ARCHIVE_OLPATH: Items
+  :ARCHIVE_CATEGORY: readme
+  :ARCHIVE_TODO: DONE
+  :END:
+- http://limansky.me/posts/2015-10-31-Draft-posts-with-Hakyll.html
+- https://jip.dev/posts/drafts-in-hakyll/
+
+* DONE wire org-mode meta
+  :PROPERTIES:
+  :ARCHIVE_TIME: 2020-09-27 Sun 15:34
+  :ARCHIVE_FILE: ~/workspace/blog/readme.org
+  :ARCHIVE_OLPATH: Items
+  :ARCHIVE_CATEGORY: readme
+  :ARCHIVE_TODO: DONE
+  :END:
+- https://github.com/jaspervdj/hakyll/issues/700
+- https://github.com/nasyxx/NasyMoe/blob/master/src/Site.hs#L102
+
+* DONE implement tags
+  :PROPERTIES:
+  :ARCHIVE_TIME: 2020-09-27 Sun 15:34
+  :ARCHIVE_FILE: ~/workspace/blog/readme.org
+  :ARCHIVE_OLPATH: Items
+  :ARCHIVE_CATEGORY: readme
+  :ARCHIVE_TODO: DONE
+  :END:
