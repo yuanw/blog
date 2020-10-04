@@ -1,0 +1,5 @@
+title: My Nix Journey on MacOS
+date: Oct 04, 2020
+modified: Oct 04, 2020
+description: How I use Nix to manage my MacOS dotfiles
+tags: nix, nix-darwin, home-manager

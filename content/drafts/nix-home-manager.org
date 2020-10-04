@@ -1,9 +1,0 @@
----
-title: How I use home-manager
-date: March 13, 2020
-summary: How to use home-manager (baby step)
-lastModified: March 13, 2020
-description: baby step
-tags: nix
----
-How I use home-manager

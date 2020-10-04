@@ -1,0 +1,11 @@
+* Goal
+
+I want to write my jounry of using Nix to manage my dotfiles on MacOS
+
+* Starting with ~nix-env -i~
+* home-manager
+* The final form with ~nix-darwin~
+
+* Reference
+- https://rycee.net/posts/2017-07-02-manage-your-home-with-nix.html
+- https://rycee.gitlab.io/home-manager/
