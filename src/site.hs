@@ -1,9 +1,7 @@
-{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 --------------------------------------------------------------------------------
 
-import Data.List (intercalate)
 import Data.Monoid (mappend)
 import Hakyll
   ( (.||.),
@@ -21,18 +19,12 @@ import Hakyll
     dateField,
     defaultConfiguration,
     defaultContext,
-    field,
     fromCapture,
     fromList,
     getResourceBody,
-    getResourceLBS,
-    getTags,
     hakyllWith,
     idRoute,
-    itemBody,
-    itemIdentifier,
     listField,
-    listFieldWith,
     loadAll,
     loadAndApplyTemplate,
     makeItem,
@@ -94,11 +86,11 @@ main = do
           >>= loadAndApplyTemplate "templates/default.html" defaultContext
           >>= relativizeUrls
     tags <- buildTags postsPattern (fromCapture "tags/*.html")
-    tagsRules tags $ \tag pattern -> do
+    tagsRules tags $ \tag pat -> do
       let title = "Posts with \"" ++ tag ++ "\""
       route idRoute
       compile $ do
-        posts <- recentFirst =<< loadAll pattern
+        posts <- recentFirst =<< loadAll pat
         let ctx =
               constField "title" title
                 `mappend` listField "posts" (postCtxWithTags tags) (return posts)
