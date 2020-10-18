@@ -1,5 +1,4 @@
 { sources ? import ./sources.nix }:
-
 let
   # default nixpkgs
   pkgs = import sources.nixpkgs { };
@@ -30,7 +29,8 @@ let
     excludes = [ "^nix/sources.nix$" ];
   };
 
-in {
+in
+{
   inherit pkgs src;
   # to be built by github actions
   ci = {

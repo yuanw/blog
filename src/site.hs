@@ -4,8 +4,7 @@
 
 import Data.Monoid (mappend)
 import Hakyll
-  ( (.||.),
-    Configuration (destinationDirectory, previewPort, providerDirectory),
+  ( Configuration (destinationDirectory, previewPort, providerDirectory),
     Context,
     FeedConfiguration (..),
     Tags,
@@ -39,6 +38,7 @@ import Hakyll
     tagsField,
     tagsRules,
     templateBodyCompiler,
+    (.||.),
   )
 import System.Environment (getArgs)
 
