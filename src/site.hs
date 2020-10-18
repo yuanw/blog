@@ -130,6 +130,7 @@ main = do
           >>= loadAndApplyTemplate "templates/archive.html" archiveCtx
           >>= loadAndApplyTemplate "templates/default.html" archiveCtx
           >>= relativizeUrls
+
     match "index.html" $ do
       route idRoute
       compile $ do
