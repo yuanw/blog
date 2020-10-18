@@ -1,22 +1,23 @@
-{ sources ? import ./sources.nix
-}:
+{ sources ? import ./sources.nix }:
 
 let
   # default nixpkgs
-  pkgs = import sources.nixpkgs {};
+  pkgs = import sources.nixpkgs { };
 
   # gitignore.nix
-  gitignoreSource = (import sources."gitignore.nix" { inherit (pkgs) lib; }).gitignoreSource;
+  gitignoreSource =
+    (import sources."gitignore.nix" { inherit (pkgs) lib; }).gitignoreSource;
 
   src = gitignoreSource ./..;
 
-  blog = pkgs.haskellPackages.callCabal2nix "blog" ../src {};
+  blog = pkgs.haskellPackages.callCabal2nix "blog" ../src { };
 
-  haskell-env = pkgs.haskellPackages.ghcWithHoogle (
-    hp: with hp; [ cabal-install ] ++ blog.buildInputs
-  );
+  haskell-env = pkgs.haskellPackages.ghcWithHoogle
+    (hp: with hp; [ cabal-install ] ++ blog.buildInputs);
 
-  pre-commit-check = (import sources."pre-commit-hooks.nix").run {
+  pre-commit-hooks = (import sources."pre-commit-hooks.nix");
+
+  pre-commit-check = pre-commit-hooks.run {
     inherit src;
     hooks = {
       shellcheck.enable = true;
@@ -26,22 +27,23 @@ let
       ormolu.enable = true;
     };
     # generated files
-    excludes = [ "^nix/sources\.nix$" ];
+    excludes = [ "^nix/sources.nix$" ];
   };
 
-in
-{
+in {
   inherit pkgs src;
   # to be built by github actions
   ci = {
     blog = blog;
+    pre-commit-check = pre-commit-check;
   };
+
 
   shell = pkgs.mkShell {
     name = "blog-env";
     buildInputs = with pkgs; [
       niv
-      pre-commit
+      pre-commit-hooks.pre-commit
       nodejs
       hlint
       yarn
