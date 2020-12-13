@@ -1,0 +1,94 @@
+
+
+* Why NixOS ?
+I have been using MacOS exclusively for last 12 years. It get the job done, I don't have any unusal complaints or insighful criticism. Apple M1 seems to be an amazing hardware. But I often wonder what is the experience of using a liuxs desktop. I want to try out Xmonad (I guess I can try it out in an VM).
+
+In addition, I have been using nix for 2 years, and nix-darwin for a while. It is not always rainbow and unicorn, I managed to setup a yabai + spacebar + Doom Emacs + Alacritty + zsh environment in both my personal and work Macbook pro (I basically copied https://github.com/cmacrae/config), the whole environment is stable-ish.   
+
+My macbook pro is kind of old, I had been thinking to replace it with a laptop or desktop. So why not a machine run on NixOS.
+
+* Why Dell XPS 9300 ?
+
+So what would 
+
+https://discourse.nixos.org/t/best-laptops-for-nixos/8545/34
+
+* Before Install NixOS
+I got a developer edition ship with Ubuntb. When I boot up the machine for first time, it asked me whether want to back up the system into ISO on an USB.
+
+** Praticle Install NixOS on VirtualBox
+- https://askubuntu.com/questions/64915/how-do-i-install-ubuntu-on-a-virtualbox-client-from-an-iso-image
+- https://www.youtube.com/watch?v=oPymb2-IXbg
+- https://www.youtube.com/watch?v=82vrj22omyQ
+** Read Dell Manual
+https://www.dell.com/support/manuals/en-ca/xps-13-9300-laptop/xps-13-9300-service-manual/system-setup-options?guid=guid-cc110ea9-65ed-4ff8-bb35-7c2853ffb988
+
+** Check Arch Wiki page for XPS 9300 and update some BIOS setting
+Pressing F2/F12 key to BIOS menu
+
+https://wiki.archlinux.org/index.php/Dell_XPS_13_(9300)
+
+- Make sure SATA Mode from "RAID" to "AHCi" already the default on developer edition
+
+- Disable secure boot to allow Linux to boot
+  (which is not default, although archlinux page state it should be disabled by default )
+
+- POST Behavior
+  Sign of Life
+  - Early Logo Display
+  - Early keyboard backlight
+  https://www.dell.com/community/XPS/XPS-13-9300-Wake-from-sleep/td-p/7523159 (Fun fact, there is "nixos-user" comments and provided answer this thread)
+
+  
+* Install 
+I chose not to go with dual-boot, just wipe the disk install nixos
+I use graphical install 
+https://channels.nixos.org/nixos-20.09/latest-nixos-gnome-x86_64-linux.iso
+
+** https://www.balena.io/etcher/ how to burn iso
+Press F12, and boot from usb
+
+The first problem I got is, the build-in wifi cannot find by install. I think it is the same problem with
+https://discourse.nixos.org/t/nixos-minimal-install-doesnt-have-wifi-firmware/7318
+
+Lucky for me, I had a usb wifi adapter which can regonzied with installer.
+
+Without internet access, we cannot finish OS installment.
+
+** Partition time
+https://gist.github.com/little-dude/03b68e9e9908d940520fbeb420b49869
+ mostly just followed
+
+- primary disk is `dev/nvme0n1`
+
+*** How to find uuid of partition
+
+blkid
+
+ls -l /dev/disk/by-uuid
+
+https://linuxhint.com/uuid_storage_devices_linux/
+
+*** Copy/paste in linux terminal
+is Ctrl + Shift + C/V
+
+I tried to reference home not by uuid. That didn't seem to work. Machine failed to boot, had to press the start button to shut down the machine. 
+* First round of nixos configuration
+** Set user password
+~passwd username~
+
+
+I need to 
+~boot.kernelPackages = pkgs.linuxPackages_latest;~
+to find laptop's wifi
+
+* References
+- https://wiki.archlinux.org/index.php/Dell_XPS_13_(9300)
+- https://www.dell.com/support/manuals/en-ca/xps-13-9300-laptop/xps-13-9300-service-manual/system-setup-options?guid=guid-cc110ea9-65ed-4ff8-bb35-7c2853ffb988
+- https://gist.github.com/little-dude/03b68e9e9908d940520fbeb420b49869
+- https://discourse.nixos.org/t/libfprint-2-tod1-xps9300-bin/7888
+- https://github.com/NixOS/nixos-hardware/blob/master/dell/xps/13-9370/default.nix
+- https://discourse.nixos.org/t/best-laptops-for-nixos/8545/34
+
+
+
