@@ -79,7 +79,7 @@ main = do
     match "css/*" $ do
       route idRoute
       compile compressCssCompiler
-    match (fromList ["about.org"]) $ do
+    match (fromList []) $ do
       route $ setExtension "html"
       compile $
         pandocCompiler
