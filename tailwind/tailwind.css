@@ -1,16 +1,20 @@
 @tailwind base;
 
 h1 {
-  @apply text-2xl;
+  @apply text-2xl my-4;
 }
 h2 {
-  @apply text-xl;
+  @apply text-xl my-3;
 }
 h3 {
-  @apply text-lg;
+  @apply text-lg my-2;
 }
 a {
   @apply text-blue-600 underline;
+}
+
+ul {
+  @apply list-disc;
 }
 
 
