@@ -34,7 +34,5 @@ https://staticman.net/docs/generated-fields
 - https://shakebuild.com/manual
 - https://github.com/mstksg/cv-static
 
-  compile https://highlightjs.org/usage/ maybe
-  copy tufte css assets
   
 ** TODO try integrate with purescript
