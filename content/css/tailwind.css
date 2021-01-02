@@ -547,7 +547,6 @@ video {
 }
 
 h1 {
-  border-bottom-width: 2px;
   font-weight: 700;
   font-size: 1.875rem;
   line-height: 2.25rem;
@@ -556,7 +555,6 @@ h1 {
 }
 
 h2 {
-  border-bottom-width: 2px;
   font-weight: 600;
   font-size: 1.5rem;
   line-height: 2rem;
@@ -565,7 +563,6 @@ h2 {
 }
 
 h3 {
-  border-bottom-width: 2px;
   font-weight: 500;
   font-size: 1.25rem;
   line-height: 1.75rem;
