@@ -5,13 +5,12 @@
 [[https://builtwithnix.org/badge.svg]]
 
 * CSS resources
-- https://github.com/edwardtufte/tufte-css
 - https://highlightjs.org/usage/ with darcula.css
 - tailwinds css
 - https://github.com/tailwindlabs/heroicons
 
 * How to develop
-~./result/bin/site watch~
+~nix build && ./result/bin/site watch~
 
 * How to compile css
 ~yarn run build~

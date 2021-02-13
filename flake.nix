@@ -39,6 +39,7 @@
               hlint
               pkgs.nixpkgs-fmt
               nodejs
+              entr
             ];
           withHoogle = false;
         };
