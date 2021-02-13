@@ -2,7 +2,7 @@
   description = "A very basic flake";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs";
     flake-utils.url = "github:numtide/flake-utils/master";
   };
   outputs = { self, nixpkgs, flake-utils }:
@@ -28,7 +28,7 @@
           overlays = [ overlay ];
         };
       in {
-        defaultPackage = pkgs.nix-tree;
+        defaultPackage = pkgs.blog;
         devShell = pkgs.haskellPackages.shellFor {
           packages = p: [ p."blog" ];
           buildInputs = with pkgs.haskellPackages; [
