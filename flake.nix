@@ -37,6 +37,7 @@
             ormolu
             hlint
             pkgs.nixpkgs-fmt
+            nodejs
           ];
           withHoogle = false;
         };
