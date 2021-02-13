@@ -1,7 +1,7 @@
 * What and Why
 Nix Flakes are a set of experimental features in the Nix package manager.
 
-If you are not familiar with ~flakes~ yet, here is a list of resources on it.
+If you are not familiar with ~Flakes~ yet, here is a list of resources on it.
 
 - [[https://nixos.wiki/wiki/Flakes][Nix Wiki On Flakes]]
 - [[https://zimbatm.com/NixFlakes][zimbatm's article on Flakes]]
@@ -11,6 +11,9 @@ If you are not familiar with ~flakes~ yet, here is a list of resources on it.
   + [[https://www.tweag.io/blog/2020-07-31-nixos-flakes/][Part III]]
 - [[https://www.youtube.com/watch?v=UeBX7Ide5a0][NixCon 2019 Nix Flakes - Eelco Dolstra]]
 - [[https://www.youtube.com/watch?v=QXUlhnhuRX4&list=PLgknCdxP89RcGPTjngfNR9WmBgvD_xW0l][Jörg Thalheim Nix Flakes 101]]
+
+  the rest of this article is basically a rehash these listed contents.
+
 Some of goals of Flakes are
 - Standarized how we compose ~nix~ files and provide a single entry-point
   (no more ~ci.nix~, ~shell.nix~)
@@ -20,7 +23,7 @@ Some of goals of Flakes are
 - a set of more user friendly nix commands
 - better reproducibility
 
-* How
+* How to install/uninstall Flakes
 ** install
 Right now, Nix Flakes is not enabled by default. We
 need to explicitly enable it.
@@ -65,20 +68,19 @@ just revert the change in ~configuration.nix~ and do ~nixos-rebuild switch~
 ~nix-env -iA nixpkgs.nix~ should bring out ~nix~ to the mainline version, and we need to rever the ~nix.conf~ change.
 Of course, multi-user version needs to restart ~nix-daemon~.
 
-** boostrap
+* How to boostrap a Nix Flakes project
 use ~nix flake init~ to generate the ~flake.nix~,
 ~nix flake update~ to generate ~flake.lock~ file.
 
 An important thing about Flakes, to improve the reproducibility, Flakes requires us to git staging all the ~flake.nix~ changes.
-* Example: nix-tree
-[[https://github.com/utdemir][utdemir]] has this nice and concise [[https://github.com/utdemir/nix-tree/blob/main/flake.nix][example]] using Flakes with a haskell project. I think it is a great starting point to understand Flakes.
-
+* (Seletive) Anatomy of ~flake.nix~
 Beside ~description~, ~flake.nix~ has 2 top-level attirbutes
 
 - ~inputs~ (the dependency management part)
 - ~outputs~ the function takes the all inputs we defined and evaluate a set of attributes. (Usually our build artifacts).
+
 ** inputs
-In this ~nix-tree~ example, input looks like
+a typical input might look like
 #+begin_src nix
 {
   inputs = {
@@ -87,7 +89,7 @@ In this ~nix-tree~ example, input looks like
   };
 }
 #+end_src
-here, the project declares two dependencies ~nixpkgs~ and ~flake-utils~. We can use ~nix flake update~ to lock down dependencies.
+here, it declares two dependencies ~nixpkgs~ and ~flake-utils~. We can use ~nix flake update~ to lock down dependencies.
 
 We can point to a branch: ~inputs.nixpkgs.url = "github:Mic92/nixpkgs/master";~.
 
@@ -107,8 +109,66 @@ Further, we can override a Flake dependency's input
   inputs.sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 }
 #+end_src
-
 ** outputs
+*** Outputs Schema
+I skipped all the ~nixos~ related attirbutes.
+
+#+begin_src
+{ self, ... }@inputs:
+{
+  # Executed by `nix flake check`
+  checks."<system>"."<attr>" = derivation;
+  # Executed by `nix build .#<name>`
+  packages."<system>"."<attr>" = derivation;
+  # Executed by `nix build .`
+  defaultPackage."<system>" = derivation;
+  # Executed by `nix run .#<name>`
+  apps."<system>"."<attr>" = {
+    type = "app";
+    program = "<store-path>";
+  };
+  # Executed by `nix run . -- <args?>`
+  defaultApp."<system>" = { type = "app"; program = "..."; };
+}
+#+end_src
+where
+- ~<system>~ is the name of the platform, such as "x86_64-linux", "x86_64-darwin"
+- ~<attr>~ is the arritbute name (package name)
+- ~<store-path>~ is a ~/nix/store...~ path
+
+So for each ~<attr>~, we can have
+
+  - check (prerequisites for build the package)
+  - package
+  - app (executable)
+
+and we can define a default ~<attr>~.
+**  [[https://github.com/numtide/flake-utils][flake-utils]]
+~flake-utils~ is a package to help us to write the boilerplates related to the outputs.
+
+#+begin_src nix
+{
+  description = "Flake utils demo";
+
+  inputs.flake-utils.url = "github:numtide/flake-utils";
+
+  outputs = { self, nixpkgs, flake-utils }:
+    flake-utils.lib.eachDefaultSystem (system:
+      let pkgs = nixpkgs.legacyPackages.${system};
+      in rec {
+        packages = flake-utils.lib.flattenTree {
+          hello = pkgs.hello;
+          gitAndTools = pkgs.gitAndTools;
+        };
+        defaultPackage = packages.hello;
+        apps.hello = flake-utils.lib.mkApp { drv = packages.hello; };
+        defaultApp = apps.hello;
+      });
+}
+#+end_src
+* Example: nix-tree
+[[https://github.com/utdemir][utdemir]] has this nice and concise [[https://github.com/utdemir/nix-tree/blob/main/flake.nix][example]] using Flakes with a haskell project. I think it is a great starting point to understand Flakes.
+
 in ~nix-tree~, the outputs looks likes
 #+begin_src nix
  {
@@ -153,4 +213,5 @@ in ~nix-tree~, the outputs looks likes
  }
 #+end_src
 
-the example uses [[https://github.com/numtide/flake-utils][flake-utils]]
+Let's break down the function a little bit
+

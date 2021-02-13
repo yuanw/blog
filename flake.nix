@@ -29,8 +29,10 @@
         };
         cssDev = pkgs.writeShellScriptBin "cssDev"
           "ls tailwind/*.css|NODE_ENV=development entr yarn build";
-      in {
+      in rec {
         defaultPackage = pkgs.blog;
+        apps.blog = flake-utils.lib.mkApp { drv = pkgs.blog; };
+        defaultApp = apps.blog;
         devShell = pkgs.haskellPackages.shellFor {
           packages = p: [ p."blog" ];
           buildInputs = with pkgs;
