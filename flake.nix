@@ -1,5 +1,5 @@
 {
-  description = "A very basic flake";
+  description = "repo for Yuan's blog";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/release-20.09";
@@ -27,6 +27,8 @@
           inherit system;
           overlays = [ overlay ];
         };
+        cssDev = pkgs.writeShellScriptBin "cssDev"
+          "ls tailwind/*.css|NODE_ENV=development entr yarn build";
       in {
         defaultPackage = pkgs.blog;
         devShell = pkgs.haskellPackages.shellFor {
@@ -38,8 +40,11 @@
               ormolu
               hlint
               pkgs.nixpkgs-fmt
+
               nodejs
+              yarn
               entr
+              cssDev
             ];
           withHoogle = false;
         };

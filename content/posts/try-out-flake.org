@@ -1,0 +1,156 @@
+* What and Why
+Nix Flakes are a set of experimental features in the Nix package manager.
+
+If you are not familiar with ~flakes~ yet, here is a list of resources on it.
+
+- [[https://nixos.wiki/wiki/Flakes][Nix Wiki On Flakes]]
+- [[https://zimbatm.com/NixFlakes][zimbatm's article on Flakes]]
+- Nix Flakes Series on tweag.io by Eelco himself
+  + [[https://www.tweag.io/blog/2020-05-25-flakes/][Part I]]
+  + [[https://www.tweag.io/blog/2020-06-25-eval-cache/][Part II]]
+  + [[https://www.tweag.io/blog/2020-07-31-nixos-flakes/][Part III]]
+- [[https://www.youtube.com/watch?v=UeBX7Ide5a0][NixCon 2019 Nix Flakes - Eelco Dolstra]]
+- [[https://www.youtube.com/watch?v=QXUlhnhuRX4&list=PLgknCdxP89RcGPTjngfNR9WmBgvD_xW0l][Jörg Thalheim Nix Flakes 101]]
+Some of goals of Flakes are
+- Standarized how we compose ~nix~ files and provide a single entry-point
+  (no more ~ci.nix~, ~shell.nix~)
+
+- Standarized nix packages' dependency management
+  (no more niv)
+- a set of more user friendly nix commands
+- better reproducibility
+
+* How
+** install
+Right now, Nix Flakes is not enabled by default. We
+need to explicitly enable it.
+*** NixOS
+adding the follwing in the ~configuration.nix~
+
+#+begin_src nix
+{ pkgs, ... }: {
+  nix = {
+    package = pkgs.nixFlakes;
+    extraOptions = ''
+      experimental-features = nix-command flakes
+    '';
+  };
+}
+#+end_src
+*** non-NixOS
+#+begin_src shell
+nix-env -iA nixpkgs.nixFlakes
+#+end_src
+and add
+
+#+begin_src shell
+experimental-features = nix-command flakes
+#+end_src
+
+to ~~/.config/nix/nix.conf~ (if current shell user is nix trusted users) or ~/etc/nix/nix.conf~
+
+Install Nix Flakes installer
+I am not sure whether this step is still needed
+#+begin_src shell
+sh <(curl -L https://github.com/numtide/nix-flakes-installer/releases/download/nix-2.4pre20210126_f15f0b8/install)
+#+end_src
+
+You can type ~nix-env --version~ to verify.
+The Flakes version should looks like ~nix-env (Nix) 2.4pre20210126_f15f0b8~. (the version was 3.0, and version rollbacked to 2.4)
+
+** uninstall
+*** NixOS
+just revert the change in ~configuration.nix~ and do ~nixos-rebuild switch~
+*** non-NixOS
+~nix-env -iA nixpkgs.nix~ should bring out ~nix~ to the mainline version, and we need to rever the ~nix.conf~ change.
+Of course, multi-user version needs to restart ~nix-daemon~.
+
+** boostrap
+use ~nix flake init~ to generate the ~flake.nix~,
+~nix flake update~ to generate ~flake.lock~ file.
+
+An important thing about Flakes, to improve the reproducibility, Flakes requires us to git staging all the ~flake.nix~ changes.
+* Example: nix-tree
+[[https://github.com/utdemir][utdemir]] has this nice and concise [[https://github.com/utdemir/nix-tree/blob/main/flake.nix][example]] using Flakes with a haskell project. I think it is a great starting point to understand Flakes.
+
+Beside ~description~, ~flake.nix~ has 2 top-level attirbutes
+
+- ~inputs~ (the dependency management part)
+- ~outputs~ the function takes the all inputs we defined and evaluate a set of attributes. (Usually our build artifacts).
+** inputs
+In this ~nix-tree~ example, input looks like
+#+begin_src nix
+{
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    flake-utils.url = "github:numtide/flake-utils/master";
+  };
+}
+#+end_src
+here, the project declares two dependencies ~nixpkgs~ and ~flake-utils~. We can use ~nix flake update~ to lock down dependencies.
+
+We can point to a branch: ~inputs.nixpkgs.url = "github:Mic92/nixpkgs/master";~.
+
+or revision: ~inputs.nix-doom-emacs.url = "github:vlaci/nix-doom-emacs?rev=238b18d7b2c8239f676358634bfb32693d3706f3";~
+
+for non-Flakes dependency, we need to declare that.
+#+begin_src nix
+{
+  inputs.bar.url = "github:foo/bar/branch";
+  inputs.bar.flake = false;
+}
+#+end_src
+Further, we can override a Flake dependency's input
+#+begin_src nix
+{
+  inputs.sops-nix.url = "github:Mic92/sops-nix";
+  inputs.sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+}
+#+end_src
+
+** outputs
+in ~nix-tree~, the outputs looks likes
+#+begin_src nix
+ {
+   outputs = { self, nixpkgs, flake-utils }: # list out the dependencies
+     let
+       overlay = self: super: { # a pattern of bring build artifacts to pkgs
+         haskellPackages = super.haskellPackages.override {
+           overrides = hself: hsuper: {
+             nix-tree = hself.callCabal2nix "nix-tree"
+               (self.nix-gitignore.gitignoreSourcePure [
+                 ./.gitignore
+                 "asciicast.sh"
+                 "flake.nix"
+               ] ./.) { };
+           };
+         };
+         nix-tree =
+           self.haskell.lib.justStaticExecutables self.haskellPackages.nix-tree;
+       };
+     in {
+       inherit overlay;
+     } // flake-utils.lib.eachDefaultSystem (system: # leverage flake-utils
+       let
+         pkgs = import nixpkgs {
+           inherit system;
+           overlays = [ overlay ];
+         };
+       in {
+         defaultPackage = pkgs.nix-tree;
+         devShell = pkgs.haskellPackages.shellFor { # development environment
+           packages = p: [ p."nix-tree" ];
+           buildInputs = with pkgs.haskellPackages; [
+             cabal-install
+             ghcid
+             ormolu
+             hlint
+             pkgs.nixpkgs-fmt
+           ];
+           withHoogle = false;
+         };
+       });
+ }
+#+end_src
+
+the example uses [[https://github.com/numtide/flake-utils][flake-utils]]
