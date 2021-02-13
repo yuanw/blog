@@ -31,14 +31,15 @@
         defaultPackage = pkgs.blog;
         devShell = pkgs.haskellPackages.shellFor {
           packages = p: [ p."blog" ];
-          buildInputs = with pkgs.haskellPackages; [
-            cabal-install
-            ghcid
-            ormolu
-            hlint
-            pkgs.nixpkgs-fmt
-            nodejs
-          ];
+          buildInputs = with pkgs;
+            with pkgs.haskellPackages; [
+              cabal-install
+              ghcid
+              ormolu
+              hlint
+              pkgs.nixpkgs-fmt
+              nodejs
+            ];
           withHoogle = false;
         };
       });
