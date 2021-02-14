@@ -12,6 +12,9 @@
 * How to develop
 ~nix build && ./result/bin/site watch~
 
+* How to compile
+~nix run . -- clean && nix run . -- build~
+
 * How to compile css
 ~yarn run build~
 
