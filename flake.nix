@@ -4,8 +4,10 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/release-20.09";
     flake-utils.url = "github:numtide/flake-utils/master";
+    easy-ps.url = "github:justinwoo/easy-purescript-nix/master";
+    easy-ps.flake = false;
   };
-  outputs = { self, nixpkgs, flake-utils }:
+  outputs = { self, nixpkgs, flake-utils, easy-ps }:
     let
       overlay = self: super: {
         haskellPackages = super.haskellPackages.override {
@@ -27,6 +29,9 @@
           inherit system;
           overlays = [ overlay ];
         };
+        purs = (import easy-ps { inherit pkgs; }).purs;
+        spago = (import easy-ps { inherit pkgs; }).spago;
+
         cssDev = pkgs.writeShellScriptBin "cssDev"
           "ls tailwind/*.css|NODE_ENV=development entr yarn build";
       in rec {
@@ -35,19 +40,21 @@
         defaultApp = apps.blog;
         devShell = pkgs.haskellPackages.shellFor {
           packages = p: [ p."blog" ];
-          buildInputs = with pkgs;
-            with pkgs.haskellPackages; [
-              cabal-install
-              ghcid
-              ormolu
-              hlint
-              pkgs.nixpkgs-fmt
+          buildInputs = with pkgs.haskellPackages; [
+            cabal-install
+            ghcid
+            ormolu
+            hlint
+            pkgs.nixpkgs-fmt
 
-              nodejs
-              yarn
-              entr
-              cssDev
-            ];
+            pkgs.nodejs
+            pkgs.yarn
+            pkgs.entr
+            cssDev
+
+            purs
+            spago
+          ];
           withHoogle = false;
         };
       });

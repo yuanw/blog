@@ -34,3 +34,16 @@ Archived entries from file /Users/yuanwang/workspace/blog/readme.org
   :ARCHIVE_CATEGORY: readme
   :ARCHIVE_TODO: DONE
   :END:
+
+* KILL integrate with shake
+:PROPERTIES:
+:ARCHIVE_TIME: 2021-02-14 Sun 14:45
+:ARCHIVE_FILE: ~/workspace/blog/readme.org
+:ARCHIVE_OLPATH: Items
+:ARCHIVE_CATEGORY: readme
+:ARCHIVE_TODO: KILL
+:END:
+- https://shakebuild.com/manual
+- https://github.com/mstksg/cv-static
+
+  

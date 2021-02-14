@@ -10,14 +10,12 @@
 - https://github.com/tailwindlabs/heroicons
 
 * How to develop
-~nix build && ./result/bin/site watch~
+~nix build && ./result/bin/blog watch~
 
-* How to compile
-~nix run . -- clean && nix run . -- build~
-
-* How to compile css
+** How to compile css
 ~yarn run build~
-
+** How to compile js
+~spago bundle-app -m StaticHTML.StaticHTML -t content/js/static-html.js~
 * Known Issues
 ** [[https://github.com/nix-community/nix-direnv#manually-re-triggering-evaluation][Manually re-triggering evaluation]]
 ~$ touch .envrc~
@@ -32,9 +30,5 @@
 * Items
 ** TODO wire static man for comment
 https://staticman.net/docs/generated-fields
-** TODO integrate with shake
-- https://shakebuild.com/manual
-- https://github.com/mstksg/cv-static
-
-  
-** TODO try integrate with purescript
+** STRT try integrate with purescript
+https://github.com/JordanMartinez/learn-halogen
