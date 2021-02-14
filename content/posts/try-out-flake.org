@@ -15,10 +15,10 @@ If you are not familiar with ~Flakes~ yet, here is a list of resources on it.
   the rest of this article is basically a rehash these listed contents.
 
 Some of goals of Flakes are
-- Standarized how we compose ~nix~ files and provide a single entry-point
+- Standardized how we compose ~nix~ files and provide a single entry-point
   (no more ~ci.nix~, ~shell.nix~)
 
-- Standarized nix packages' dependency management
+- Standardized nix packages' dependency management
   (no more niv)
 - a set of more user friendly nix commands
 - better reproducibility
@@ -28,7 +28,7 @@ Some of goals of Flakes are
 Right now, Nix Flakes is not enabled by default. We
 need to explicitly enable it.
 *** NixOS
-adding the follwing in the ~configuration.nix~
+adding the following in the ~configuration.nix~
 
 #+begin_src nix
 { pkgs, ... }: {
@@ -65,16 +65,16 @@ The Flakes version should looks like ~nix-env (Nix) 2.4pre20210126_f15f0b8~. (th
 *** NixOS
 just revert the change in ~configuration.nix~ and do ~nixos-rebuild switch~
 *** non-NixOS
-~nix-env -iA nixpkgs.nix~ should bring out ~nix~ to the mainline version, and we need to rever the ~nix.conf~ change.
+~nix-env -iA nixpkgs.nix~ should bring out ~nix~ to the mainline version, and we need to revert the ~nix.conf~ change.
 Of course, multi-user version needs to restart ~nix-daemon~.
 
-* How to boostrap a Nix Flakes project
+* How to bootstrap a Nix Flakes project
 use ~nix flake init~ to generate the ~flake.nix~,
 ~nix flake update~ to generate ~flake.lock~ file.
 
 An important thing about Flakes, to improve the reproducibility, Flakes requires us to git staging all the ~flake.nix~ changes.
-* (Seletive) Anatomy of ~flake.nix~
-Beside ~description~, ~flake.nix~ has 2 top-level attirbutes
+* (Selective) Anatomy of ~flake.nix~
+Beside ~description~, ~flake.nix~ has 2 top-level attributes
 
 - ~inputs~ (the dependency management part)
 - ~outputs~ the function takes the all inputs we defined and evaluate a set of attributes. (Usually our build artifacts).
@@ -110,8 +110,8 @@ Further, we can override a Flake dependency's input
 }
 #+end_src
 ** outputs
-*** Outputs Schema
-I skipped all the ~nixos~ related attirbutes.
+*** Schema
+I skipped all the ~nixos~ related attributes.
 
 #+begin_src
 { self, ... }@inputs:
@@ -133,7 +133,7 @@ I skipped all the ~nixos~ related attirbutes.
 #+end_src
 where
 - ~<system>~ is the name of the platform, such as "x86_64-linux", "x86_64-darwin"
-- ~<attr>~ is the arritbute name (package name)
+- ~<attr>~ is the attribute name (package name)
 - ~<store-path>~ is a ~/nix/store...~ path
 
 So for each ~<attr>~, we can have
@@ -144,8 +144,26 @@ So for each ~<attr>~, we can have
 
 and we can define a default ~<attr>~.
 **  [[https://github.com/numtide/flake-utils][flake-utils]]
-~flake-utils~ is a package to help us to write the boilerplates related to the outputs.
+~flake-utils~ ,as its name indicates, is a utility package help us write flake.
 
+For example, it has [[https://github.com/numtide/flake-utils/blob/3982c9903e93927c2164caa727cd3f6a0e6d14cc/default.nix#L60][~eachDefaultSystem~]] function take a lambda and iterate through all the systems supported by nixpkgs an hydra. So we can reuse the same lambda to build for different systems.
+
+~flattenTree~ takes a tree of attributes and flatten them into a one level key-value (attribute to derivation), which is what Flakes packages outputs expects.
+
+~flattenTree { hello = pkgs.hello; gitAndTools = pkgs.gitAndTools }~
+
+returns
+#+begin_src
+{
+  hello = «derivation»;
+  "gitAndTools/git" = «derivation»;
+  "gitAndTools/hub" = «derivation»;
+}
+#+end_src
+
+~mkApp~ is a helper function to construct ~nix app~.
+
+here is an example
 #+begin_src nix
 {
   description = "Flake utils demo";
@@ -167,7 +185,7 @@ and we can define a default ~<attr>~.
 }
 #+end_src
 * Example: nix-tree
-[[https://github.com/utdemir][utdemir]] has this nice and concise [[https://github.com/utdemir/nix-tree/blob/main/flake.nix][example]] using Flakes with a haskell project. I think it is a great starting point to understand Flakes.
+[[https://github.com/utdemir][utdemir]] has this nice and concise [[https://github.com/utdemir/nix-tree/blob/main/flake.nix][example]] using Flakes with a Haskell project. I think it is a great starting point to understand Flakes.
 
 in ~nix-tree~, the outputs looks likes
 #+begin_src nix
@@ -213,5 +231,9 @@ in ~nix-tree~, the outputs looks likes
  }
 #+end_src
 
-Let's break down the function a little bit
+Let's break down the function a little bit.
+The outputs have 2 dependencies ~nixpkgs~ and ~flake-utils~.
 
+First thing, it construct an overlay contains the local ~nix-tree~ as Haskell package and a derivation for the executable.
+
+Next, for ~eachDefaultSystem~, it initialize the new nixpkgs with relevant system and overlay, and construct ~defaultPackage~ and ~devShell~. ~devShell~ is Nix Flakes' version of ~nix-shell~ (without -p capability, if you want to use nix-shell -p, there is ~nix shell~). We can start a development shell by ~nix develop~ command. There is ~nix develop~ [[https://zimbatm.com/NixFlakes/#direnv-integration][integration]] with ~direnv~
