@@ -31,7 +31,10 @@
           "ls tailwind/*.css|NODE_ENV=development entr yarn build";
       in rec {
         defaultPackage = pkgs.blog;
-        apps.blog = flake-utils.lib.mkApp { drv = pkgs.blog; };
+        apps.blog = flake-utils.lib.mkApp {
+          drv = pkgs.blog;
+          exePath = "${pkgs.blog}/bin/blog build";
+        };
         defaultApp = apps.blog;
         devShell = pkgs.haskellPackages.shellFor {
           packages = p: [ p."blog" ];
