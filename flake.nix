@@ -8,24 +8,25 @@
       url = "github:justinwoo/easy-purescript-nix/master";
       flake = false;
     };
-    inputs.devshell.url = "github:numtide/devshell/master";
+    devshell.url = "github:numtide/devshell/master";
   };
   outputs = { self, nixpkgs, flake-utils, easy-ps, devshell }:
     let
-      overlay = self: super: {
+      overlay = final: prev: {
 
-        haskellPackages = super.haskellPackages.override {
+        haskellPackages = prev.haskellPackages.override {
           overrides = hself: hsuper: {
             blog = hself.callCabal2nix "blog"
-              (self.nix-gitignore.gitignoreSourcePure [
+              (final.nix-gitignore.gitignoreSourcePure [
                 ./.gitignore
 
               ] ./src) { };
           };
         };
-        blog = self.haskell.lib.justStaticExecutables self.haskellPackages.blog;
-        purs = (import easy-ps { pkgs = self; }).purs;
-        spago = (import easy-ps { pkgs = self; }).spago;
+        blog =
+          final.haskell.lib.justStaticExecutables final.haskellPackages.blog;
+        purs = (import easy-ps { pkgs = final; }).purs;
+        spago = (import easy-ps { pkgs = final; }).spago;
       };
     in {
       inherit overlay;

@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "devshell": {
+      "locked": {
+        "lastModified": 1613310953,
+        "narHash": "sha256-GhAwxJ0Jfsj8LIQmEQylpVkcThUJgPChjo48DZeBQZA=",
+        "owner": "numtide",
+        "repo": "devshell",
+        "rev": "f64db97388dda7c2c6f8fb7aa5d6d08365fb1e01",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "ref": "master",
+        "repo": "devshell",
+        "type": "github"
+      }
+    },
     "easy-ps": {
       "flake": false,
       "locked": {
@@ -51,6 +67,7 @@
     },
     "root": {
       "inputs": {
+        "devshell": "devshell",
         "easy-ps": "easy-ps",
         "flake-utils": "flake-utils",
         "nixpkgs": "nixpkgs"
