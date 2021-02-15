@@ -32,3 +32,7 @@
 https://staticman.net/docs/generated-fields
 ** STRT try integrate with purescript
 https://github.com/JordanMartinez/learn-halogen
+
+implement this in purescript
+
+https://css-tricks.com/sticky-table-of-contents-with-scrolling-active-states/

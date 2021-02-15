@@ -4,12 +4,16 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/release-20.09";
     flake-utils.url = "github:numtide/flake-utils/master";
-    easy-ps.url = "github:justinwoo/easy-purescript-nix/master";
-    easy-ps.flake = false;
+    easy-ps = {
+      url = "github:justinwoo/easy-purescript-nix/master";
+      flake = false;
+    };
+    inputs.devshell.url = "github:numtide/devshell/master";
   };
-  outputs = { self, nixpkgs, flake-utils, easy-ps }:
+  outputs = { self, nixpkgs, flake-utils, easy-ps, devshell }:
     let
       overlay = self: super: {
+
         haskellPackages = super.haskellPackages.override {
           overrides = hself: hsuper: {
             blog = hself.callCabal2nix "blog"
@@ -20,6 +24,8 @@
           };
         };
         blog = self.haskell.lib.justStaticExecutables self.haskellPackages.blog;
+        purs = (import easy-ps { pkgs = self; }).purs;
+        spago = (import easy-ps { pkgs = self; }).spago;
       };
     in {
       inherit overlay;
@@ -29,8 +35,6 @@
           inherit system;
           overlays = [ overlay ];
         };
-        purs = (import easy-ps { inherit pkgs; }).purs;
-        spago = (import easy-ps { inherit pkgs; }).spago;
 
         cssDev = pkgs.writeShellScriptBin "cssDev"
           "ls tailwind/*.css|NODE_ENV=development entr yarn build";
@@ -40,21 +44,22 @@
         defaultApp = apps.blog;
         devShell = pkgs.haskellPackages.shellFor {
           packages = p: [ p."blog" ];
-          buildInputs = with pkgs.haskellPackages; [
-            cabal-install
-            ghcid
-            ormolu
-            hlint
-            pkgs.nixpkgs-fmt
+          buildInputs = with pkgs;
+            with pkgs.haskellPackages; [
+              cabal-install
+              ghcid
+              ormolu
+              hlint
+              nixpkgs-fmt
 
-            pkgs.nodejs
-            pkgs.yarn
-            pkgs.entr
-            cssDev
+              nodejs
+              yarn
+              entr
+              cssDev
 
-            purs
-            spago
-          ];
+              purs
+              spago
+            ];
           withHoogle = false;
         };
       });

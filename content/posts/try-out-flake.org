@@ -184,7 +184,7 @@ here is an example
       });
 }
 #+end_src
-* Example: nix-tree
+* Example 1: nix-tree
 [[https://github.com/utdemir][utdemir]] has this nice and concise [[https://github.com/utdemir/nix-tree/blob/main/flake.nix][example]] using Flakes with a Haskell project. I think it is a great starting point to understand Flakes.
 
 in ~nix-tree~, the outputs looks likes
@@ -237,3 +237,6 @@ The outputs have 2 dependencies ~nixpkgs~ and ~flake-utils~.
 First thing, it construct an overlay contains the local ~nix-tree~ as Haskell package and a derivation for the executable.
 
 Next, for ~eachDefaultSystem~, it initialize the new nixpkgs with relevant system and overlay, and construct ~defaultPackage~ and ~devShell~. ~devShell~ is Nix Flakes' version of ~nix-shell~ (without -p capability, if you want to use nix-shell -p, there is ~nix shell~). We can start a development shell by ~nix develop~ command. There is ~nix develop~ [[https://zimbatm.com/NixFlakes/#direnv-integration][integration]] with ~direnv~
+
+* Example 2: https://github.com/nix-community/todomvc-nix
+https://github.com/numtide/devshell
