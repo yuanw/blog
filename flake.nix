@@ -25,8 +25,8 @@
         };
         blog =
           final.haskell.lib.justStaticExecutables final.haskellPackages.blog;
-        purs = (import easy-ps { pkgs = final; }).purs;
-        spago = (import easy-ps { pkgs = final; }).spago;
+        purs = (prev.callPackage easy-ps { }).purs;
+        spago = (prev.callPackage easy-ps { }).spago;
       };
     in {
       inherit overlay;
