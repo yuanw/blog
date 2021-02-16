@@ -294,7 +294,7 @@ devshell (not to confuse with Nix Flakes devShell) is numtide project to customi
 
 I think it is fair to say that devshel is still early stage of development. (Although one can argue almost every thing mentioned in this article is in the early stage of development.) Lots of usages are subject to future changes. Using devshell probably requires you to read throught the source code. But I think devshell is a really exicting project.
 
-** How to use devshell
+** How to "install" devshell
 
 devshell does aim to support non-Flakes and Flakes Nix. I am only going to cover the Flakes version, the non-Flakes usage is covered at the devshell's [[https://numtide.github.io/devshell/getting_started.html][doc]].
 
@@ -308,8 +308,128 @@ First thing is to declare devshell as an input, and we need to import devshell o
         };
 #+end_src
 
-the overlay would bring ~devshell~ attribute into the pkgs. ~devshell~ has functions like ~mkShell~ and ~fromTOML~. ~fromTOML~ allows us to configure the devshell using TOML file. ~mkShell~ allows us to use Nix experssions.
+the overlay would bring ~devshell~ attribute into the pkgs. ~devshell~ has functions like [[https://github.com/numtide/devshell/blob/master/default.nix#L86][~mkShell~]] and [[https://github.com/numtide/devshell/blob/master/default.nix#L74][~fromTOML~]]. ~fromTOML~ allows us to configure the devshell using TOML file.
+#+begin_src nix
+{
+  # assuming we import devshell.overlay
+  # and there is devshell.toml file
+  devShell = pkgs.devshell.fromTOML ./devshell.toml;
+}
+#+end_src
 
-[[https://github.com/yuanw/blog/blob/4b610ac5f481a71e3dc36b3098484f7e412294ae/flake.nix#L48][My devshell config]]
+~mkShell~ allows us to use Nix experssions.
+#+begin_src nix
+{ devShell = pkgs.devshell.mkShell { name = "blog-dev-shell"; }; }
+#+end_src
 
-Here is devshell [[https://numtide.github.io/devshell/modules_schema.html][configuration options]].
+Here is [[https://github.com/yuanw/blog/blob/4b610ac5f481a71e3dc36b3098484f7e412294ae/flake.nix#L48][My devshell config]]. devshell document page has a list of [[https://numtide.github.io/devshell/modules_schema.html][configuration options]].
+
+** environments variables
+This is kind of like ~shellHook~ in the old ~mkShell~ function. We can define environment variables in our devshell.
+
+TOML version looks like
+#+begin_src toml
+[[env]]
+name = "GO111MODULE"
+value = "on" 
+#+end_src
+
+Nix version looks little verbose
+#+begin_src nix
+{
+  devshell = pkgs.devshell.mkShell {
+    env = [{
+      name = "NODE_ENV";
+      value = "development";
+    }];
+  };
+}
+#+end_src
+
+** packages
+Of course, we can define packages for our devshell
+TOML version
+#+begin_src toml
+[devshell]
+packages = [
+  "go"
+]
+#+end_src
+Nix counterpart is more flexible, imagine I have a custom ~haskellPackages~ with lots of overlays, I can reference it in ~flake.nix~ pretty easily.
+#+begin_src nix
+{
+  devshell =
+    pkgs.devshell.mkShell { packages = [ myHaskellEnv pkgs.nixpkgs-fmt ]; };
+}
+#+end_src
+
+** commands
+I think this is a cool feature in devshell. Using Nix expressions we can define some common commands for your project. 
+#+begin_src nix
+{
+  devshell = pkgs.devshell.mkShell {
+    commands = [
+      {
+        name = "cssWatch";
+        category = "css";
+        command =
+          "ls tailwind/*.css | ${pkgs.entr}/bin/entr ${pkgs.yarn}/bin/yarn build";
+      }
+      {
+        name = "siteClean";
+        category = "static site";
+        help = "clean static site files";
+        command = "${pkgs.blog}/bin/blog clean";
+      }
+      {
+        name = "yarn";
+        category = "javascript";
+        package = "yarn";
+      }
+    ];
+  };
+}
+#+end_src
+
+Everytime, you can enter devshell, all commands and a motd (message of the day) will be displayed.
+the commands are grouped by their category. ~packages~ won't show up in there.
+
+#+begin_src shell
+🔨 Welcome to blog-dev-shell
+
+[css]
+
+  cssWatch
+
+[general commands]
+
+  menu      - prints this menu
+
+[javascript]
+
+  node      - Event-driven I/O framework for the V8 JavaScript engine
+  yarn      - Fast, reliable, and secure dependency management for javascript
+
+[purescript]
+
+  purs
+  spago
+
+[static site]
+
+  siteClean - clean static site files
+  siteWatch - Watch static site files
+
+[utility]
+
+  entr      - Run arbitrary commands when files change
+#+end_src
+
+** modules
+Right now, all the build-in modules are in [[https://github.com/numtide/devshell/tree/master/extra][devshell/extra]] directory.
+- git hook
+- locale
+- c
+- go
+- rust
+One can write custom module. For example, nixpkgs  haskell-modules has a nice [[https://github.com/NixOS/nixpkgs/blob/196682b1755abab6adef36666cc045f5dbb63281/pkgs/development/haskell-modules/make-package-set.nix#L288][shellFor]] function, we can turn it into a haskell module for devshell.
