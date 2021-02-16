@@ -25,17 +25,21 @@
         };
         blog =
           final.haskell.lib.justStaticExecutables final.haskellPackages.blog;
-        purs = (import easy-ps { pkgs = final; }).purs;
-        spago = (import easy-ps { pkgs = final; }).spago;
+        purs = (final.callPackage easy-ps { }).purs;
+        spago = (final.callPackage easy-ps { }).spago;
       };
     in {
       inherit overlay;
-    } // flake-utils.lib.eachDefaultSystem (system:
+    } // flake-utils.lib.eachSystem [ "x86_64-darwin" ] (system:
       let
         pkgs = import nixpkgs {
           inherit system;
-          overlays = [ overlay ];
+          overlays = [ devshell.overlay overlay ];
         };
+
+        myHaskellEnv = (pkgs.haskellPackages.ghcWithHoogle (p:
+          with p;
+          [ blog cabal-install ormolu hlint ] ++ pkgs.blog.buildInputs));
 
         cssDev = pkgs.writeShellScriptBin "cssDev"
           "ls tailwind/*.css|NODE_ENV=development entr yarn build";
@@ -43,25 +47,74 @@
         defaultPackage = pkgs.blog;
         apps.blog = flake-utils.lib.mkApp { drv = pkgs.blog; };
         defaultApp = apps.blog;
-        devShell = pkgs.haskellPackages.shellFor {
-          packages = p: [ p."blog" ];
-          buildInputs = with pkgs;
-            with pkgs.haskellPackages; [
-              cabal-install
-              ghcid
-              ormolu
-              hlint
-              nixpkgs-fmt
-
-              nodejs
-              yarn
-              entr
-              cssDev
-
-              purs
-              spago
-            ];
-          withHoogle = false;
+        devShell = pkgs.devshell.mkShell {
+          name = "blog-dev-shell";
+          bash = {
+            extra = ''
+              export LD_INCLUDE_PATH="$DEVSHELL_DIR/include"
+              export LD_LIB_PATH="$DEVSHELL_DIR/lib"
+            '';
+            interactive = "";
+          };
+          commands = [
+            {
+              name = "siteClean";
+              category = "static site";
+              help = "clean static site files";
+              command = "${pkgs.blog}/bin/blog clean";
+            }
+            {
+              name = "siteWatch";
+              category = "static site";
+              help = "Watch static site files";
+              command = "${pkgs.blog}/bin/blog watch";
+            }
+            {
+              name = "yarn";
+              category = "javascript";
+              package = "yarn";
+            }
+            {
+              name = "node";
+              category = "javascript";
+              package = "nodejs";
+            }
+            {
+              name = "spago";
+              category = "purescript";
+              package = "spago";
+            }
+            {
+              name = "purs";
+              category = "purescript";
+              package = "purs";
+            }
+            {
+              name = "entr";
+              category = "utility";
+              package = "entr";
+            }
+          ];
+          # https://github.com/numtide/devshell/blob/master/modules/env.nix#L57
+          env = [
+            {
+              name = "HAKYLL_ENV";
+              value = "development";
+            }
+            {
+              name = "HIE_HOOGLE_DATABASE";
+              value = "${myHaskellEnv}/share/doc/hoogle/default.hoo";
+            }
+            {
+              name = "NIX_GHC";
+              value = "${myHaskellEnv}/bin/ghc";
+            }
+            {
+              name = "NIX_GHCPKG";
+              value = "${myHaskellEnv}/bin/ghc-pkg";
+            }
+          ];
+          packages = [ myHaskellEnv pkgs.nixpkgs-fmt ];
         };
       });
 }
