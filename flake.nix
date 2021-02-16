@@ -30,7 +30,7 @@
       };
     in {
       inherit overlay;
-    } // flake-utils.lib.eachSystem [ "x86_64-darwin" ] (system:
+    } // flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
           inherit system;
@@ -41,8 +41,6 @@
           with p;
           [ blog cabal-install ormolu hlint ] ++ pkgs.blog.buildInputs));
 
-        cssDev = pkgs.writeShellScriptBin "cssDev"
-          "ls tailwind/*.css|NODE_ENV=development entr yarn build";
       in rec {
         defaultPackage = pkgs.blog;
         apps.blog = flake-utils.lib.mkApp { drv = pkgs.blog; };
@@ -57,6 +55,12 @@
             interactive = "";
           };
           commands = [
+            {
+              name = "cssWatch";
+              category = "css";
+              command =
+                "ls tailwind/*.css | ${pkgs.entr}/bin/entr ${pkgs.yarn}/bin/yarn build";
+            }
             {
               name = "siteClean";
               category = "static site";
@@ -98,7 +102,7 @@
           # https://github.com/numtide/devshell/blob/master/modules/env.nix#L57
           env = [
             {
-              name = "HAKYLL_ENV";
+              name = "NODE_ENV";
               value = "development";
             }
             {

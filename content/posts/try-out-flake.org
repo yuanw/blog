@@ -1,4 +1,7 @@
-* What and Why
+* Goal
+to summarize what I found and learnt about Nix Flakes.
+
+* What is Nix Flakes and Why you might care about it
 Nix Flakes are a set of experimental features in the Nix package manager.
 
 If you are not familiar with ~Flakes~ yet, here is a list of resources on it.
@@ -12,15 +15,15 @@ If you are not familiar with ~Flakes~ yet, here is a list of resources on it.
 - [[https://www.youtube.com/watch?v=UeBX7Ide5a0][NixCon 2019 Nix Flakes - Eelco Dolstra]]
 - [[https://www.youtube.com/watch?v=QXUlhnhuRX4&list=PLgknCdxP89RcGPTjngfNR9WmBgvD_xW0l][Jörg Thalheim Nix Flakes 101]]
 
-  the rest of this article is basically a rehash these listed contents.
+  the rest of this article is basically a rehash on these listed contents.
 
 Some of goals of Flakes are
 - Standardized how we compose ~nix~ files and provide a single entry-point
-  (no more ~ci.nix~, ~shell.nix~)
+  (You don't have to have ~default.nix~, ~ci.nix~, ~shell.nix~, of course you can break down your flake file into smalled nix files).
 
 - Standardized nix packages' dependency management
-  (no more niv)
-- a set of more user friendly nix commands
+  (I think with Flakes, one doesn't need [[https://github.com/nmattia/niv][niv]] to pin down dependencies version. Although niv is great, and its commands are more user friendly than what Flakes offers right now)
+- a set of more user friendly nix commands (nix run, nix develop)
 - better reproducibility
 
 * How to install/uninstall Flakes
@@ -148,6 +151,8 @@ and we can define a default ~<attr>~.
 
 For example, it has [[https://github.com/numtide/flake-utils/blob/3982c9903e93927c2164caa727cd3f6a0e6d14cc/default.nix#L60][~eachDefaultSystem~]] function take a lambda and iterate through all the systems supported by nixpkgs an hydra. So we can reuse the same lambda to build for different systems.
 
+Using ~flake-utils.lib.eachSystem [ "x86_64-linux" ]~, you target fewer systems.
+
 ~flattenTree~ takes a tree of attributes and flatten them into a one level key-value (attribute to derivation), which is what Flakes packages outputs expects.
 
 ~flattenTree { hello = pkgs.hello; gitAndTools = pkgs.gitAndTools }~
@@ -184,7 +189,7 @@ here is an example
       });
 }
 #+end_src
-* Example 1: nix-tree
+* Case Study 1: nix-tree
 [[https://github.com/utdemir][utdemir]] has this nice and concise [[https://github.com/utdemir/nix-tree/blob/main/flake.nix][example]] using Flakes with a Haskell project. I think it is a great starting point to understand Flakes.
 
 in ~nix-tree~, the outputs looks likes
@@ -238,5 +243,68 @@ First thing, it construct an overlay contains the local ~nix-tree~ as Haskell pa
 
 Next, for ~eachDefaultSystem~, it initialize the new nixpkgs with relevant system and overlay, and construct ~defaultPackage~ and ~devShell~. ~devShell~ is Nix Flakes' version of ~nix-shell~ (without -p capability, if you want to use nix-shell -p, there is ~nix shell~). We can start a development shell by ~nix develop~ command. There is ~nix develop~ [[https://zimbatm.com/NixFlakes/#direnv-integration][integration]] with ~direnv~
 
-* Example 2: https://github.com/nix-community/todomvc-nix
-https://github.com/numtide/devshell
+* How to use non-flake dependency
+Let's say if I want to use [[https://github.com/justinwoo/easy-purescript-nix][easy-purescript-nix]] in my project. First I need to add it as inputs
+#+begin_src nix
+{
+  inputs.easy-ps = {
+    url = "github:justinwoo/easy-purescript-nix/master";
+    flake = false;
+  };
+}
+#+end_src
+
+there are more than one packages in ~easy-purescript-nix~. I can added them into my project's overlay and add them into the ~pkgs~.
+#+begin_src nix
+{
+  outputs = {self, nixpkgs, easy-ps}: {
+   overlay = final: prev: {
+
+        purs = (prev.callPackage easy-ps {}).purs;
+        spago = (prev.callPackage easy-ps {}).spago;
+} // (
+  flake-utils.lib.eachDefaultSystem  (system:
+    let
+      pkgs = import nixpkgs {
+        inherit system;
+        overlays = [self.overlay];
+      };
+        in rec {
+            devShell = {
+            packages =  [
+              pkgs.purs
+              pkgs.spago
+            ];
+          };
+        };
+   ));
+#+end_src
+and you can use [[https://github.com/edolstra/flake-compat][flake-compat]] to use Flakes project from mainline (legacy) Nix.
+
+
+* Case Study 2: [[https://github.com/nix-community/todomvc-nix][todomvc-nix]]
+todomvc-nix is a much more complex example.
+It needs to build Haskell (even ghcjs, which usually is more chanlleing to build) and rust source code.
+
+You can checkout the code yourself to see how one can override different haskell packages and using  [[https://github.com/numtide/devshell][numtide/devshell]] to customize the ~nix develop~ experience.
+
+* [[https://github.com/numtide/devshell][numtide/devshell]]
+devshell (not to confuse with Nix Flakes devShell) is numtide project to customize per-project developer environments. The marketing slogan is "like virtualenv, but for all the languages".
+
+I think it is fair to say that devshel is still early stage of development. (Although one can argue most things mentioned in this article is in the early stage of development.) Lots of usages are subject to future changes. Using devshell probably requires you to read throught the source code. But I think devshell is a really exicting project.
+
+** How to use devshell
+
+devshell does aim to support non-Flakes and Flakes nix. I am only going to cover the Flakes version, the devshell's [[https://numtide.github.io/devshell/getting_started.html][doc]].
+
+First thing is to declare devshell as an input, and we need to import devshell overlay into our instance of nixpkgs.
+#+begin_src 
+ flake-utils.lib.eachSystem [ "x86_64-darwin" ] (system:
+      let
+        pkgs = import nixpkgs {
+          inherit system;
+          overlays = [ devshell.overlay overlay ];
+        };
+#+end_src
+
+the overlay would bring ~devshell~ attribute into the pkgs. ~devshell~ have functions like ~mkShell~ and ~fromTOML~. ~fromTOML~ allows us to configure the devshell using TOML file. ~mkShell~ allows us to use Nix experssion.
