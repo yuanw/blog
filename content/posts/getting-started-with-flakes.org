@@ -1,5 +1,5 @@
-* Goal
-to summarize what I found and learnt about Nix Flakes.
+* Introduction
+I finally converted my blog project to use Nix Flakes and [[https://github.com/numtide/devshell][numtide/devshell]]. I want to write down what I learnt about Nix Flakes and devshell.
 
 * What is Nix Flakes and Why you might care about it
 Nix Flakes are a set of experimental features in the Nix package manager.
@@ -15,7 +15,7 @@ If you are not familiar with ~Flakes~ yet, here is a list of resources on it.
 - [[https://www.youtube.com/watch?v=UeBX7Ide5a0][NixCon 2019 Nix Flakes - Eelco Dolstra]]
 - [[https://www.youtube.com/watch?v=QXUlhnhuRX4&list=PLgknCdxP89RcGPTjngfNR9WmBgvD_xW0l][Jörg Thalheim Nix Flakes 101]]
 
-  the rest of this article is basically a rehash on these listed contents.
+  the most content of this article is a rehash on these listed contents.
 
 Some of goals of Flakes are
 - Standardized how we compose ~nix~ files and provide a single entry-point
@@ -254,7 +254,7 @@ Let's say if I want to use [[https://github.com/justinwoo/easy-purescript-nix][e
 }
 #+end_src
 
-there are more than one packages in ~easy-purescript-nix~. I can added them into my project's overlay and add them into the ~pkgs~.
+there are more than one packages in ~easy-purescript-nix~. I can added them into an overlay and add the overlay into the ~pkgs~.
 #+begin_src nix
 {
   outputs = {self, nixpkgs, easy-ps}: {
@@ -279,7 +279,8 @@ there are more than one packages in ~easy-purescript-nix~. I can added them into
         };
    ));
 #+end_src
-and you can use [[https://github.com/edolstra/flake-compat][flake-compat]] to use Flakes project from mainline (legacy) Nix.
+
+On the another hand, you can use [[https://github.com/edolstra/flake-compat][flake-compat]] to use Flakes project from mainline (legacy) Nix.
 
 
 * Case Study 2: [[https://github.com/nix-community/todomvc-nix][todomvc-nix]]
@@ -291,11 +292,11 @@ You can checkout the code yourself to see how one can override different haskell
 * [[https://github.com/numtide/devshell][numtide/devshell]]
 devshell (not to confuse with Nix Flakes devShell) is numtide project to customize per-project developer environments. The marketing slogan is "like virtualenv, but for all the languages".
 
-I think it is fair to say that devshel is still early stage of development. (Although one can argue most things mentioned in this article is in the early stage of development.) Lots of usages are subject to future changes. Using devshell probably requires you to read throught the source code. But I think devshell is a really exicting project.
+I think it is fair to say that devshel is still early stage of development. (Although one can argue almost every thing mentioned in this article is in the early stage of development.) Lots of usages are subject to future changes. Using devshell probably requires you to read throught the source code. But I think devshell is a really exicting project.
 
 ** How to use devshell
 
-devshell does aim to support non-Flakes and Flakes nix. I am only going to cover the Flakes version, the devshell's [[https://numtide.github.io/devshell/getting_started.html][doc]].
+devshell does aim to support non-Flakes and Flakes Nix. I am only going to cover the Flakes version, the non-Flakes usage is covered at the devshell's [[https://numtide.github.io/devshell/getting_started.html][doc]].
 
 First thing is to declare devshell as an input, and we need to import devshell overlay into our instance of nixpkgs.
 #+begin_src 
@@ -307,4 +308,8 @@ First thing is to declare devshell as an input, and we need to import devshell o
         };
 #+end_src
 
-the overlay would bring ~devshell~ attribute into the pkgs. ~devshell~ have functions like ~mkShell~ and ~fromTOML~. ~fromTOML~ allows us to configure the devshell using TOML file. ~mkShell~ allows us to use Nix experssion.
+the overlay would bring ~devshell~ attribute into the pkgs. ~devshell~ has functions like ~mkShell~ and ~fromTOML~. ~fromTOML~ allows us to configure the devshell using TOML file. ~mkShell~ allows us to use Nix experssions.
+
+[[https://github.com/yuanw/blog/blob/4b610ac5f481a71e3dc36b3098484f7e412294ae/flake.nix#L48][My devshell config]]
+
+Here is devshell [[https://numtide.github.io/devshell/modules_schema.html][configuration options]].
