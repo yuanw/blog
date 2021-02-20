@@ -1,8 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 --------------------------------------------------------------------------------
-
-import Data.Monoid (mappend)
+import Data.Functor.Identity (runIdentity)
+import qualified Data.Text                     as T
 import Hakyll
   ( Configuration (destinationDirectory, previewPort, providerDirectory),
     Context,
@@ -29,6 +29,7 @@ import Hakyll
     makeItem,
     match,
     pandocCompiler,
+    pandocCompilerWith,
     recentFirst,
     relativizeUrls,
     renderAtom,
@@ -41,7 +42,18 @@ import Hakyll
     (.||.),
   )
 import System.Environment (getArgs)
-
+import           Text.Pandoc.Options            ( WriterOptions
+                                                , writerNumberSections
+                                                , writerSyntaxMap
+                                                , writerTOCDepth
+                                                , writerTableOfContents
+                                                , writerTemplate
+                                                ) 
+import           Text.Pandoc.Templates          ( Template
+                                                , compileTemplate
+                                                )
+import Hakyll.Web.Pandoc (defaultHakyllReaderOptions)
+import Hakyll (defaultHakyllWriterOptions)
 myFeedConfiguration :: FeedConfiguration
 myFeedConfiguration =
   FeedConfiguration
@@ -60,6 +72,25 @@ config =
       providerDirectory = "content"
     }
 
+
+-- | Adds writer options for Table of Content rendering.
+withTableOfContents :: WriterOptions -> WriterOptions
+withTableOfContents options = options { writerNumberSections  = True
+                                      , writerTableOfContents = True
+                                      , writerTOCDepth        = 2
+                                      , writerTemplate        = Just tocTemplate
+                                      }
+
+tocTemplate :: Template T.Text
+tocTemplate =
+  either error id . runIdentity . compileTemplate "" $
+    T.unlines
+      [ "<div class=\"toc hidden\"><div class=\"header\">Table of Contents</div>",
+        "$toc$",
+        "</div>",
+        "$body$"
+      ]
+
 --------------------------------------------------------------------------------
 main :: IO ()
 main = do
@@ -67,7 +98,7 @@ main = do
   let previewMode = action == "watch"
       postsPattern =
         if previewMode
-          then "posts/*.org" .||. "drafts/*.org"
+          then "posts/*.org" .||. "drafts/*.org" .||. "posts/*.md"
           else "posts/*.org"
   hakyllWith config $ do
     match "images/*" $ do
@@ -102,7 +133,7 @@ main = do
     match postsPattern $ do
       route $ setExtension "html"
       compile $
-        pandocCompiler
+        pandocCompilerWith defaultHakyllReaderOptions (withTableOfContents defaultHakyllWriterOptions )
           >>= saveSnapshot "content"
           >>= loadAndApplyTemplate "templates/post.html" (postCtxWithTags tags)
           >>= loadAndApplyTemplate "templates/default.html" (postCtxWithTags tags)
