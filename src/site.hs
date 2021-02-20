@@ -54,6 +54,7 @@ import           Text.Pandoc.Templates          ( Template
                                                 )
 import Hakyll.Web.Pandoc (defaultHakyllReaderOptions)
 import Hakyll (defaultHakyllWriterOptions)
+
 myFeedConfiguration :: FeedConfiguration
 myFeedConfiguration =
   FeedConfiguration
@@ -85,7 +86,7 @@ tocTemplate :: Template T.Text
 tocTemplate =
   either error id . runIdentity . compileTemplate "" $
     T.unlines
-      [ "<div class=\"toc hidden\"><div class=\"header\">Table of Contents</div>",
+      [ "<div id=\"toc\" class=\"hidden\"><div class=\"header\">Table of Contents</div>",
         "$toc$",
         "</div>",
         "$body$"

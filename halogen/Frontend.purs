@@ -2,77 +2,62 @@ module Frontend where
 
 import Prelude
 
--- Imports for lesson
-import Halogen.HTML as HH
-
--- Imports for scaffolding
-import Control.Monad.Error.Class (throwError)
-import Data.Const (Const)
-import Data.Maybe (maybe)
-import Effect (Effect)
-import Effect.Aff (Aff)
-import Effect.Exception (error)
-import Halogen as H
-import Halogen.Aff (awaitLoad, selectElement, runHalogenAff)
-import Halogen.VDom.Driver (runUI)
-import Web.DOM.ParentNode (QuerySelector(..))
-import Web.HTML (HTMLElement)
+import Control.Monad.Maybe.Trans         (MaybeT(..), runMaybeT)
+import Effect                            (Effect)
+import Effect.Class                      (liftEffect)
+import Effect.Class.Console              (log)
+import Effect.Ref                        as Ref
+import Web.DOM.DOMTokenList              as DOMTokenList
+import Web.Event.Event                   (Event, EventType)
+import Web.Event.EventTarget             (EventTarget, addEventListener, eventListener)
+import Web.HTML.Event.EventTypes         (readystatechange)
+import Web.HTML.HTMLDocument             as HTMLDocument
+import Web.HTML                          as Web
+import Web.HTML.Window                   as Window
+import Web.DOM.Document                  as Document
+import Web.DOM.Element                   as Element
+import Web.DOM.ParentNode                as ParentNode
 
 main :: Effect Unit
-main =
-  -- We're going to run the same function below 3 times using
-  -- the 3 values provided here.
-  runStateOnlyDynamicRenderer 1 2 3 simpleIntState
+main = do
+  doc  <- map HTMLDocument.toDocument <<< Window.document =<< Web.window
+  ready doc do
+    updateClss doc
+    log "Hello from PureScript!"
+  where
+    ready doc a = do
+      a' <- doOnce a
+      onE readystatechange
+          (Document.toEventTarget doc)
+          (\_ -> a')
 
--- | Shows how to use Halogen VDOM DSL to render dynamic HTML
--- | (no event handling) based on the state value received.
-simpleIntState :: Int -> StaticHTML
-simpleIntState state =
-  HH.div_ [ HH.text $ "The state was: " <> show state ]
 
--- Scaffolded code below --
+updateClss :: Document.Document -> Effect Unit
+updateClss doc = void <<< runMaybeT $ do
+  toc <- MaybeT $ ParentNode.querySelector
+      (ParentNode.QuerySelector "#toc") docPN
+  liftEffect do
+      log "hi"
+      cList    <- Element.classList toc
+      DOMTokenList.remove cList "hidden"
+  where
+    docPN = Document.toParentNode doc
 
--- | HTML written in Purescript via Halogen's HTML DSL
--- | that is always rendered the same and does not include any event handling.
-type StaticHTML = H.ComponentHTML Unit () Aff
+doOnce
+    :: Effect Unit
+    -> Effect (Effect Unit)
+doOnce a = do
+    doneRef <- Ref.new false
+    pure do
+      done <- Ref.read doneRef
+      unless done do
+        a
+        Ref.write true doneRef
 
--- | A function that uses the `state` type's value to render HTML
--- | with no event-handling.
-type StateOnlyDynamicRenderer state = (state -> StaticHTML)
-
--- | Uses the `state` type's value to render dynamic HTML
--- | using 3 different state values.
-runStateOnlyDynamicRenderer :: forall state.
-                               state
-                            -> state
-                            -> state
-                            -> StateOnlyDynamicRenderer state
-                            -> Effect Unit
-runStateOnlyDynamicRenderer firstState secondState thirdState rendererFunction =
-  runHalogenAff do
-    awaitLoad
-
-    div1 <- selectElement' "could not find 'div#first'" $ QuerySelector "#first"
-    div2 <- selectElement' "could not find 'div#second'" $ QuerySelector "#second"
-    div3 <- selectElement' "could not find 'div#third'" $ QuerySelector "#third"
-
-    void $ runUI (stateOnlyStaticComponent firstState  rendererFunction) unit div1
-    void $ runUI (stateOnlyStaticComponent secondState rendererFunction) unit div2
-    void $ runUI (stateOnlyStaticComponent thirdState  rendererFunction) unit div3
-
--- | Wraps Halogen types cleanly, so that one gets very clear compiler errors
-stateOnlyStaticComponent :: forall state.
-                            state
-                         -> StateOnlyDynamicRenderer state
-                         -> H.Component HH.HTML (Const Void) Unit Void Aff
-stateOnlyStaticComponent state dynamicRenderer =
-  H.mkComponent
-    { initialState: const state
-    , render: dynamicRenderer
-    , eval: H.mkEval H.defaultEval
-    }
-
-selectElement' :: String -> QuerySelector -> Aff HTMLElement
-selectElement' errorMessage query = do
-  maybeElem <- selectElement query
-  maybe (throwError (error errorMessage)) pure maybeElem
+onE :: EventType
+    -> EventTarget
+    -> (Event -> Effect Unit)
+    -> Effect Unit
+onE etype targ h = do
+  listener <- eventListener h
+  addEventListener etype listener false targ
