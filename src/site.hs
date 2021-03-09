@@ -44,7 +44,6 @@ import Hakyll
 import System.Environment (getArgs)
 import           Text.Pandoc.Options            ( WriterOptions
                                                 , writerNumberSections
-                                                , writerSyntaxMap
                                                 , writerTOCDepth
                                                 , writerTableOfContents
                                                 , writerTemplate

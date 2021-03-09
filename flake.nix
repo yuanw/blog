@@ -42,7 +42,8 @@
 
         myHaskellEnv = (pkgs.haskellPackages.ghcWithHoogle (p:
           with p;
-          [ blog cabal-install ormolu hlint ] ++ pkgs.blog.buildInputs));
+          [ blog cabal-install ormolu hlint brittany ]
+          ++ pkgs.blog.buildInputs));
 
       in rec {
         defaultPackage = pkgs.blog;
