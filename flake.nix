@@ -2,17 +2,15 @@
   description = "repo for Yuan's blog";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/release-20.09";
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils/master";
     easy-ps = {
       url = "github:justinwoo/easy-purescript-nix/master";
       flake = false;
     };
-    easy-hls.url = "github:jkachmar/easy-hls-nix";
-    easy-hls.inputs.nixpkgs.follows = "nixpkgs";
     devshell.url = "github:numtide/devshell/master";
   };
-  outputs = { self, nixpkgs, flake-utils, easy-ps, devshell, easy-hls }:
+  outputs = { self, nixpkgs, flake-utils, easy-ps, devshell }:
     let
       overlay = final: prev: {
 
