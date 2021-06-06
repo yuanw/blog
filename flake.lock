@@ -16,6 +16,26 @@
         "type": "github"
       }
     },
+    "easy-hls": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1615061837,
+        "narHash": "sha256-abOU+32/jjqvVW72Rkx+wSwiBGNqe73RwI4LlJz9nOI=",
+        "owner": "jkachmar",
+        "repo": "easy-hls-nix",
+        "rev": "e4be1cd92e7103052c9e37e17210f1467016a001",
+        "type": "github"
+      },
+      "original": {
+        "owner": "jkachmar",
+        "repo": "easy-hls-nix",
+        "type": "github"
+      }
+    },
     "easy-ps": {
       "flake": false,
       "locked": {
@@ -68,6 +88,7 @@
     "root": {
       "inputs": {
         "devshell": "devshell",
+        "easy-hls": "easy-hls",
         "easy-ps": "easy-ps",
         "flake-utils": "flake-utils",
         "nixpkgs": "nixpkgs"

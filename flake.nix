@@ -8,9 +8,11 @@
       url = "github:justinwoo/easy-purescript-nix/master";
       flake = false;
     };
+    easy-hls.url = "github:jkachmar/easy-hls-nix";
+    easy-hls.inputs.nixpkgs.follows = "nixpkgs";
     devshell.url = "github:numtide/devshell/master";
   };
-  outputs = { self, nixpkgs, flake-utils, easy-ps, devshell }:
+  outputs = { self, nixpkgs, flake-utils, easy-ps, devshell, easy-hls }:
     let
       overlay = final: prev: {
 
@@ -27,6 +29,7 @@
           final.haskell.lib.justStaticExecutables final.haskellPackages.blog;
         purs = (final.callPackage easy-ps { }).purs;
         spago = (final.callPackage easy-ps { }).spago;
+        hls = (final.callPackage easy-hls { });
       };
     in {
       inherit overlay;
@@ -39,7 +42,8 @@
 
         myHaskellEnv = (pkgs.haskellPackages.ghcWithHoogle (p:
           with p;
-          [ blog cabal-install ormolu hlint ] ++ pkgs.blog.buildInputs));
+          [ blog cabal-install ormolu hlint brittany ]
+          ++ pkgs.blog.buildInputs));
 
       in rec {
         defaultPackage = pkgs.blog;
@@ -118,7 +122,7 @@
               value = "${myHaskellEnv}/bin/ghc-pkg";
             }
           ];
-          packages = [ myHaskellEnv pkgs.nixpkgs-fmt ];
+          packages = [ myHaskellEnv pkgs.hls pkgs.nixpkgs-fmt ];
         };
       });
 }
