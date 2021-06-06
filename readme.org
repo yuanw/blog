@@ -36,3 +36,4 @@ https://github.com/JordanMartinez/learn-halogen
 implement this in purescript
 
 https://css-tricks.com/sticky-table-of-contents-with-scrolling-active-states/
+https://svejcar.dev/posts/2019/11/27/table-of-contents-in-hakyll/
