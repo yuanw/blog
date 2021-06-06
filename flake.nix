@@ -27,7 +27,6 @@
           final.haskell.lib.justStaticExecutables final.haskellPackages.blog;
         purs = (final.callPackage easy-ps { }).purs;
         spago = (final.callPackage easy-ps { }).spago;
-        hls = (final.callPackage easy-hls { });
       };
     in {
       inherit overlay;
@@ -120,7 +119,7 @@
               value = "${myHaskellEnv}/bin/ghc-pkg";
             }
           ];
-          packages = [ myHaskellEnv pkgs.hls pkgs.nixpkgs-fmt ];
+          packages = [ myHaskellEnv pkgs.nixpkgs-fmt ];
         };
       });
 }
