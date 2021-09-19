@@ -1,0 +1,10 @@
+* Goal
+
+Want to share how I configure tmux using Nix. I hope it can give you some ideas about how to potentially improve your workflow
+
+* Resources
+
+- [[https://thoughtbot.com/upcase/tmux][thoughtbot tmux course by Chris Toomey]]
+- [[https://waylonwalker.com/tmux-nav-2021/][waylonwalker's blog]]
+- [[https://leanpub.com/the-tao-of-tmux/read][Tao of Tmux by Tony Narlock]]
+- [[https://pragprog.com/titles/bhtmux2/tmux-2/][Pragmatic bookshelf tmux 2 book by Brain P. Hogan]]
