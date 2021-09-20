@@ -12,9 +12,131 @@ Want to share how I configure tmux (using Nix). I hope it can give you some idea
 - [[https://pragprog.com/titles/bhtmux2/tmux-2/][Pragmatic bookshelf tmux 2 book by Brain P. Hogan]]
 
 
-* integrate with ~z~
+* Two new-lish features
+
+
+** ~display-popup~
+
+#+BEGIN_CENTER
+display-popup [-BCE] [-c target-client] [-d start-directory] [-h
+             height] [-t target-pane] [-w width] [-x position] [-y
+             position] [shell-command]
+                   (alias: popup)
+             Display a popup running shell-command on target-client.  A
+             popup is a rectangular box drawn over the top of any panes.
+             Panes are not updated while a popup is present.
+
+             -E closes the popup automatically when shell-command exits.
+             Two -E closes the popup only if shell-command exited with
+             success.
+
+             -x and -y give the position of the popup, they have the
+             same meaning as for the display-menu command.  -w and -h
+             give the width and height - both may be a percentage
+             (followed by ‘%’).  If omitted, half of the terminal size
+             is used.  -B does not surround the popup by a border.
+
+             The -C flag closes any popup on the client .
+#+END_CENTER
+
+** ~display-menu~
+
+#+BEGIN_CENTER
+     display-menu [-O] [-c target-client] [-t target-pane] [-T title]
+             [-x position] [-y position] name key command ...
+                   (alias: menu)
+             Display a menu on target-client.  target-pane gives the
+             target for any commands run from the menu.
+
+             A menu is passed as a series of arguments: first the menu
+             item name, second the key shortcut (or empty for none) and
+             third the command to run when the menu item is chosen.  The
+             name and command are formats, see the FORMATS and STYLES
+             sections.  If the name begins with a hyphen (-), then the
+             item is disabled (shown dim) and may not be chosen.  The
+             name may be empty for a separator line, in which case both
+             the key and command should be omitted.
+
+             -T is a format for the menu title (see FORMATS).
+
+             -x and -y give the position of the menu.  Both may be a row
+             or column number, or one of the following special values:
+
+                   Value    Flag    Meaning
+                   C        Both    The centre of the terminal
+                   R        -x      The right side of the terminal
+                   P        Both    The bottom left of the pane
+                   M        Both    The mouse position
+                   W        Both    The window position on the status
+                                    line
+                   S        -y      The line above or below the status
+                                    line
+
+             Or a format, which is expanded including the following
+             additional variables:
+
+                   Variable name                 Replaced with
+                   popup_centre_x                Centered in the client
+                   popup_centre_y                Centered in the client
+                   popup_height                  Height of menu or popup
+                   popup_mouse_bottom            Bottom of at the mouse
+                   popup_mouse_centre_x          Horizontal centre at
+                                                 the mouse
+                   popup_mouse_centre_y          Vertical centre at the
+                                                 mouse
+                   popup_mouse_top               Top at the mouse
+                   popup_mouse_x                 Mouse X position
+                   popup_mouse_y                 Mouse Y position
+                   popup_pane_bottom             Bottom of the pane
+                   popup_pane_left               Left of the pane
+                   popup_pane_right              Right of the pane
+                   popup_pane_top                Top of the pane
+                   popup_status_line_y           Above or below the
+                                                 status line
+                   popup_width                   Width of menu or popup
+                   popup_window_status_line_x    At the window position
+                                                 in status line
+                   popup_window_status_line_y    At the status line
+                                                 showing the window
+
+             Each menu consists of items followed by a key shortcut
+             shown in brackets.  If the menu is too large to fit on the
+             terminal, it is not displayed.  Pressing the key shortcut
+             chooses the corresponding item.  If the mouse is enabled
+             and the menu is opened from a mouse key binding, releasing
+             the mouse button with an item selected chooses that item
+             and releasing the mouse button without an item selected
+             closes the menu.  -O changes this behaviour so that the
+             menu does not close when the mouse button is released
+             without an item selected the menu is not closed and a mouse
+             button must be clicked to choose an item.
+
+             The following keys are also available:
+
+                   Key    Function
+                   Enter  Choose selected item
+                   Up     Select previous item
+                   Down   Select next item
+                   q      Exit menu
+#+END_CENTER
+* Mouse or no mouse
+maybe you think the point of tmux is to do mouse-free workflow, to enable mouse in tmux
+
+* oh-my-zsh tmux plugin
+
+* integrate with ~z~ like tool to autojump and start a new tmux session
 #+begin_src shell
 function zt {
     z $1 && tat
 }
 #+end_src
+
+or
+
+#+begin_src shell
+function zt {
+    z $1 && td --start
+}
+#+end_src
+
+~zt~ cannot jump back to an existing session
