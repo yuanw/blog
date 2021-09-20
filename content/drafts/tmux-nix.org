@@ -124,6 +124,8 @@ maybe you think the point of tmux is to do mouse-free workflow, to enable mouse 
 
 * oh-my-zsh tmux plugin
 
+I am using ~zsh~ and ~oh-my-zsh~, it has a [[https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/tmux/tmux.plugin.zsh][tmux]] plugin.
+
 * integrate with ~z~ like tool to autojump and start a new tmux session
 #+begin_src shell
 function zt {
@@ -140,3 +142,5 @@ function zt {
 #+end_src
 
 ~zt~ cannot jump back to an existing session
+
+* put everything in one nix module
