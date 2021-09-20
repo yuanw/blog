@@ -22,7 +22,7 @@ main :: Effect Unit
 main = do
   doc  <- map HTMLDocument.toDocument <<< Window.document =<< Web.window
   ready doc do
-    updateClss doc
+    -- updateClss doc
     log "Hello from PureScript!"
   where
     ready doc a = do
