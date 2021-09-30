@@ -19,6 +19,10 @@ Want to share how I configure tmux (using Nix). I hope it can give you some idea
 * Mouse or no mouse
 maybe you think the point of tmux is to do mouse-free workflow, to enable mouse in tmux
 
+
+* combining `zfz`
+
+
 * oh-my-zsh tmux plugin
 
 I am using ~zsh~ and ~oh-my-zsh~, it has a [[https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/tmux/tmux.plugin.zsh][tmux]] plugin.
