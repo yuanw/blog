@@ -1,20 +1,37 @@
-* Goal
-
-Want to share how I configure tmux (using Nix). I hope it can give you some ideas about how to potentially improve your workflow
 
 
+* TL;DR
+I throw all my tmux configuration (along with some basic alacritty and starship configuration) into a [[https://github.com/yuanw/nix-home/blob/master/modules/terminal/default.nix][nix module]].
+I really enjoy using it so far. I hope it can give you some ideas about how to potentially improve your workflow
 
-* Aspirations
+* Longer version
 
-- [[https://thoughtbot.com/upcase/tmux][thoughtbot tmux course by Chris Toomey]]
-- [[https://waylonwalker.com/tmux-nav-2021/][waylonwalker's blog]]
+Before using Nix, I had very limited experience with Tmux. I think I only used once when I ssh into some ec2 box for doing mutlipy long running jobs.
+After adpating Nix, I started to try out Alacirtty (I was having a hard time to get Kitty build on MacOS with Nix), I really like Alacirtty, but it doesn't support tabs or split, the community recommends
+using window manager or terminal multiplexer. The idea didn't bother me too much. (I brought a [[https://pragprog.com/titles/bhtmux2/tmux-2/][tmux 2]] book long before that, never read it), I thought to myself: maybe this is a good oppurity to learn tmux. So I skip through the book, and set up tmux with basic configuration using nix home manager, and back to everyday work. I didn't leverage tmux too much, and I often feel like I should spend some more time to tweak my configuration, so it suits my use case better. One day I came across [[https://waylonwalker.com/tmux-nav-2021/][waylonwalker's blog]], which introduce Chirs Toomy's thoughtbot course on tmux to me. These materials really give me lots of ideas, and after some embarrassing long hours, I finally manage to put all my tmux configuration into a single nix module.
 
-* Chirs Toomey course is great! but beware it is little bit outdated
+
+ Here are some lessons and tricks I learned:
 
 
-** ~display-popup~
+** give ~display-popup~ and ~display-menu~ a try
 
-** ~display-menu~
+Most of tmux material I came cross are little bit of dated. The latest version of tmux at the moment of writing is 3.2a.
+I think "new" (I am not sure how new are they) commands like ~display-popup~ and ~display-menu~ are really cool. If you are using tmux, and not aware of them, I think you should give them a try. They might helps you to improve your workflow. waylonwalker's blog has some cool ideas on how to use ~display-popup~.
+There is an example how I use ~display-menu~ and ~display-popup~
+
+Basically ~diplay-menu~ allow you to display a menu on a specific position with a title. You choose items from Menu using arrow keys or shortcut, usually item is tmux command. You can optionally add an visual divdior between items.
+
+#+begin_src
+bind-key Tab display-menu -T "#[align=centre]Sessions" "Switch" . 'choose-session -Zw' Last l "switch-client -l" ${tmuxMenuSeperator} \
+              "Open Main Workspace" m "display-popup -E \" td ${cfg.mainWorkspaceDir} \"" "Open Sec Workspace" s "display-popup -E \" td ${cfg.secondaryWorkspaceDir} \""   ${tmuxMenuSeperator} \
+              "Kill Current Session" k "run-shell 'tmux switch-client -n \; tmux kill-session -t #{session_name}'"  "Kill Other Sessions" o "display-popup -E \"tkill \"" ${tmuxMenuSeperator} \
+              Random r "run-shell 'tat random'" Emacs e "run-shell 'temacs'" ${tmuxMenuSeperator} \
+              Exit q detach"
+#+end_src
+
+
+
 
 * Mouse or no mouse
 maybe you think the point of tmux is to do mouse-free workflow, to enable mouse in tmux
@@ -44,8 +61,3 @@ function zt {
 
 ~zt~ cannot jump back to an existing session
 
-* Put (almost) everything in one nix module
-* Other Reference
-- [[https://leanpub.com/the-tao-of-tmux/read][Tao of Tmux by Tony Narlock]]
-- [[https://pragprog.com/titles/bhtmux2/tmux-2/][Pragmatic bookshelf tmux 2 book by Brain P. Hogan]]
-- [[https://superuser.com/questions/1105090/move-a-tmux-pane-to-another-session][SO: move pane to another session]]
