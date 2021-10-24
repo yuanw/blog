@@ -14,7 +14,7 @@ using window manager or terminal multiplexer. The idea didn't bother me too much
  Here are some lessons and tricks I learned:
 
 
-** give ~display-popup~ and ~display-menu~ a try
+* give ~display-popup~ and ~display-menu~ a try
 
 Most of tmux material I came cross are little bit of dated. The latest version of tmux at the moment of writing is 3.2a.
 I think "new" (I am not sure how new are they) commands like ~display-popup~ and ~display-menu~ are really cool. If you are using tmux, and not aware of them, I think you should give them a try. They might helps you to improve your workflow. waylonwalker's blog has some cool ideas on how to use ~display-popup~.
@@ -31,7 +31,7 @@ bind-key Tab display-menu -T "#[align=centre]Sessions" "Switch" . 'choose-sessio
 #+end_src
 
 
-
+* Have visual indicator on tmux prefix press
 
 * Mouse or no mouse
 maybe you think the point of tmux is to do mouse-free workflow, to enable mouse in tmux
