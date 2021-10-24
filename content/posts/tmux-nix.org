@@ -14,13 +14,13 @@ using window manager or terminal multiplexer. The idea didn't bother me too much
  Here are some lessons and tricks I learned:
 
 
-* give ~display-popup~ and ~display-menu~ a try
+* ~display-popup~ and ~display-menu~
 
 Most of tmux material I came cross are little bit of dated. The latest version of tmux at the moment of writing is 3.2a.
 I think "new" (I am not sure how new are they) commands like ~display-popup~ and ~display-menu~ are really cool. If you are using tmux, and not aware of them, I think you should give them a try. They might helps you to improve your workflow. waylonwalker's blog has some cool ideas on how to use ~display-popup~.
 There is an example how I use ~display-menu~ and ~display-popup~
 
-Basically ~diplay-menu~ allow you to display a menu on a specific position with a title. You choose items from Menu using arrow keys or shortcut, usually item is tmux command. You can optionally add an visual divdior between items.
+Basically ~diplay-menu~ allow you to display a menu on a specific position with a title. You choose items from Menu using arrow keys or shortcut, usually item is tmux command. You can optionally add an visual divider between items.
 
 #+begin_src
 bind-key Tab display-menu -T "#[align=centre]Sessions" "Switch" . 'choose-session -Zw' Last l "switch-client -l" ${tmuxMenuSeperator} \
@@ -31,33 +31,24 @@ bind-key Tab display-menu -T "#[align=centre]Sessions" "Switch" . 'choose-sessio
 #+end_src
 
 
-* Have visual indicator on tmux prefix press
+[[../images/tmux-menu.png]]
+
+* Have a visual cue on tmux prefix press
+
+You might want to hit whether you currently press tmux prefix key or not. I found this nice [[https://stackoverflow.com/questions/12003726/give-a-hint-when-press-prefix-key-in-tmux][solution]]
+
+Without press prefix
+[[../images/tmux-prefix-before.png]]
+
+with prefix press
+[[../images/tmux-prefix-after.png]]
 
 * Mouse or no mouse
-maybe you think the point of tmux is to do mouse-free workflow, to enable mouse in tmux
+Maybe you think the point of tmux is to do mouse-free workflow, to enable mouse in tmux might seems wrong. But there are certain tasks like resizing panel are easier with Mouse. You can even set a command to toggle enabling mouse.
 
-
-* combining `zfz`
-
-
-* oh-my-zsh tmux plugin
+* Use oh-my-zsh tmux plugin to start tmux automatically
 
 I am using ~zsh~ and ~oh-my-zsh~, it has a [[https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/tmux/tmux.plugin.zsh][tmux]] plugin.
 
-* integrate with ~z~ like tool to autojump and start a new tmux session
-#+begin_src shell
-function zt {
-    z $1 && tat
-}
-#+end_src
-
-or
-
-#+begin_src shell
-function zt {
-    z $1 && td --start
-}
-#+end_src
-
-~zt~ cannot jump back to an existing session
-
+* A single nix module
+Nix module allows us to group all tmux related configurations (bash script, zsh and tmux) into a single place.
