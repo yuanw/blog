@@ -5,13 +5,14 @@ You can edit this file as you like.
 { name = "my-project"
 , dependencies =
     [ "console"
-    , "css"
     , "effect"
-    , "halogen"
-    , "halogen-css"
     , "psci-support"
-    , "random"
-    , "run"
+    , "prelude"
+    , "refs"
+    , "transformers"
+    , "web-dom"
+    , "web-events"
+    , "web-html"
     ]
 , packages = ./packages.dhall
 , sources = ["halogen/**/*.purs" ]

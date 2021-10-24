@@ -15,10 +15,7 @@
 ** How to compile css
 ~yarn run build~
 ** How to compile js
-~spago bundle-app -m StaticHTML.StaticHTML -t content/js/static-html.js~
-* Known Issues
-** [[https://github.com/nix-community/nix-direnv#manually-re-triggering-evaluation][Manually re-triggering evaluation]]
-~$ touch .envrc~
+~spago bundle-app -m Frontend -t content/js/static-html.js~ or ~buildJs~
 
 * Some sites built by Hakyll
 - https://github.com/abhin4v/abhin4v.github.io/tree/source
