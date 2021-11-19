@@ -36,7 +36,7 @@
 
         myHaskellEnv = (pkgs.haskellPackages.ghcWithHoogle (p:
           with p;
-          [ blog cabal-install ormolu hlint brittany ]
+          [ blog cabal-install ormolu hlint hpack brittany ]
           ++ pkgs.blog.buildInputs));
 
       in  {

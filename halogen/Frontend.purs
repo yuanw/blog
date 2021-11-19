@@ -22,7 +22,7 @@ main :: Effect Unit
 main = do
   doc  <- map HTMLDocument.toDocument <<< Window.document =<< Web.window
   ready doc do
-    -- updateClss doc
+    updateClss doc
     log "Hello from PureScript!"
   where
     ready doc a = do
@@ -38,8 +38,8 @@ updateClss doc = void <<< runMaybeT $ do
       (ParentNode.QuerySelector "#toc") docPN
   liftEffect do
       log "found toc"
-      cList    <- Element.classList toc
-      DOMTokenList.remove cList "hidden"
+      -- cList    <- Element.classList toc
+      -- DOMTokenList.remove cList "hidden"
   where
     docPN = Document.toParentNode doc
 
