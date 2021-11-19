@@ -19,7 +19,7 @@ If you are not familiar with ~Flakes~ yet, here is a list of resources on it.
 
 Some of goals of Flakes are
 - Standardized how we compose ~nix~ files and provide a single entry-point
-  (You don't have to have ~default.nix~, ~ci.nix~, ~shell.nix~, of course you can break down your flake file into smalled nix files).
+  (You don't have to have ~default.nix~, ~ci.nix~, ~shell.nix~, of course you can break down your flake file into smaller nix files).
 
 - Standardized nix packages' dependency management
   (I think with Flakes, one doesn't need [[https://github.com/nmattia/niv][niv]] to pin down dependencies version. Although niv is great, and its commands are more user friendly than what Flakes offers right now)

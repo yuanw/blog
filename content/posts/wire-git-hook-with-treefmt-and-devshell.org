@@ -1,0 +1,29 @@
+* Background
+
+I was looking for a way to integrate [[https://github.com/cachix/pre-commit-hooks.nix][pre-commit-hooks.nix]] and [[https://github.com/numtide/devshell/][numtide/devshell]], I came across this [[https://github.com/numtide/devshell/issues/19][github issue]]. It seems zimbatm added ~git.hooks~ extra module to support git hook integration in devshell. So I decide to give a try.
+
+
+* Code
+I am configuring my devshell using nix, rather than toml file.
+
+I think for toml version, you should just do
+
+~devshell.toml~
+#+begin_src
+imports = ["git/hooks"]
+git.hooks.enable = true
+git.hooks.pre-comment = "treefmt"
+#+end_src
+
+assuming you already added devshell overlay, we need to import git extra module, and enable ~git.hooks~ and add script for the hook we want to use. Here i am using [[https://github.com/numtide/treefmt][numtide/treefmt.]]
+
+#+begin_src nix
+devShell = pkgs.devshell.mkShell {
+          imports = [ (pkgs.devshell.extraModulesDir + "/git/hooks.nix") ];
+          git.hooks.enable = true;
+          git.hooks.pre-commit.text = "${pkgs.treefmt}/bin/treefmt";
+}
+#+end_src
+
+assuming you have a ~treefmt.toml~ in your project root directory, you should be to ready to go
+
