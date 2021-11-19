@@ -11,24 +11,24 @@
     devshell.url = "github:numtide/devshell/master";
   };
   outputs = { self, nixpkgs, flake-utils, easy-ps, devshell }:
-     flake-utils.lib.eachDefaultSystem (system:
+    flake-utils.lib.eachDefaultSystem (system:
       let
-      overlay = final: prev: {
+        overlay = final: prev: {
 
-        haskellPackages = prev.haskellPackages.override {
-          overrides = hself: hsuper: {
-            blog = hself.callCabal2nix "blog"
-              (final.nix-gitignore.gitignoreSourcePure [
-                ./.gitignore
+          haskellPackages = prev.haskellPackages.override {
+            overrides = hself: hsuper: {
+              blog = hself.callCabal2nix "blog"
+                (final.nix-gitignore.gitignoreSourcePure [
+                  ./.gitignore
 
-              ] ./src) { };
+                ] ./src) { };
+            };
           };
+          blog =
+            final.haskell.lib.justStaticExecutables final.haskellPackages.blog;
+          purs = (final.callPackage easy-ps { }).purs;
+          spago = (final.callPackage easy-ps { }).spago;
         };
-        blog =
-          final.haskell.lib.justStaticExecutables final.haskellPackages.blog;
-        purs = (final.callPackage easy-ps { }).purs;
-        spago = (final.callPackage easy-ps { }).spago;
-      };
         pkgs = import nixpkgs {
           inherit system;
           overlays = [ devshell.overlay overlay ];
