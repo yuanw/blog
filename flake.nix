@@ -39,10 +39,9 @@
           [ blog cabal-install ormolu hlint brittany ]
           ++ pkgs.blog.buildInputs));
 
-      in rec {
+      in  {
         defaultPackage = pkgs.blog;
         apps.blog = flake-utils.lib.mkApp { drv = pkgs.blog; };
-        defaultApp = apps.blog;
         devShell = pkgs.devshell.mkShell {
           name = "blog-dev-shell";
           bash = {
