@@ -693,7 +693,10 @@ var PS = {};
                   return $1(Web_HTML_Window.document($2));
               };
           })())(Web_HTML.window)();
-          return ready(doc)(updateClss(doc))();
+          return ready(doc)(function __do() {
+              Effect_Class_Console.log(Effect_Class.monadEffectEffect)("hello from purescript")();
+              return updateClss(doc)();
+          })();
       };
   })();
   exports["main"] = main;

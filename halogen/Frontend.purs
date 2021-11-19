@@ -22,6 +22,7 @@ main :: Effect Unit
 main = do
   doc  <- map HTMLDocument.toDocument <<< Window.document =<< Web.window
   ready doc do
+    log "hello from purescript"
     updateClss doc
   where
     ready doc a = do
@@ -39,6 +40,7 @@ updateClss doc = void <<< runMaybeT $ do
       log "found toc"
       -- cList    <- Element.classList toc
       -- DOMTokenList.remove cList "hidden"
+      -- log "remove hidden class"
   where
     docPN = Document.toParentNode doc
 
