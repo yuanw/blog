@@ -11,7 +11,8 @@
     devshell.url = "github:numtide/devshell/master";
   };
   outputs = { self, nixpkgs, flake-utils, easy-ps, devshell }:
-    let
+     flake-utils.lib.eachDefaultSystem (system:
+      let
       overlay = final: prev: {
 
         haskellPackages = prev.haskellPackages.override {
@@ -28,10 +29,6 @@
         purs = (final.callPackage easy-ps { }).purs;
         spago = (final.callPackage easy-ps { }).spago;
       };
-    in {
-      inherit overlay;
-    } // flake-utils.lib.eachDefaultSystem (system:
-      let
         pkgs = import nixpkgs {
           inherit system;
           overlays = [ devshell.overlay overlay ];
@@ -126,7 +123,7 @@
               value = "${myHaskellEnv}/bin/ghc-pkg";
             }
           ];
-          packages = [ myHaskellEnv pkgs.nixpkgs-fmt ];
+          packages = [ myHaskellEnv pkgs.nixfmt pkgs.treefmt ];
         };
       });
 }
