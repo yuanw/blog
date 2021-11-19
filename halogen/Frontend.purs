@@ -23,7 +23,6 @@ main = do
   doc  <- map HTMLDocument.toDocument <<< Window.document =<< Web.window
   ready doc do
     updateClss doc
-    log "Hello from PureScript!"
   where
     ready doc a = do
       a' <- doOnce a

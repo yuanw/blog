@@ -100,7 +100,7 @@
               category = "purescript";
               help = "Build js from purescript";
               command =
-                "spago bundle-app -m Frontend -t content/js/static-html.js";
+                "spago bundle-app -m Frontend -t content/js/frontend.js";
             }
           ];
           # https://github.com/numtide/devshell/blob/master/modules/env.nix#L57
