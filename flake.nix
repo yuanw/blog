@@ -39,11 +39,14 @@
           [ blog cabal-install ormolu hlint hpack brittany ]
           ++ pkgs.blog.buildInputs));
 
-      in  {
+      in {
         defaultPackage = pkgs.blog;
         apps.blog = flake-utils.lib.mkApp { drv = pkgs.blog; };
         devShell = pkgs.devshell.mkShell {
           name = "blog-dev-shell";
+          imports = [ (pkgs.devshell.extraModulesDir + "/git/hooks.nix") ];
+          git.hooks.enable = true;
+          git.hooks.pre-commit.text = "${pkgs.treefmt}/bin/treefmt";
           bash = {
             extra = ''
               export LD_INCLUDE_PATH="$DEVSHELL_DIR/include"
