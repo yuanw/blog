@@ -20,7 +20,7 @@ jobs:
         signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
         # Only needed for private caches
         #authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-    - run: GITHUB_PATH= nix flake update --recreate-lock-file
+    - run: GITHUB_PATH= nix flake update
     - run: nix build 
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v3.11.0
