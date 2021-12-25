@@ -431,15 +431,18 @@ tr.even {
   --tw-bg-opacity: 1;
   background-color: rgb(243 244 246 / var(--tw-bg-opacity));
 }
+.static {
+  position: static;
+}
 .my-6 {
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
 }
-.mt-2 {
-  margin-top: 0.5rem;
-}
 .mt-4 {
   margin-top: 1rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
 }
 .inline-block {
   display: inline-block;
@@ -449,6 +452,12 @@ tr.even {
 }
 .flex {
   display: flex;
+}
+.contents {
+  display: contents;
+}
+.hidden {
+  display: none;
 }
 .h-8 {
   height: 2rem;
@@ -527,10 +536,6 @@ tr.even {
 .font-semibold {
   font-weight: 600;
 }
-.text-gray-600 {
-  --tw-text-opacity: 1;
-  color: rgb(75 85 99 / var(--tw-text-opacity));
-}
 .text-gray-900 {
   --tw-text-opacity: 1;
   color: rgb(17 24 39 / var(--tw-text-opacity));
@@ -538,6 +543,10 @@ tr.even {
 .text-gray-800 {
   --tw-text-opacity: 1;
   color: rgb(31 41 55 / var(--tw-text-opacity));
+}
+.text-gray-600 {
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
 }
 .text-indigo-500 {
   --tw-text-opacity: 1;

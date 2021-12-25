@@ -75,7 +75,7 @@ config =
 
 -- | Adds writer options for Table of Content rendering.
 withTableOfContents :: WriterOptions -> WriterOptions
-withTableOfContents options = options { writerNumberSections  = True
+withTableOfContents options = options { writerNumberSections  = False
                                       , writerTableOfContents = True
                                       , writerTOCDepth        = 2
                                       , writerTemplate        = Just tocTemplate
