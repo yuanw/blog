@@ -14,33 +14,43 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         overlay = final: prev: {
-
           haskellPackages = prev.haskellPackages.override {
             overrides = hself: hsuper: {
               blog = hself.callCabal2nix "blog"
-                (final.nix-gitignore.gitignoreSourcePure [
-                  ./.gitignore
-
-                ] ./src) { };
+                (final.nix-gitignore.gitignoreSourcePure [ ./.gitignore ] ./src)
+                { };
             };
           };
           blog =
             final.haskell.lib.justStaticExecutables final.haskellPackages.blog;
           purs = (final.callPackage easy-ps { }).purs;
           spago = (final.callPackage easy-ps { }).spago;
+          blogContent = pkgs.stdenv.mkDerivation  {
+          pname = "blog-content";
+          version = "0.0.1";
+          src = ./.;
+          installPhase = ''
+            ${pkgs.blog}/bin/blog rebuild
+
+            ${pkgs.nodePackages.tailwindcss}/bin/tailwindcss --input tailwind/tailwind.css -m -o dist/css/tailwind.css
+            mkdir $out
+            mv dist/* $out
+          '';
+        };
+
         };
         pkgs = import nixpkgs {
           inherit system;
           overlays = [ devshell.overlay overlay ];
         };
-
         myHaskellEnv = (pkgs.haskellPackages.ghcWithHoogle (p:
           with p;
-          [ blog cabal-install ormolu hlint hpack brittany ]
+          [ blog cabal-install ormolu hlint hpack brittany warp ]
           ++ pkgs.blog.buildInputs));
 
       in {
-        defaultPackage = pkgs.blog;
+        defaultPackage = pkgs.blogContent;
+        packages = flake-utils.lib.flattenTree { blogContent = pkgs.blogContent; };
         apps.blog = flake-utils.lib.mkApp { drv = pkgs.blog; };
         devShell = pkgs.devshell.mkShell {
           name = "blog-dev-shell";
@@ -60,6 +70,13 @@
               category = "css";
               command =
                 "ls tailwind/*.css | ${pkgs.entr}/bin/entr ${pkgs.yarn}/bin/yarn build";
+            }
+            {
+              name = "preview";
+              category = "static site";
+              help = "preview static site files";
+              command =
+                "warp -d ${pkgs.blogContent}";
             }
             {
               name = "siteClean";
@@ -125,7 +142,12 @@
               value = "${myHaskellEnv}/bin/ghc-pkg";
             }
           ];
-          packages = [ myHaskellEnv pkgs.nixfmt pkgs.treefmt ];
+          packages = [
+            myHaskellEnv
+            pkgs.nixfmt
+            pkgs.nodePackages.tailwindcss
+            pkgs.treefmt
+          ];
         };
       });
 }

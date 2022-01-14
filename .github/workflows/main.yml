@@ -21,12 +21,12 @@ jobs:
         signingKey: ${{ secrets.CACHIX_SIGNING_KEY }}
     - name: Nix build
       run: |
-        nix run . -- build
+        nix build
     - name: Archive Production Artifact
       uses: actions/upload-artifact@master
       with:
           name: dist
-          path: dist
+          path: .
 
   deploy:
     name: Deploy
