@@ -24,7 +24,8 @@
                   # Need to set $LANG for Unicode support in a pure environment
                   postInstall = (old.postInstall or "") + ''
                     wrapProgram "$out/bin/blog" \
-                      --set LANG "en_US.UTF-8"
+                      --set LANG "en_US.UTF-8" \
+                      --set LOCALE_ARCHIVE "${prev.glibcLocales}/lib/locale/locale-archive"
                   '';
                 });
             };
