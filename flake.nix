@@ -16,27 +16,35 @@
         overlay = final: prev: {
           haskellPackages = prev.haskellPackages.override {
             overrides = hself: hsuper: {
-              blog = hself.callCabal2nix "blog"
+              blog = (hself.callCabal2nix "blog"
                 (final.nix-gitignore.gitignoreSourcePure [ ./.gitignore ] ./src)
-                { };
+                { }).overrideAttrs (old: {
+                  nativeBuildInputs = (old.nativeBuildInputs or [ ])
+                    ++ [ prev.makeWrapper ];
+                  # Need to set $LANG for Unicode support in a pure environment
+                  postInstall = (old.postInstall or "") + ''
+                    wrapProgram "$out/bin/blog" \
+                      --set LANG "en_US.UTF-8"
+                  '';
+                });
             };
           };
           blog =
             final.haskell.lib.justStaticExecutables final.haskellPackages.blog;
           purs = (final.callPackage easy-ps { }).purs;
           spago = (final.callPackage easy-ps { }).spago;
-          blogContent = pkgs.stdenv.mkDerivation  {
-          pname = "blog-content";
-          version = "0.0.2";
-          src = ./.;
-          installPhase = ''
-            ${pkgs.blog}/bin/blog rebuild
+          blogContent = pkgs.stdenv.mkDerivation {
+            pname = "blog-content";
+            version = "0.0.2";
+            src = ./.;
+            installPhase = ''
+              ${pkgs.blog}/bin/blog rebuild
 
-            ${pkgs.nodePackages.tailwindcss}/bin/tailwindcss --input tailwind/tailwind.css -m -o dist/css/tailwind.css
-            mkdir $out
-            mv dist/* $out
-          '';
-        };
+              ${pkgs.nodePackages.tailwindcss}/bin/tailwindcss --input tailwind/tailwind.css -m -o dist/css/tailwind.css
+              mkdir $out
+              mv dist/* $out
+            '';
+          };
 
         };
         pkgs = import nixpkgs {
@@ -50,7 +58,8 @@
 
       in {
         defaultPackage = pkgs.blogContent;
-        packages = flake-utils.lib.flattenTree { blogContent = pkgs.blogContent; };
+        packages =
+          flake-utils.lib.flattenTree { blogContent = pkgs.blogContent; };
         apps.blog = flake-utils.lib.mkApp { drv = pkgs.blog; };
         devShell = pkgs.devshell.mkShell {
           name = "blog-dev-shell";
@@ -75,8 +84,7 @@
               name = "preview";
               category = "static site";
               help = "preview static site files";
-              command =
-                "warp -d ${pkgs.blogContent}";
+              command = "warp -d ${pkgs.blogContent}";
             }
             {
               name = "siteClean";
