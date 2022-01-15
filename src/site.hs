@@ -99,7 +99,7 @@ main = do
       postsPattern =
         if previewMode
           then "posts/*.org" .||. "drafts/*.org" .||. "posts/*.md"
-          else "posts/*.org"
+          else "posts/*.org" .||. "posts/*.md"
   hakyllWith config $ do
     match "images/*" $ do
       route idRoute

@@ -27,7 +27,7 @@
           spago = (final.callPackage easy-ps { }).spago;
           blogContent = pkgs.stdenv.mkDerivation  {
           pname = "blog-content";
-          version = "0.0.1";
+          version = "0.0.2";
           src = ./.;
           installPhase = ''
             ${pkgs.blog}/bin/blog rebuild
