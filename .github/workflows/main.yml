@@ -22,11 +22,12 @@ jobs:
     - name: Nix build
       run: |
         nix build
+        cp result dist
     - name: Archive Production Artifact
       uses: actions/upload-artifact@master
       with:
           name: dist
-          path: ./result
+          path: dist
 
   deploy:
     name: Deploy
