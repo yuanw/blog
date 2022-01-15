@@ -1,9 +1,9 @@
 name: CI
 
-on:
-  push:
-    branches:
-      - master
+# on:
+#   push:
+#     branches:
+#       - master
 
 jobs:
   build:
@@ -35,6 +35,7 @@ jobs:
     name: Deploy
     needs: build
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2.4.0

@@ -18,25 +18,18 @@
             overrides = hself: hsuper: {
               blog = (hself.callCabal2nix "blog"
                 (final.nix-gitignore.gitignoreSourcePure [ ./.gitignore ] ./src)
-                { }).overrideAttrs (old: {
-                  nativeBuildInputs = (old.nativeBuildInputs or [ ])
-                    ++ [ prev.makeWrapper ];
-                  # Need to set $LANG for Unicode support in a pure environment
-                  postInstall = (old.postInstall or "") + ''
-                    wrapProgram "$out/bin/blog" \
-                      --set LANG "en_US.UTF-8" \
-                      --set LOCALE_ARCHIVE "${prev.glibcLocales}/lib/locale/locale-archive"
-                  '';
-                });
+                { });
             };
           };
           blog =
             final.haskell.lib.justStaticExecutables final.haskellPackages.blog;
+
           purs = (final.callPackage easy-ps { }).purs;
           spago = (final.callPackage easy-ps { }).spago;
           blogContent = pkgs.stdenv.mkDerivation {
             pname = "blog-content";
             version = "0.0.2";
+            LC_ALL = "C.UTF-8";
             src = ./.;
             installPhase = ''
               ${pkgs.blog}/bin/blog rebuild
@@ -56,6 +49,7 @@
           with p;
           [ blog cabal-install ormolu hlint hpack brittany warp ]
           ++ pkgs.blog.buildInputs));
+
 
       in {
         defaultPackage = pkgs.blogContent;
