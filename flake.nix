@@ -29,11 +29,11 @@
           blogContent = pkgs.stdenv.mkDerivation {
             pname = "blog-content";
             version = "0.0.2";
-            LC_ALL = "C.UTF-8";
+            LANG = "en_US.UTF-8";
+            preConfigure = ''export LANG="en_US.UTF-8";'';
             src = ./.;
             installPhase = ''
               ${pkgs.blog}/bin/blog rebuild
-
               ${pkgs.nodePackages.tailwindcss}/bin/tailwindcss --input tailwind/tailwind.css -m -o dist/css/tailwind.css
               mkdir $out
               mv dist/* $out
