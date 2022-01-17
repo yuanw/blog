@@ -52,7 +52,11 @@
           '';
           buildPhase = ''
             build-spago-style ./halogen/*.purs
-            spago bundle-app --no-install --no-build -m Frontend --to $out/index.js --global-cache skip
+            spago bundle-app --no-install --no-build -m Frontend -t frontendjs --global-cache skip
+          '';
+          installPhase = ''
+            mkdir $out
+            mv frontend.js $out/
           '';
         };
         blogContent = pkgs.stdenv.mkDerivation {
@@ -63,7 +67,7 @@
           src = ./.;
           buildPhase = ''
             ${pkgs.blog}/bin/blog rebuild
-
+            cp ${frontendJs}/frontend.js dist/js/frontend.js
             ${pkgs.nodePackages.tailwindcss}/bin/tailwindcss --input tailwind/tailwind.css -m -o dist/css/tailwind.css
             mkdir $out
           '';

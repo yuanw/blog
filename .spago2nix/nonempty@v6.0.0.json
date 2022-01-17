@@ -1,1 +1,0 @@
-{"type":"Fetched","value":{"result":{"url":"https://github.com/purescript/purescript-nonempty.git","sha256":"0azk1jrpqnjf2i97lcp63wcm31c4hddklp1mfmdan27zap3zqyjm","rev":"d3e91e3d6e06e5bdcc5b2c21c8e5d0f9b946bb9e"},"package":{"version":"v6.0.0","repo":{"tag":"Remote","contents":"https://github.com/purescript/purescript-nonempty.git"},"packageName":"nonempty"}}}
