@@ -26,19 +26,6 @@
 
           purs = (final.callPackage easy-ps { }).purs;
           spago = (final.callPackage easy-ps { }).spago;
-          blogContent = pkgs.stdenv.mkDerivation {
-            pname = "blog-content";
-            version = "0.0.2";
-            LC_ALL = "C.UTF-8";
-            src = ./.;
-            installPhase = ''
-              ${pkgs.blog}/bin/blog rebuild
-
-              ${pkgs.nodePackages.tailwindcss}/bin/tailwindcss --input tailwind/tailwind.css -m -o dist/css/tailwind.css
-              mkdir $out
-              mv dist/* $out
-            '';
-          };
 
         };
         pkgs = import nixpkgs {
@@ -49,12 +36,26 @@
           with p;
           [ blog cabal-install ormolu hlint hpack brittany warp ]
           ++ pkgs.blog.buildInputs));
+        blogContent = pkgs.stdenv.mkDerivation {
+          pname = "blog-content";
+          version = "0.0.2";
+          buildInputs = [ pkgs.glibcLocales ];
+          LANG = "en_US.UTF-8";
+          src = ./.;
+          buildPhase = ''
+            ${pkgs.blog}/bin/blog rebuild
 
+            ${pkgs.nodePackages.tailwindcss}/bin/tailwindcss --input tailwind/tailwind.css -m -o dist/css/tailwind.css
+            mkdir $out
+          '';
+          installPhase = ''
+            mv dist/* $out
+          '';
+        };
 
       in {
-        defaultPackage = pkgs.blogContent;
-        packages =
-          flake-utils.lib.flattenTree { blogContent = pkgs.blogContent; };
+        defaultPackage = blogContent;
+        packages = flake-utils.lib.flattenTree { blogContent = blogContent; };
         apps.blog = flake-utils.lib.mkApp { drv = pkgs.blog; };
         devShell = pkgs.devshell.mkShell {
           name = "blog-dev-shell";
@@ -79,7 +80,7 @@
               name = "preview";
               category = "static site";
               help = "preview static site files";
-              command = "warp -d ${pkgs.blogContent}";
+              command = "warp -d ${blogContent}";
             }
             {
               name = "siteClean";
