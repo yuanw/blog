@@ -32,7 +32,6 @@ _cache/
 .spago
 bower_components
 node_modules
-
 # Generated files
 .psci
 output
