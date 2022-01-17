@@ -26,7 +26,7 @@
 
           purs = (final.callPackage easy-ps { }).purs;
           spago = (final.callPackage easy-ps { }).spago;
-
+          spago2nix = (final.callPackage easy-ps { }).spago2nix;
         };
         pkgs = import nixpkgs {
           inherit system;
@@ -36,6 +36,29 @@
           with p;
           [ blog cabal-install ormolu hlint hpack brittany warp ]
           ++ pkgs.blog.buildInputs));
+        spagoPkgs = import ./spago-packages.nix { inherit pkgs; };
+        # https://github.com/cideM/lions-backend/blob/main/client/default.nix#L40
+        frontendJs = pkgs.stdenv.mkDerivation {
+          name = "frontendJs";
+          buildInputs =
+            [ spagoPkgs.installSpagoStyle spagoPkgs.buildSpagoStyle ];
+          nativeBuildInputs = with pkgs; [ purs spago ];
+          src = ./.;
+          unpackPhase = ''
+            cp $src/spago.dhall .
+            cp $src/packages.dhall .
+            cp -r $src/halogen .
+            install-spago-style
+          '';
+          buildPhase = ''
+            build-spago-style ./halogen/*.purs
+            spago bundle-app --no-install --no-build -m Frontend -t frontend.js --global-cache skip
+          '';
+          installPhase = ''
+            mkdir $out
+            mv frontend.js $out/
+          '';
+        };
         blogContent = pkgs.stdenv.mkDerivation {
           pname = "blog-content";
           version = "0.0.2";
@@ -44,7 +67,7 @@
           src = ./.;
           buildPhase = ''
             ${pkgs.blog}/bin/blog rebuild
-
+            cp ${frontendJs}/frontend.js dist/js/frontend.js
             ${pkgs.nodePackages.tailwindcss}/bin/tailwindcss --input tailwind/tailwind.css -m -o dist/css/tailwind.css
             mkdir $out
           '';
@@ -55,7 +78,10 @@
 
       in {
         defaultPackage = blogContent;
-        packages = flake-utils.lib.flattenTree { blogContent = blogContent; };
+        packages = flake-utils.lib.flattenTree {
+          blogContent = blogContent;
+          frontendJs = frontendJs;
+        };
         apps.blog = flake-utils.lib.mkApp { drv = pkgs.blog; };
         devShell = pkgs.devshell.mkShell {
           name = "blog-dev-shell";
@@ -108,6 +134,11 @@
               name = "spago";
               category = "purescript";
               package = "spago";
+            }
+            {
+              name = "spago2nix";
+              category = "purescript";
+              package = "spago2nix";
             }
             {
               name = "purs";

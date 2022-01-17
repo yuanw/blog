@@ -30,6 +30,7 @@ _cache/
 # Dependencies
 .psci_modules
 .spago
+.spago2nix
 bower_components
 node_modules
 
