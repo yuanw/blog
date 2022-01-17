@@ -38,7 +38,7 @@ updateClss doc = void <<< runMaybeT $ do
       (ParentNode.QuerySelector "#toc") docPN
   liftEffect do
       log "found toc"
-      -- cList    <- Element.classList toc
+      cList    <- Element.classList toc
       -- DOMTokenList.remove cList "hidden"
       -- log "remove hidden class"
   where

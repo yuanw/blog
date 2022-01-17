@@ -37,13 +37,23 @@
           [ blog cabal-install ormolu hlint hpack brittany warp ]
           ++ pkgs.blog.buildInputs));
         spagoPkgs = import ./spago-packages.nix { inherit pkgs; };
+        # https://github.com/cideM/lions-backend/blob/main/client/default.nix#L40
         frontendJs = pkgs.stdenv.mkDerivation {
-          name = "halogen-dist";
+          name = "frontendJs";
+          buildInputs =
+            [ spagoPkgs.installSpagoStyle spagoPkgs.buildSpagoStyle ];
+          nativeBuildInputs = with pkgs; [ purs spago ];
           src = ./.;
+          unpackPhase = ''
+            cp $src/spago.dhall .
+            cp $src/packages.dhall .
+            cp -r $src/halogen .
+            install-spago-style
+          '';
           buildPhase = ''
-            ${pkgs.spago}/bin/spago bundle-app --no-install --no-build -m Frontend --to $out/index.js
-
-             '';
+            build-spago-style ./halogen/*.purs
+            spago bundle-app --no-install --no-build -m Frontend --to $out/index.js --global-cache skip
+          '';
         };
         blogContent = pkgs.stdenv.mkDerivation {
           pname = "blog-content";
