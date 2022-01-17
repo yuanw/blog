@@ -52,7 +52,7 @@
           '';
           buildPhase = ''
             build-spago-style ./halogen/*.purs
-            spago bundle-app --no-install --no-build -m Frontend -t frontendjs --global-cache skip
+            spago bundle-app --no-install --no-build -m Frontend -t frontend.js --global-cache skip
           '';
           installPhase = ''
             mkdir $out
