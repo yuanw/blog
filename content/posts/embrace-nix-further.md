@@ -1,7 +1,7 @@
 ---
 title: Further nixify this blog build process
-date: Feb 2, 2022
-modified: Feb 2, 2022
+date: Feb 02, 2022
+modified: Feb 02, 2022
 description: Leveraging nix to build this blog end to end
 tags: nix 
 ---
@@ -31,10 +31,48 @@ I always wanted to move the Hakyll execution, and css and javascript generation 
 # Tailwind css
 
 # Compile purescript 
+Since I have been using spago to build purescript locally, I knew I should use [spago2nix](https://github.com/justinwoo/spago2nix). Follow along the readme, I ran this issue.
+```shell
+[error] Directory "/" is not accessible. Permissions {readable = True, writable = False, executable = False, searchable = True}
+builder for '/nix/store/cv1xmms7j9mgsm08i0ydamjs00ah6yp5-my-frontend-0.1.drv' failed with exit code 1
+```
+
+After banging my head to the wall quite time, I was able to find this discourse [post](https://discourse.purescript.org/t/spago2nix-any-complete-example-to-look-at/2532/10) describles the exactly same issue, and someone shared a nix [build](https://github.com/cideM/lions-backend/blob/main/client/default.nix) very close to what I want to do.
+
+Turns out, I need to pass `--global-cache skip` to `spago`
+
+```nix
+  frontendJs = pkgs.stdenv.mkDerivation {
+          name = "frontendJs";
+          buildInputs =
+            [ spagoPkgs.installSpagoStyle spagoPkgs.buildSpagoStyle ];
+          nativeBuildInputs = with pkgs; [ purs spago ];
+          src = ./.;
+          unpackPhase = ''
+            cp $src/spago.dhall .
+            cp $src/packages.dhall .
+            cp -r $src/halogen .
+            install-spago-style
+          '';
+          buildPhase = ''
+            build-spago-style ./halogen/*.purs
+            spago bundle-app --no-install --no-build -m Frontend -t frontend.js --global-cache skip
+          '';
+          installPhase = ''
+            mkdir $out
+            mv frontend.js $out/
+          '';
+        };
+```
+
+# Glue everything together
 
 # Local development tool
 
-One notable downside, you can imagine, is the dev shell could take a while to load. 
+Two notable downsides:
+
+First, you can imagine, is the dev shell could take a while to load. 
+Second, due to how flake pure evaluation works, I need check new posts into git, for my preview command to pick them up.
 
 # Integrate with github action
 
@@ -83,10 +121,10 @@ jobs:
           path: dist
 ```
 
-Pretty nice and clean, if you ask me.
+Beside setting up nix, the step is pretty nice and clean, if you ask me.
 
 # Conclusion
 
 Beforehand, I knew I might run into some weird issues locally or in github CI. But to my surprise, I was able to quick find the solutions on the web quite fast. I guess this is how internet as its best, and make me want to share this learning experience. 
 
-Thanks for reading, hope this article helps you in some ways.  
+Thanks for reading, hope this article helps you in some ways.
