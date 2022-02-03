@@ -59,25 +59,27 @@
             mv frontend.js $out/
           '';
         };
-        mkBlogContent = {includeDraft ? false}: pkgs.stdenv.mkDerivation {
-          pname = if includeDraft then "blog-content-preview" else "blog-content";
-          version = "0.0.2";
-          buildInputs = [ pkgs.glibcLocales ];
-          LANG = "en_US.UTF-8";
-          PREVIEW = if includeDraft then "TRUE" else "FALSE";
-          src = ./.;
-          buildPhase = ''
-            ${pkgs.blog}/bin/blog rebuild
-            cp ${frontendJs}/frontend.js dist/js/frontend.js
-            ${pkgs.nodePackages.tailwindcss}/bin/tailwindcss --input tailwind/tailwind.css -m -o dist/css/tailwind.css
-            mkdir $out
-          '';
-          installPhase = ''
-            mv dist/* $out
-          '';
-        };
-        blogContent = mkBlogContent {};
-        draftContent = mkBlogContent {includeDraft = true;};
+        mkBlogContent = { includeDraft ? false }:
+          pkgs.stdenv.mkDerivation {
+            pname =
+              if includeDraft then "blog-content-preview" else "blog-content";
+            version = "0.0.2";
+            buildInputs = [ pkgs.glibcLocales ];
+            LANG = "en_US.UTF-8";
+            PREVIEW = if includeDraft then "TRUE" else "FALSE";
+            src = ./.;
+            buildPhase = ''
+              ${pkgs.blog}/bin/blog rebuild
+              cp ${frontendJs}/frontend.js dist/js/frontend.js
+              ${pkgs.nodePackages.tailwindcss}/bin/tailwindcss --input tailwind/tailwind.css -m -o dist/css/tailwind.css
+              mkdir $out
+            '';
+            installPhase = ''
+              mv dist/* $out
+            '';
+          };
+        blogContent = mkBlogContent { };
+        draftContent = mkBlogContent { includeDraft = true; };
       in {
         defaultPackage = blogContent;
         packages = flake-utils.lib.flattenTree {

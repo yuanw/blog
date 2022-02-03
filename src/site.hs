@@ -99,7 +99,7 @@ main = do
   let previewMode = fromMaybe "FALSE" includeDraft == "TRUE"
       postsPattern =
         if previewMode
-          then "posts/*.org" .||. "drafts/*.org" .||. "posts/*.md"
+          then "posts/*.org" .||. "drafts/*.org" .||. "drafts/*.md" .||.  "posts/*.md"
           else "posts/*.org" .||. "posts/*.md"
   hakyllWith config $ do
     match "images/*" $ do
