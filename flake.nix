@@ -59,11 +59,12 @@
             mv frontend.js $out/
           '';
         };
-        blogContent = pkgs.stdenv.mkDerivation {
-          pname = "blog-content";
+        mkBlogContent = {includeDraft ? false}: pkgs.stdenv.mkDerivation {
+          pname = if includeDraft then "blog-content-preview" else "blog-content";
           version = "0.0.2";
           buildInputs = [ pkgs.glibcLocales ];
           LANG = "en_US.UTF-8";
+          PREVIEW = if includeDraft then "TRUE" else "FALSE";
           src = ./.;
           buildPhase = ''
             ${pkgs.blog}/bin/blog rebuild
@@ -75,7 +76,8 @@
             mv dist/* $out
           '';
         };
-
+        blogContent = mkBlogContent {};
+        draftContent = mkBlogContent {includeDraft = true;};
       in {
         defaultPackage = blogContent;
         packages = flake-utils.lib.flattenTree {
@@ -106,7 +108,7 @@
               name = "preview";
               category = "static site";
               help = "preview static site files";
-              command = "warp -d ${blogContent}";
+              command = "warp -d ${draftContent}";
             }
             {
               name = "siteClean";

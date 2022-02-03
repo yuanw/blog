@@ -41,7 +41,8 @@ import Hakyll
     templateBodyCompiler,
     (.||.),
   )
-import System.Environment (getArgs)
+import System.Environment (lookupEnv)
+import Data.Maybe (fromMaybe)
 import           Text.Pandoc.Options            ( WriterOptions
                                                 , writerNumberSections
                                                 , writerTOCDepth
@@ -94,8 +95,8 @@ tocTemplate =
 --------------------------------------------------------------------------------
 main :: IO ()
 main = do
-  (action : _) <- getArgs
-  let previewMode = action == "watch"
+  includeDraft <- lookupEnv "PREVIEW"
+  let previewMode = fromMaybe "FALSE" includeDraft == "TRUE"
       postsPattern =
         if previewMode
           then "posts/*.org" .||. "drafts/*.org" .||. "posts/*.md"
