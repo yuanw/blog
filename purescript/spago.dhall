@@ -15,5 +15,5 @@ You can edit this file as you like.
     , "web-html"
     ]
 , packages = ./packages.dhall
-, sources = ["halogen/**/*.purs" ]
+, sources = ["src/**/*.purs" ]
 }

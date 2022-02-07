@@ -1,4 +1,7 @@
-module Frontend where
+module Frontend
+  ( main
+  )
+  where
 
 import Prelude
 
