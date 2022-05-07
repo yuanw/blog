@@ -1,5 +1,5 @@
 ---
-title: Project reactor: Mono zip with void 
+title: Project reactor - Mono zip with void 
 date: May 07, 2022
 modified: May 07, 2022
 description: How to workaround mono zip void
