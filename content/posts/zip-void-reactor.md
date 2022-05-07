@@ -1,5 +1,13 @@
-# Interesting case of Java unit type and Mono.zip
+---
+title: Project reactor: Mono zip with void 
+date: May 07, 2022
+modified: May 07, 2022
+description: How to workaround mono zip void
+tags: java, reactor 
+---
+# `Mono<Void>`
 
+In reactor, sometime we want to give certain operation return type like ~Mono<Void>~, like we don't need any information from the operation, as long as the operation succeed. In this sense, we are using `Void` as Unit type 
 
 # awkward case of Unit type in java
 
