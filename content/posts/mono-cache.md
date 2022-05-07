@@ -1,5 +1,5 @@
 ---
-title: Project reactor: Mono with Caffeine  
+title: Project reactor Mono with Caffeine  
 date: May 07, 2022
 modified: May 07, 2022
 description: How to cache your async result
