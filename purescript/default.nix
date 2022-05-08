@@ -17,11 +17,11 @@ in {
     '';
     buildPhase = ''
       build-spago-style "./src/**/*.purs"
-      spago bundle-app --no-install --no-build -m Frontend -t frontend.js --global-cache skip
+      ${pkgs.spago}/bin/spago bundle-app --no-install --main Frontend --no-build --global-cache skip
     '';
     installPhase = ''
       mkdir $out
-      mv frontend.js $out/
+      mv index.js $out/
     '';
   };
 
