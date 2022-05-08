@@ -7,7 +7,7 @@ tags: java, reactor
 ---
 # `Mono<Void>`
 
-In reactor, sometime we want to give certain operation return type like ~Mono<Void>~, like we don't need any information from the operation, as long as the operation succeed. In this sense, we are using `Void` as Unit type 
+In reactor, sometime we want to give certain operation return type like `Mono<Void>`, like we don't need any information from the operation, as long as the operation succeed. In this sense, we are using `Void` as Unit type 
 
 # awkward case of Unit type in java
 
