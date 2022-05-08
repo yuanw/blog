@@ -23,17 +23,17 @@
     "easy-ps": {
       "flake": false,
       "locked": {
-        "lastModified": 1651400038,
-        "narHash": "sha256-bwbpXSTD8Hf7tlCXfZuLfo2QivvX1ZDJ1PijXXRTo3Q=",
+        "lastModified": 1651398946,
+        "narHash": "sha256-ZSA3FQDhUZsIMIaFBQNl6VAaBwNsDOYwrJ5HAx+NgFY=",
         "owner": "justinwoo",
         "repo": "easy-purescript-nix",
-        "rev": "0ad5775c1e80cdd952527db2da969982e39ff592",
+        "rev": "0f5c141df3ea876b94739b655018168450280587",
         "type": "github"
       },
       "original": {
         "owner": "justinwoo",
-        "ref": "master",
         "repo": "easy-purescript-nix",
+        "rev": "0f5c141df3ea876b94739b655018168450280587",
         "type": "github"
       }
     },
