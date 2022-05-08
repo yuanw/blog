@@ -12,4 +12,3 @@ https://projectreactor.io/docs/extra/snapshot/api/reactor/cache/CacheMono.html
 
 # (bijukunjummen/CachingUtils.java)[https://gist.github.com/bijukunjummen/a12ab5d3e823c5f052ce608b5fc7b6a4] 
 
-For some reason, I cannot get this example work with caffeine 2.9.3. The inline cache might caused some issue
