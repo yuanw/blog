@@ -9,14 +9,6 @@
 - tailwinds css
 - https://github.com/tailwindlabs/heroicons
 
-* How to develop
-~nix build && ./result/bin/blog watch~
-
-** How to compile css
-~yarn run build~
-** How to compile js
-~spago bundle-app -m Frontend -t content/js/static-html.js~ or ~buildJs~
-
 * Some sites built by Hakyll
 - https://github.com/abhin4v/abhin4v.github.io/tree/source
 - https://github.com/sdiehl/stephendiehl.com
@@ -25,8 +17,6 @@
 - https://github.com/patrickt/patrickt.github.io
   
 * Items
-** TODO wire static man for comment
-https://staticman.net/docs/generated-fields
 ** STRT try integrate with purescript
 https://github.com/JordanMartinez/learn-halogen
 
