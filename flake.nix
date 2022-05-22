@@ -37,18 +37,19 @@
           [ blog cabal-install ormolu hlint hpack brittany warp ]
           ++ pkgs.blog.buildInputs));
 
-        frontendJs = (import ./purescript-unicorns { inherit pkgs; }).frontendJs2;
+        frontendJs = (import ./purescript { inherit pkgs; }).frontendJs;
         mkBlogContent = { includeDraft ? false }:
           pkgs.stdenv.mkDerivation {
             pname =
               if includeDraft then "blog-content-preview" else "blog-content";
-            version = "0.0.2";
+            version = "0.0.3";
             buildInputs = [ pkgs.glibcLocales ];
             LANG = "en_US.UTF-8";
             PREVIEW = if includeDraft then "TRUE" else "FALSE";
             src = ./.;
             buildPhase = ''
               ${pkgs.blog}/bin/blog rebuild
+              cp ${frontendJs}/frontend.js dist/js/frontend.js
               ${pkgs.nodePackages.tailwindcss}/bin/tailwindcss --input tailwind/tailwind.css -m -o dist/css/tailwind.css
               mkdir $out
             '';

@@ -17,11 +17,11 @@ in {
     '';
     buildPhase = ''
       build-spago-style "./src/**/*.purs"
-      # ${pkgs.spago}/bin/spago --global-cache skip bundle-app --no-install --main Frontend --no-build -y
+      esbuild --bundle ./output/Frontend/index.js --platform=browser --minify --outfile="frontend.js"
     '';
     installPhase = ''
       mkdir $out
-      mv output $out/
+      mv frontend.js $out/
     '';
   };
 
