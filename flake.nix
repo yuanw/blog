@@ -5,7 +5,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils/master";
     easy-ps = {
-      url = "github:justinwoo/easy-purescript-nix/0f5c141df3ea876b94739b655018168450280587";
+      url = "github:justinwoo/easy-purescript-nix";
       flake = false;
     };
     devshell.url = "github:numtide/devshell/master";
@@ -37,7 +37,7 @@
           [ blog cabal-install ormolu hlint hpack brittany warp ]
           ++ pkgs.blog.buildInputs));
 
-        frontendJs = (import ./purescript { inherit pkgs; }).frontendJs;
+        frontendJs = (import ./purescript-unicorns { inherit pkgs; }).frontendJs2;
         mkBlogContent = { includeDraft ? false }:
           pkgs.stdenv.mkDerivation {
             pname =
@@ -160,6 +160,7 @@
             }
           ];
           packages = [
+            pkgs.esbuild
             myHaskellEnv
             pkgs.nixfmt
             pkgs.nodePackages.tailwindcss

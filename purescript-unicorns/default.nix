@@ -4,8 +4,8 @@ let spagoPkgs = import ./spago-packages.nix { inherit pkgs; };
 
 in {
   # https://github.com/cideM/lions-backend/blob/main/client/default.nix#L40
-  frontendJs = pkgs.stdenv.mkDerivation {
-    name = "frontendJs";
+  frontendJs2 = pkgs.stdenv.mkDerivation {
+    name = "frontendJs2";
     buildInputs = [ spagoPkgs.installSpagoStyle spagoPkgs.buildSpagoStyle ];
     nativeBuildInputs = with pkgs; [ purs spago esbuild ];
     src = ./.;
@@ -17,7 +17,7 @@ in {
     '';
     buildPhase = ''
       build-spago-style "./src/**/*.purs"
-      # ${pkgs.spago}/bin/spago --global-cache skip bundle-app --no-install --main Frontend --no-build -y
+      ${pkgs.spago}/bin/spago --global-cache=skip bundle-app
     '';
     installPhase = ''
       mkdir $out
