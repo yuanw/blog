@@ -17,7 +17,7 @@ in {
     '';
     buildPhase = ''
       build-spago-style "./src/**/*.purs"
-      ${pkgs.spago}/bin/spago --global-cache=skip -V bundle-app
+      esbuild --bundle ./output/Frontend/index.js --platform=browser --minify --outfile="frontend.js"
     '';
     installPhase = ''
       mkdir $out
