@@ -50,7 +50,6 @@
             buildPhase = ''
               ${pkgs.blog}/bin/blog rebuild
               cp ${frontendJs}/frontend.js dist/js/frontend.js
-              ${pkgs.nodePackages.tailwindcss}/bin/tailwindcss --input tailwind/tailwind.css -m -o dist/css/tailwind.css
               mkdir $out
             '';
             installPhase = ''
@@ -164,7 +163,6 @@
             pkgs.esbuild
             myHaskellEnv
             pkgs.nixfmt
-            pkgs.nodePackages.tailwindcss
             pkgs.treefmt
           ];
         };
