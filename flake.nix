@@ -159,12 +159,7 @@
               value = "${myHaskellEnv}/bin/ghc-pkg";
             }
           ];
-          packages = [
-            pkgs.esbuild
-            myHaskellEnv
-            pkgs.nixfmt
-            pkgs.treefmt
-          ];
+          packages = [ pkgs.esbuild myHaskellEnv pkgs.nixfmt pkgs.treefmt ];
         };
       });
 }
