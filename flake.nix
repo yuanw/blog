@@ -18,7 +18,7 @@
         inputs.flake-root.flakeModule
         inputs.mission-control.flakeModule
         inputs.pre-commit-hooks-nix.flakeModule
-         inputs.flake-parts.flakeModules.easyOverlay
+        inputs.flake-parts.flakeModules.easyOverlay
       ];
       perSystem = { self', lib, config, pkgs, ... }: let   mkBlogContent = { includeDraft ? false }:
           pkgs.stdenv.mkDerivation {
@@ -41,10 +41,7 @@
             packages.blogContent = mkBlogContent {};
             packages.draftContent = mkBlogContent {includeDraft = true;};
 
-     # blogContent = mkBlogContent { };
-     #    draftContent = mkBlogContent { includeDraft = true; };
-    # };
-               haskellProjects.main = {
+                  haskellProjects.main = {
           packages = {
             # You can add more than one local package here.
             blog.root = ./src; # Assumes ./my-package.cabal
