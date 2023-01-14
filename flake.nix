@@ -41,7 +41,7 @@
             packages.blogContent = mkBlogContent {};
             packages.draftContent = mkBlogContent {includeDraft = true;};
 
-                  haskellProjects.main = {
+        haskellProjects.main = {
           packages = {
             # You can add more than one local package here.
             blog.root = ./src; # Assumes ./my-package.cabal
