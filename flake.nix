@@ -49,6 +49,9 @@
             # You can add more than one local package here.
             blog.root = ./src; # Assumes ./my-package.cabal
           };
+           devShell = {
+              hlsCheck.enable = true;
+          };
         };
         pre-commit.settings.hooks = {
           nixpkgs-fmt.enable = true;
