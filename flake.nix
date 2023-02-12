@@ -49,11 +49,9 @@
             # You can add more than one local package here.
             blog.root = ./src; # Assumes ./my-package.cabal
           };
-          hlsCheck.enable = false;
         };
         pre-commit.settings.hooks = {
           nixpkgs-fmt.enable = true;
-          hlint.enable = true;
           cabal-fmt.enable = true;
           fourmolu.enable = true;
         };
