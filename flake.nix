@@ -50,10 +50,10 @@
             blog.root = ./src; # Assumes ./my-package.cabal
           };
           hlsCheck.enable = false;
-          hlintCheck.enable = true;
         };
         pre-commit.settings.hooks = {
           nixpkgs-fmt.enable = true;
+          hlint.enable = true;
           cabal-fmt.enable = true;
           fourmolu.enable = true;
         };
