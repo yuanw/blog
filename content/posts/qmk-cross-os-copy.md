@@ -1,6 +1,6 @@
 ---
 title: cross os copy/paste with qmk
-date: October 19, 2021
+date: March 5, 2023
 modified: October 24, 2021
 description: How I configure tmux with nix
 tags: tmux, nix, home-manager
