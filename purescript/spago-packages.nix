@@ -652,7 +652,8 @@ let
 
   getStoreGlob = pkg: ''"${pkg.outPath}/src/**/*.purs"'';
 
-in {
+in
+{
   inherit inputs;
 
   installSpagoStyle = pkgs.writeShellScriptBin "install-spago-style" ''
