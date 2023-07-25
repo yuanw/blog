@@ -35,7 +35,7 @@
               PREVIEW = if includeDraft then "TRUE" else "FALSE";
               src = ./.;
               buildPhase = ''
-                ${self'.packages.main-blog}/bin/blog rebuild
+                ${self'.packages.blog}/bin/blog rebuild
                 mkdir $out
               '';
               installPhase = ''
