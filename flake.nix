@@ -6,20 +6,18 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
     haskell-flake.url = "github:srid/haskell-flake";
     flake-root.url = "github:srid/flake-root";
-    mission-control.url = "github:Platonic-Systems/mission-control";
     treefmt-nix.url = "github:numtide/treefmt-nix";
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
-    # pre-commit-hooks-nix.url = "github:cachix/pre-commit-hooks.nix";
+    devenv.url = "github:cachix/devenv";
   };
   outputs = inputs@{ self, nixpkgs, flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
-      systems = [ "x86_64-linux" "aarch64-darwin"  ];
-      # systems = nixpkgs.lib.systems.flakeExposed;
+      systems = [ "x86_64-linux" "aarch64-darwin" ];
       imports = [
         inputs.haskell-flake.flakeModule
         inputs.flake-root.flakeModule
-        # inputs.mission-control.flakeModule
         inputs.treefmt-nix.flakeModule
+        inputs.devenv.flakeModule
       ];
       perSystem = { self', lib, config, pkgs, ... }:
         let
@@ -47,45 +45,38 @@
           packages.draftContent = mkBlogContent { includeDraft = true; };
 
           haskellProjects.default = {
-            
-               projectRoot = ./src;
-            
-            
+            projectRoot = ./src;
+            autoWire = [ "packages" "apps" "checks" ]; # Wire all but the devShell
             devShell = {
-              tools = hp:
-                {
-                  treefmt = config.treefmt.build.wrapper;
-                } // config.treefmt.build.programs;
-              hlsCheck.enable = true;
+              hlsCheck.enable = false;
             };
           };
-          # pre-commit.settings.hooks = {
-          #   nixpkgs-fmt.enable = true;
-          #   cabal-fmt.enable = true;
-          #   fourmolu.enable = true;
-          # };
           treefmt.config = {
             inherit (config.flake-root) projectRootFile;
             package = pkgs.treefmt;
-            flakeFormatter =
-              false; # For https://github.com/numtide/treefmt-nix/issues/55
-
             programs.ormolu.enable = true;
             programs.nixpkgs-fmt.enable = true;
             programs.cabal-fmt.enable = true;
             programs.hlint.enable = true;
-
             # We use fourmolu
             programs.ormolu.package = pkgs.haskellPackages.fourmolu;
             settings.formatter.ormolu = {
-             options = [ "--ghc-opt" "-XImportQualifiedPost" ];
+              options = [ "--ghc-opt" "-XImportQualifiedPost" ];
             };
           };
-                  devShells.default = pkgs.mkShell {
-            inputsFrom =
-              [ self'.devShells.main ];
+
+          packages.default = config.packages.blogContent;
+          devenv.shells.default = {
+            # https://devenv.sh/reference/options/
+            packages = [
+              config.treefmt.build.wrapper
+            ] ++ config.haskellProjects.default.outputs.devShell.nativeBuildInputs
+            ++ config.haskellProjects.default.outputs.devShell.buildInputs;
+
+            scripts.preview.exec = ''
+               warp -d ${config.packages.blogContent}
+            '';
           };
-                   packages.default = config.packages.blogContent;
         };
     };
 }
