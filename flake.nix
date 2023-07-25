@@ -49,10 +49,7 @@
           packages.draftContent = mkBlogContent { includeDraft = true; };
 
           haskellProjects.main = {
-            packages = {
-              # You can add more than one local package here.
-              blog.root = ./src; # Assumes ./my-package.cabal
-            };
+            
             devShell = {
               tools = hp:
                 {
