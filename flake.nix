@@ -48,10 +48,10 @@
           packages.blogContent = mkBlogContent { };
           packages.draftContent = mkBlogContent { includeDraft = true; };
 
-          haskellProjects.main = {
-            packages = {
-              blog.root = ./src;
-            };
+          haskellProjects.default = {
+            
+               projectRoot = ./src;
+            
             
             devShell = {
               tools = hp:
