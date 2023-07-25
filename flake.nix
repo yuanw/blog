@@ -18,10 +18,8 @@
       imports = [
         inputs.haskell-flake.flakeModule
         inputs.flake-root.flakeModule
-        inputs.mission-control.flakeModule
+        # inputs.mission-control.flakeModule
         inputs.treefmt-nix.flakeModule
-        # inputs.pre-commit-hooks-nix.flakeModule
-        # inputs.flake-parts.flakeModules.easyOverlay
       ];
       perSystem = { self', lib, config, pkgs, ... }:
         let
@@ -80,48 +78,14 @@
             # We use fourmolu
             programs.ormolu.package = pkgs.haskellPackages.fourmolu;
             settings.formatter.ormolu = {
-              options = [ "--ghc-opt" "-XImportQualifiedPost" ];
+             options = [ "--ghc-opt" "-XImportQualifiedPost" ];
             };
           };
-          mission-control.scripts = {
-            docs = {
-              description = "Start Hoogle server for project dependencies";
-              exec = ''
-                echo http://127.0.0.1:8888
-                hoogle serve -p 8888 --local
-              '';
-              category = "Dev Tools";
-            };
-            fmt = {
-              description = "Format the source tree";
-              exec = config.treefmt.build.wrapper;
-              category = "Dev Tools";
-            };
-            repl = {
-              description = "Start the cabal repl";
-              exec = ''
-                cabal repl "$@"
-              '';
-              category = "Dev Tools";
-            };
-            preview = { exec = "warp -d ${config.packages.draftContent}"; };
-          };
-          devShells.default = pkgs.mkShell {
+                  devShells.default = pkgs.mkShell {
             inputsFrom =
-              [ config.mission-control.devShell self'.devShells.main ];
+              [ self'.devShells.main ];
           };
-          # devShells.default = config.mission-control.installToDevShell (pkgs.mkShell
-          #   {
-          #     nativeBuildInputs = [
-          #       pkgs.nixpkgs-fmt
-          #       pkgs.pre-commit
-          #     ];
-          #     shellHook = ''
-          #       ${config.pre-commit.installationScript}
-          #     '';
-          #   } // self'.devShells.main);
-          # packages.default = self'.packages.main-blog;
-          packages.default = config.packages.blogContent;
+                   packages.default = config.packages.blogContent;
         };
     };
 }
