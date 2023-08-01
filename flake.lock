@@ -8,11 +8,11 @@
         "pre-commit-hooks": "pre-commit-hooks"
       },
       "locked": {
-        "lastModified": 1690221957,
-        "narHash": "sha256-L3dFV5r9zBToDYxQdlkJCQ6T1iqtFIqkeovS2r7Udl0=",
+        "lastModified": 1690638457,
+        "narHash": "sha256-3EBd8PHd0lbSCMief9eQdzTOvEofnB3koR+Q4wvvDbA=",
         "owner": "cachix",
         "repo": "devenv",
-        "rev": "9fb94a348179ee0074beeac2dce2d30f18588e4d",
+        "rev": "da313abf0fb6d21210f6d555acabf40425e080f1",
         "type": "github"
       },
       "original": {
@@ -112,11 +112,11 @@
     },
     "haskell-flake": {
       "locked": {
-        "lastModified": 1689950301,
-        "narHash": "sha256-sUYqHggNUIMuBVOsRoseBn3/tx58yMnMvOM31Rqf9dU=",
+        "lastModified": 1690398210,
+        "narHash": "sha256-1wnx2K3U2xmUI5rUulOZ66tcIva+OGWS47dyHdZJjsA=",
         "owner": "srid",
         "repo": "haskell-flake",
-        "rev": "92aabc529c4487960c14016b65b3ac7e7e159b13",
+        "rev": "d3c8d8be31d3a5dcf9d49e9dacfc570b5c736658",
         "type": "github"
       },
       "original": {
@@ -233,11 +233,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1690026219,
-        "narHash": "sha256-oOduRk/kzQxOBknZXTLSEYd7tk+GoKvr8wV6Ab+t4AU=",
+        "lastModified": 1690630721,
+        "narHash": "sha256-Y04onHyBQT4Erfr2fc82dbJTfXGYrf4V0ysLUYnPOP8=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "f465da166263bc0d4b39dfd4ca28b777c92d4b73",
+        "rev": "d2b52322f35597c62abf56de91b0236746b2a03d",
         "type": "github"
       },
       "original": {
