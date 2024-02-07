@@ -42,7 +42,7 @@ jobs:
           name: dist
           path: dist
       - name: Deploy to Firebase
-        uses: w9jds/firebase-action@v12.8.0
+        uses: w9jds/firebase-action@v13.2.0
         with:
           args: deploy --message '${{github.event.head_commit.message}}' --only hosting
         env:
