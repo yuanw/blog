@@ -23,7 +23,7 @@
       ];
       perSystem = { self', lib, config, pkgs, ... }:
       let
-        nodeEnv = pkgs.callPackage ./short-singularity/node-env.nix {};
+        nodeEnv = pkgs.callPackage ./short-singularity/default.nix {};
       in
         {
 packages.nodejs = pkgs.nodejs_21;
