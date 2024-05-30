@@ -24,49 +24,13 @@
         inputs.devshell.flakeModule
       ];
       perSystem = { self', lib, config, pkgs, ... }:
-        let
-          mkBlogContent = { includeDraft ? false }:
-            pkgs.stdenv.mkDerivation {
-              pname =
-                if includeDraft then "blog-content-preview" else "blog-content";
-              version = "0.0.4";
-              buildInputs = [ pkgs.glibcLocales ];
-              LANG = "en_US.UTF-8";
-              PREVIEW = if includeDraft then "TRUE" else "FALSE";
-              src = ./.;
-              buildPhase = ''
-                ${self'.packages.blog}/bin/blog rebuild
-                mkdir $out
-              '';
-              installPhase = ''
-                mv dist/* $out
-              '';
-            };
-        in
+
         {
 
-          packages.blogContent = mkBlogContent { };
-          packages.draftContent = mkBlogContent { includeDraft = true; };
-
-          haskellProjects.default = {
-            projectRoot = ./src;
-            autoWire = [ "packages" "apps" "checks" ]; # Wire all but the devShell
-            devShell = {
-              hlsCheck.enable = false;
-            };
-          };
           treefmt.config = {
             inherit (config.flake-root) projectRootFile;
             package = pkgs.treefmt;
-            programs.ormolu.enable = true;
             programs.nixpkgs-fmt.enable = true;
-            programs.cabal-fmt.enable = true;
-            programs.hlint.enable = true;
-            # We use fourmolu
-            programs.ormolu.package = pkgs.haskellPackages.fourmolu;
-            settings.formatter.ormolu = {
-              options = [ "--ghc-opt" "-XImportQualifiedPost" ];
-            };
           };
 
           packages.default = config.packages.blogContent;
