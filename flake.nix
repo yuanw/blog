@@ -32,7 +32,6 @@
             programs.nixpkgs-fmt.enable = true;
           };
 
-          packages.default = config.packages.blogContent;
           devshells.default = {
       commands = [
         { package = config.packages.nodejs; category = "docs"; }
