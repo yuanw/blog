@@ -8,7 +8,11 @@
     flake-root.url = "github:srid/flake-root";
     treefmt-nix.url = "github:numtide/treefmt-nix";
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
-    devenv.url = "github:cachix/devenv";
+
+    devshell = {
+      url = "github:numtide/devshell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
   outputs = inputs@{ self, nixpkgs, flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
@@ -17,7 +21,7 @@
         inputs.haskell-flake.flakeModule
         inputs.flake-root.flakeModule
         inputs.treefmt-nix.flakeModule
-        inputs.devenv.flakeModule
+        inputs.devshell.flakeModule
       ];
       perSystem = { self', lib, config, pkgs, ... }:
         let
@@ -66,17 +70,12 @@
           };
 
           packages.default = config.packages.blogContent;
-          devenv.shells.default = {
-            # https://devenv.sh/reference/options/
-            packages = [
-              config.treefmt.build.wrapper
-            ] ++ config.haskellProjects.default.outputs.devShell.nativeBuildInputs
-            ++ config.haskellProjects.default.outputs.devShell.buildInputs;
+          devshells.default = {
+      commands = [
+        { package = config.packages.nodejs; category = "docs"; }
+      ];
+    };
 
-            scripts.preview.exec = ''
-               warp -d ${config.packages.blogContent}
-            '';
-          };
         };
     };
 }
