@@ -20,11 +20,10 @@
       imports = [
         inputs.flake-root.flakeModule
         inputs.treefmt-nix.flakeModule
-        inputs.devshell.flakeModule
       ];
       perSystem = { self', lib, config, pkgs, ... }:
-
         {
+packages.nodejs = pkgs.nodejs_21;
 
           treefmt.config = {
             inherit (config.flake-root) projectRootFile;
@@ -32,11 +31,18 @@
             programs.nixpkgs-fmt.enable = true;
           };
 
-          devshells.default = {
-      commands = [
-        { package = config.packages.nodejs; category = "docs"; }
-      ];
-    };
+           devShells.default = pkgs.mkShell {
+          name = "my-haskell-package custom development shell";
+          inputsFrom = [
+
+          ];
+          nativeBuildInputs = [
+            # other development tools.
+            config.packages.nodejs
+            config.packages.node2nix
+          ];
+        };
+
 
         };
     };
