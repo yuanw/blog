@@ -39,7 +39,7 @@ packages.nodejs = pkgs.nodejs_21;
           nativeBuildInputs = [
             # other development tools.
             config.packages.nodejs
-            config.packages.nodePackages.node2nix
+            pkgs.nodePackages.node2nix
           ];
         };
 
