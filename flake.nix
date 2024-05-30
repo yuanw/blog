@@ -22,6 +22,9 @@
         inputs.treefmt-nix.flakeModule
       ];
       perSystem = { self', lib, config, pkgs, ... }:
+      let
+        nodeEnv = pkgs.callPackage ./short-singularity/node-env.nix {};
+      in
         {
 packages.nodejs = pkgs.nodejs_21;
 
@@ -38,9 +41,13 @@ packages.nodejs = pkgs.nodejs_21;
           ];
           nativeBuildInputs = [
             # other development tools.
+            nodeEnv.shell.nodeDependencies
             config.packages.nodejs
             pkgs.nodePackages.node2nix
           ];
+          shellHook = ''
+              export NODE_PATH=${nodeEnv.shell.nodeDependencies}/lib/node_modules
+            '';
         };
 
 
