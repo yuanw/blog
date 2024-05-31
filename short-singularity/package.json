@@ -1,7 +1,8 @@
 {
-  "name": "short-singularity",
+  "name": "@uniorgjs/astro-example",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.0.4",
+  "private": true,
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -10,12 +11,11 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/mdx": "^3.0.1",
+    "@astrojs/check": "^0.7.0",
     "@astrojs/rss": "^4.0.6",
     "@astrojs/sitemap": "^3.1.5",
-      "astro": "^4.9.2",
-      "@astrojs/check": "^0.3.4",
-       "astro-org": "^2.1.2",
-      "typescript": "^5.3.3"
+    "astro": "^4.9.2",
+    "astro-org": "^2.1.2",
+    "typescript": "^5.4.5"
   }
 }
