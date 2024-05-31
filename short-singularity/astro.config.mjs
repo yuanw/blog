@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import mdx from '@astrojs/mdx';
 import org from 'astro-org'
 
 import sitemap from '@astrojs/sitemap';
@@ -6,5 +7,5 @@ import sitemap from '@astrojs/sitemap';
 // https://astro.build/config
 export default defineConfig({
 	site: 'https://example.com',
-	integrations: [org(), sitemap()],
+	integrations: [org(), mdx(), sitemap()],
 });
