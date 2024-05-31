@@ -35,19 +35,17 @@ packages.nodejs = pkgs.nodejs_21;
           };
 
            devShells.default = pkgs.mkShell {
-          name = "my-haskell-package custom development shell";
+          name = "my shell";
           inputsFrom = [
 
           ];
           nativeBuildInputs = [
             # other development tools.
-            nodeEnv.shell.nodeDependencies
+            # nodeEnv.shell.nodeDependencies
             config.packages.nodejs
-            pkgs.nodePackages.node2nix
+            # pkgs.nodePackages.node2nix
           ];
-          shellHook = ''
-              export NODE_PATH=${nodeEnv.shell.nodeDependencies}/lib/node_modules
-            '';
+
         };
 
 
