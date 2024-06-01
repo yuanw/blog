@@ -32,7 +32,7 @@ packages.nodejs = pkgs.nodejs_21;
             package = pkgs.treefmt;
             programs.nixpkgs-fmt.enable = true;
           };
-
+ packages.default = config.packages.blog;
          devShells.default = pkgs.mkShell {
           name = "my shell";
           inputsFrom = [
