@@ -2,7 +2,7 @@
 title: Integrate git hooks with treefmt and devshell
 description: wire git hooks with numtide devshell
 tags: nix, git-hook, devshell
-date: October 19, 2021
+pubDate: 'October 19, 2021'
 modified: October 24, 2021
 ---
 # Background

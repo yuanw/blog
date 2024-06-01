@@ -1,12 +1,14 @@
 ---
 title: Build a blog with Nix
-date: Sep 13, 2020
+date: 2020-09-21
 modified: Sep 26, 2020
 description: Using Hakyll, github action, and Firebase
-tags: nix, haskell, hakyll
+tags: 
+  - nix
+  - haskell
+  - hakyll
 ---
 
-![](https://builtwithnix.org/badge.svg)
 
 # Vision
 

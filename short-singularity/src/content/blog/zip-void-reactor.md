@@ -1,6 +1,6 @@
 ---
 title: Project reactor - Mono zip with void 
-date: May 07, 2022
+pubDate: 'May 07, 2022'
 modified: May 07, 2022
 description: How to workaround mono zip void
 tags: java, reactor 

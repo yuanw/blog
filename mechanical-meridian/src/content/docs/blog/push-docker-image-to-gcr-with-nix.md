@@ -1,9 +1,11 @@
 ---
 title: Push Nix-built container image to GCR using github action
 description: use skopeo to push nix-built docker image to google container registry
-tags: nix, github, skopeo 
-date: Feb 07, 2022
-modified: Feb 07, 2022
+tags: 
+  - nix
+  - github
+  - skopeo 
+date: 2021-02-07
 ---
 
 # Intro 

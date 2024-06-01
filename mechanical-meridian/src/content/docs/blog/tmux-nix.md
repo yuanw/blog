@@ -1,9 +1,13 @@
 ---
 title: Using Tmux with Nix
-date: October 19, 2021
-modified: October 24, 2021
+date: 2021-10-19
+pubDate: 'October 19, 2021'
+modified: 'October 24, 2021'
 description: How I configure tmux with nix
-tags: tmux, nix, home-manager
+tags: 
+  - tmux
+  - nix
+  - home-manager
 ---
 
 # TL;DR
@@ -59,7 +63,7 @@ divider between items.
                   Random r "run-shell 'tat random'" Emacs e "run-shell 'temacs'" ${tmuxMenuSeperator} \
                   Exit q detach"
 
-![](../images/tmux-menu.png)
+![](../../../assets/tmux-menu.png)
 
 # Have a visual cue on tmux prefix press
 
@@ -67,9 +71,9 @@ You might want to hit whether you currently press tmux prefix key or
 not. I found this nice
 [solution](https://stackoverflow.com/questions/12003726/give-a-hint-when-press-prefix-key-in-tmux)
 
-Without press prefix ![](../images/tmux-prefix-before.png)
+Without press prefix ![](../../../assets/tmux-prefix-before.png)
 
-with prefix press ![](../images/tmux-prefix-after.png)
+with prefix press ![](../../../assets/tmux-prefix-after.png)
 
 # Mouse or no mouse
 

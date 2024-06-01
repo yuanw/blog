@@ -1,9 +1,12 @@
 ---
 title: Getting started with Nix Flakes and devshell
-date: Feb 13, 2021
+date: 2021-02-13
+pubDate: 'Feb 13, 2021'
 modified: Feb 16, 2021
 description: My experience with Nix Flakes and devshell
-tags: nix, Flakes
+tags:
+   - nix
+   - Flakes
 ---
 
 # Introduction
