@@ -8,11 +8,7 @@
     flake-root.url = "github:srid/flake-root";
     treefmt-nix.url = "github:numtide/treefmt-nix";
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
-
-    devshell = {
-      url = "github:numtide/devshell";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+  devenv.url = "github:cachix/devenv";
   };
   outputs = inputs@{ self, nixpkgs, flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
@@ -20,6 +16,8 @@
       imports = [
         inputs.flake-root.flakeModule
         inputs.treefmt-nix.flakeModule
+           inputs.devenv.flakeModule
+
         ./mechanical-meridian/flake-module.nix
       ];
       perSystem = { self', lib, config, pkgs, ... }:
@@ -32,20 +30,21 @@ packages.nodejs = pkgs.nodejs_22;
             package = pkgs.treefmt;
             programs.nixpkgs-fmt.enable = true;
           };
+          devenv.shells.default = {
+            # https://devenv.sh/reference/options/
+            packages = [
+              config.treefmt.build.wrapper
+                          config.packages.nodejs
+
+            ];
+
+            scripts.preview.exec = ''
+              ${pkgs.haskellPackages.wai-app-static}/bin/warp -d ${config.packages.blog}
+            '';
+          };
+
  packages.default = config.packages.blog;
-         devShells.default = pkgs.mkShell {
-          name = "my shell";
-          inputsFrom = [
 
-          ];
-          nativeBuildInputs = [
-            # other development tools.
-            # nodeEnv.shell.nodeDependencies
-            config.packages.nodejs
-            # pkgs.nodePackages.node2nix
-          ];
-
-        };
 
 
         };
