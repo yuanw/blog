@@ -8,5 +8,5 @@ import starlight from "@astrojs/starlight";
 // https://astro.build/config
 export default defineConfig({
   site: 'https://example.com',
-  integrations: [org(), mdx(), sitemap(), starlight()]
+  integrations: [org(), mdx(), sitemap()]
 });
