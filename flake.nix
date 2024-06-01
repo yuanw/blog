@@ -25,7 +25,7 @@
       perSystem = { self', lib, config, pkgs, ... }:
 
         {
-packages.nodejs = pkgs.nodejs_21;
+packages.nodejs = pkgs.nodejs_22;
 
           treefmt.config = {
             inherit (config.flake-root) projectRootFile;
