@@ -1,7 +1,7 @@
 ---
 title: Using Tmux with Nix
-date: October 19, 2021
-modified: October 24, 2021
+pubDate: 'October 19, 2021'
+modified: 'October 24, 2021'
 description: How I configure tmux with nix
 tags: tmux, nix, home-manager
 ---
