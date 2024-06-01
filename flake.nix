@@ -20,11 +20,10 @@
       imports = [
         inputs.flake-root.flakeModule
         inputs.treefmt-nix.flakeModule
+        ./mechanical-meridian/flake-module.nix
       ];
       perSystem = { self', lib, config, pkgs, ... }:
-      let
-        nodeEnv = pkgs.callPackage ./short-singularity/default.nix {};
-      in
+
         {
 packages.nodejs = pkgs.nodejs_21;
 
@@ -34,7 +33,7 @@ packages.nodejs = pkgs.nodejs_21;
             programs.nixpkgs-fmt.enable = true;
           };
 
-           devShells.default = pkgs.mkShell {
+         devShells.default = pkgs.mkShell {
           name = "my shell";
           inputsFrom = [
 
