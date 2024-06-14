@@ -1,12 +1,28 @@
 ---
-title: Building blog with nix and astro.build
+title: Building blog with nix and starlight.astro.build
 date: 2024-06-02
 description: How I configure tmux with nix
 tags: 
   - astro
   - nix
 ---
+I recently moved this blog to use starlight.astro.build.
 
+# Starlight components
+
+starlight offers lots of cool components for writing blogs:
+
+https://starlight.astro.build/guides/components/
+
+
+## Code Snippet
+```js title="example.js" ins={3} del={2}
+  function thisIsJavaScript() {
+    console.log('Old code to be removed')
+    console.log('New and shiny code!')
+  }
+```
+## Sidenote
 :::tip
 It’s best to avoid using `<blockquote>` for things that aren’t quotes.
 :::
@@ -15,8 +31,59 @@ It’s best to avoid using `<blockquote>` for things that aren’t quotes.
 Using `<blockquote>` for notes is deprecated.
 :::
 
-import Badge from '@astrojs/starlight/components/Badge.astro';
 
-<Badge>Nice</Badge>
+## Folder Tree
+import { FileTree  } from '@astrojs/starlight/components';
 
-<Badge variant="accent">Wow!</Badge>
+<FileTree>
+- public/
+  - robots.txt
+  - favicon.svg
+  - social-image.png
+- src/
+  - components/
+    - Header.astro
+    - Button.jsx
+  - layouts/
+    - PostLayout.astro
+  - pages/
+    - posts/
+      - post1.md
+      - post2.md
+      - post3.md
+    - index.astro
+  - styles/
+    - global.css
+- astro.config.mjs
+- package.json
+- tsconfig.json
+</FileTree>
+
+## Steps
+import { Steps } from '@astrojs/starlight/components';
+
+<Steps>
+
+1. Import the component into your MDX file:
+
+   ```js
+   import { Steps } from '@astrojs/starlight/components';
+   ```
+
+2. Wrap `<Steps>` around your ordered list items.
+
+</Steps>
+
+## Badge
+
+import { Badge } from '@astrojs/starlight/components';
+
+<Badge text="New" variant="tip" size="small" />
+
+<Badge text="Deprecated" variant="caution" size="medium" />
+
+<Badge text="Starlight" variant="note" size="large" />
+
+<Badge text="Custom" variant="success" style={{ fontStyle: 'italic' }} />
+
+# Setup local dev environment with Nix
