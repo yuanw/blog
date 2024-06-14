@@ -45,6 +45,7 @@
                     stdenv
                     mkShell
                     rsync
+                    cacert
                     ;
                 };
 
