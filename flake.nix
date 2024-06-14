@@ -46,7 +46,7 @@
   };
 
   nodejs-package-lock-v3 = {
-    packageLockFile = "${config.mkDerivation.src}/package-lock.json";
+    packageLockFile = ./mechanical-meridian/package-lock.json;
   };
 
   name = "dream-blog";
