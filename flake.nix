@@ -29,8 +29,9 @@
             modules = [
               {
                 imports = [
-                  dream2nix.modules.dream2nix.nodejs-package-lock-v3
-                  dream2nix.modules.dream2nix.nodejs-granular-v3
+                     dream2nix.modules.dream2nix.nodejs-devshell-v3
+                  # dream2nix.modules.dream2nix.nodejs-package-lock-v3
+                  # dream2nix.modules.dream2nix.nodejs-granular-v3
                 ];
 
                 mkDerivation = {
@@ -43,10 +44,6 @@
                     fetchFromGitHub
                     stdenv
                     ;
-                };
-
-                nodejs-package-lock-v3 = {
-                  packageLockFile = ./mechanical-meridian/package-lock.json;
                 };
 
                 name = "dream-blog";
