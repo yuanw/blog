@@ -10,7 +10,7 @@
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
     devenv.url = "github:cachix/devenv";
   };
-  outputs = inputs@{ self, nixpkgs, flake-parts,dream2nix, ... }:
+  outputs = inputs@{ self, nixpkgs, flake-parts, dream2nix, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [ "x86_64-linux" "aarch64-darwin" ];
       imports = [
@@ -24,41 +24,41 @@
         {
           packages.nodejs = pkgs.nodejs_22;
 
-          packages.dream-blog = dream2nix.lib.evalModules  {
+          packages.dream-blog = dream2nix.lib.evalModules {
             packageSets.nixpkgs = pkgs;
-             modules = [
-               {
-                 imports = [
-    dream2nix.modules.dream2nix.nodejs-package-lock-v3
-    dream2nix.modules.dream2nix.nodejs-granular-v3
-                 ];
+            modules = [
+              {
+                imports = [
+                  dream2nix.modules.dream2nix.nodejs-package-lock-v3
+                  dream2nix.modules.dream2nix.nodejs-granular-v3
+                ];
 
-                 mkDerivation = {
-    src = ./mechanical-meridian;
-  };
+                mkDerivation = {
+                  src = ./mechanical-meridian;
+                };
 
-  deps = {nixpkgs, ...}: {
-    inherit
-      (nixpkgs)
-      fetchFromGitHub
-      stdenv
-      ;
-  };
+                deps = { nixpkgs, ... }: {
+                  inherit
+                    (nixpkgs)
+                    fetchFromGitHub
+                    stdenv
+                    ;
+                };
 
-  nodejs-package-lock-v3 = {
-    packageLockFile = ./mechanical-meridian/package-lock.json;
-  };
+                nodejs-package-lock-v3 = {
+                  packageLockFile = ./mechanical-meridian/package-lock.json;
+                };
 
-  name = "dream-blog";
-  version = "0.1.0";
-               }
-        {
-          paths.projectRoot = ./.;
-          # can be changed to ".git" or "flake.nix" to get rid of .project-root
-          paths.projectRootFile = "flake.nix";
-          paths.package = ./.;
-        }
-      ];
+                name = "dream-blog";
+                version = "0.1.0";
+              }
+              {
+                paths.projectRoot = ./.;
+                # can be changed to ".git" or "flake.nix" to get rid of .project-root
+                paths.projectRootFile = "flake.nix";
+                paths.package = ./.;
+              }
+            ];
 
           };
 
