@@ -4,8 +4,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
-    dream2nix_legacy.url = "github:nix-community/dream2nix/c9c8689f09aa95212e75f3108788862583a1cf5a";
-
+    dream2nix_legacy.url = "github:nix-community/dream2nix";
     flake-root.url = "github:srid/flake-root";
     treefmt-nix.url = "github:numtide/treefmt-nix";
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
@@ -18,7 +17,8 @@
         inputs.flake-root.flakeModule
         inputs.treefmt-nix.flakeModule
         inputs.devenv.flakeModule
-        inputs.dream2nix_legacy.flakeModuleBeta
+        
+        inputs.dream2nix_legacy.flake-parts
         ./mechanical-meridian/flake-module.nix
       ];
       perSystem = { self', lib, config, pkgs, ... }:
