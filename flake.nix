@@ -38,9 +38,9 @@
                   src = ./mechanical-meridian;
                 };
 
-                deps = { pkgs, ... }: {
+                deps = { nixpkgs, ... }: {
                   inherit
-                    (pkgs)
+                    (nixpkgs)
                     fetchFromGitHub
                     stdenv
                     mkShell
