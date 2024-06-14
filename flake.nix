@@ -26,6 +26,8 @@ inputs.dream2nix_legacy.flakeModuleBeta
         {
 packages.nodejs = pkgs.nodejs_22;
 
+dream2nix.conifg = {
+};
           treefmt.config = {
             inherit (config.flake-root) projectRootFile;
             package = pkgs.treefmt;
