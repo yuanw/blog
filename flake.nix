@@ -9,7 +9,7 @@
     flake-root.url = "github:srid/flake-root";
     treefmt-nix.url = "github:numtide/treefmt-nix";
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
-  devenv.url = "github:cachix/devenv";
+    devenv.url = "github:cachix/devenv";
   };
   outputs = inputs@{ self, nixpkgs, flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
@@ -17,14 +17,14 @@
       imports = [
         inputs.flake-root.flakeModule
         inputs.treefmt-nix.flakeModule
-           inputs.devenv.flakeModule
-inputs.dream2nix_legacy.flakeModuleBeta
+        inputs.devenv.flakeModule
+        inputs.dream2nix_legacy.flakeModuleBeta
         ./mechanical-meridian/flake-module.nix
       ];
       perSystem = { self', lib, config, pkgs, ... }:
 
         {
-packages.nodejs = pkgs.nodejs_22;
+          packages.nodejs = pkgs.nodejs_22;
 
 
           treefmt.config = {
@@ -36,7 +36,7 @@ packages.nodejs = pkgs.nodejs_22;
             # https://devenv.sh/reference/options/
             packages = [
               config.treefmt.build.wrapper
-                          config.packages.nodejs
+              config.packages.nodejs
 
             ];
 
@@ -45,7 +45,7 @@ packages.nodejs = pkgs.nodejs_22;
             '';
           };
 
- packages.default = config.packages.blog;
+          packages.default = config.packages.blog;
 
 
 
