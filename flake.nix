@@ -24,6 +24,43 @@
         {
           packages.nodejs = pkgs.nodejs_22;
 
+          packages.dream-blog = dream2nix.lib.evalModules  {
+            packageSets.nixpkgs = pkgs;
+             modules = [
+               {
+                 imports = [
+    dream2nix.modules.dream2nix.nodejs-package-lock-v3
+    dream2nix.modules.dream2nix.nodejs-granular-v3
+                 ];
+
+                 mkDerivation = {
+    src = ./mechanical-meridian;
+  };
+
+  deps = {nixpkgs, ...}: {
+    inherit
+      (nixpkgs)
+      fetchFromGitHub
+      stdenv
+      ;
+  };
+
+  nodejs-package-lock-v3 = {
+    packageLockFile = "${config.mkDerivation.src}/package-lock.json";
+  };
+
+  name = "dream-blog";
+  version = "0.1.0";
+               }
+        {
+          paths.projectRoot = ./.;
+          # can be changed to ".git" or "flake.nix" to get rid of .project-root
+          paths.projectRootFile = "flake.nix";
+          paths.package = ./.;
+        }
+      ];
+
+          };
 
           treefmt.config = {
             inherit (config.flake-root) projectRootFile;
