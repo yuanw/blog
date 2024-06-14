@@ -29,13 +29,13 @@
             modules = [
               {
                 imports = [
-                     dream2nix.modules.dream2nix.nodejs-devshell-v3
+                  dream2nix.modules.dream2nix.nodejs-devshell-v3
                   # dream2nix.modules.dream2nix.nodejs-package-lock-v3
                   # dream2nix.modules.dream2nix.nodejs-granular-v3
                 ];
 
                 mkDerivation = {
-                  src = ./mechanical-meridian;
+                  SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";                  src = ./mechanical-meridian;
                 };
 
                 deps = { nixpkgs, ... }: {
