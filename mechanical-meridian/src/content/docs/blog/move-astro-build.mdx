@@ -1,19 +1,25 @@
 ---
-title: Building blog with nix and starlight.astro.build
+title: Present blog with starlight.astro.build (and Nix)
 date: 2024-06-02
+lastUpdated: 2024-06-14
 description: How I configure tmux with nix
 tags: 
   - astro
   - nix
 ---
-I recently moved this blog to use starlight.astro.build.
+I recently started to use starlight.astro.build for writing this blog.
 
-# Starlight components
+# Why Starlight
+The biggest things I feel like out of box Hakyell missing is [sidenote](https://tony-zorman.com/posts/block-sidenotes.html).
 
-starlight offers lots of cool components for writing blogs:
+starlight offers lots of cool components for writing documentations:
 
 https://starlight.astro.build/guides/components/
+## Sidenote / Asides
 
+:::tip
+It’s best to avoid using `<blockquote>` for things that aren’t quotes.
+:::
 
 ## Code Snippet
 ```js title="example.js" ins={3} del={2}
@@ -22,10 +28,7 @@ https://starlight.astro.build/guides/components/
     console.log('New and shiny code!')
   }
 ```
-## Sidenote
-:::tip
-It’s best to avoid using `<blockquote>` for things that aren’t quotes.
-:::
+
 
 :::caution[Deprecated]
 Using `<blockquote>` for notes is deprecated.
@@ -86,4 +89,13 @@ import { Badge } from '@astrojs/starlight/components';
 
 <Badge text="Custom" variant="success" style={{ fontStyle: 'italic' }} />
 
-# Setup local dev environment with Nix
+# Publish with Nix
+Here's a simple footnote,[^1] and here's a longer one.[^bignote]
+[^1]: This is the first footnote.
+[^bignote]: Here's one with multiple paragraphs and code.
+
+    Indent paragraphs to include them in the footnote.
+
+    `{ my code }`
+
+    Add as many paragraphs as you like.

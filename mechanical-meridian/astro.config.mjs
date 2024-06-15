@@ -7,6 +7,7 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			title: 'Yuan Wang',
+            credits: true,
             plugins: [starlightBlog()],
 			social: {
 				github: 'https://github.com/yuanw/blog',
