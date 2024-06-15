@@ -1,6 +1,7 @@
 ---
 title: Write a blog with starlight.astro.build (and Nix)
 date: 2024-06-02
+draft: true
 lastUpdated: 2024-06-14
 description: How I configure my blog with starlight astro
 tags: 
@@ -9,12 +10,10 @@ tags:
 ---
 
 # Background 
-I have been terrible with writing. This blog 
+I have been terrible with writing. For the last 7 years, i didn't manage to squeeze out 10 posts, all the posts I did come with are ... not that good. Although no amount tailwind css, nextJS can fix that, maybe adapting a newer framework and a polish look of the site can give me a needed booster for give writing another try. Oh boy, starlight astro is polished. In this post, I want to share my experiences with starlight, hope it might help someone. 
 
-I recently started to use starlight.astro.build for writing this blog.
-
-# Why Starlight
-The biggest things I feel like out of box Hakyell missing is [sidenote](https://tony-zorman.com/posts/block-sidenotes.html).
+# Starlight Componets 
+Before starlight, I used hakyell. One thing I keep feel like  missing is [sidenote](https://tony-zorman.com/posts/block-sidenotes.html).
 
 starlight offers lots of cool components for writing documentations:
 
@@ -94,6 +93,9 @@ import { Badge } from '@astrojs/starlight/components';
 <Badge text="Custom" variant="success" style={{ fontStyle: 'italic' }} />
 
 # Publish with Nix
+
+# Conclusion
+
 Here's a simple footnote,[^1] and here's a longer one.[^bignote]
 [^1]: This is the first footnote.
 [^bignote]: Here's one with multiple paragraphs and code.
