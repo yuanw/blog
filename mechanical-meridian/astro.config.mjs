@@ -9,6 +9,9 @@ export default defineConfig({
 			title: 'Yuan Wang',
             credits: true,
             plugins: [starlightBlog()],
+            // components: {
+            //    Footer: './src/components/Footer.astro'
+            //},
 			social: {
 				github: 'https://github.com/yuanw/blog',
 			},
