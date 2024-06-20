@@ -4,10 +4,19 @@ import starlightBlog from 'starlight-blog';
 
 // https://astro.build/config
 export default defineConfig({
+    site: 'https://yuanwang.ca',
 	integrations: [
 		starlight({
 			title: 'Yuan Wang',
-            plugins: [starlightBlog()],
+            credits: true,
+            plugins: [starlightBlog({
+            	  
+            }
+            )],
+            // components: {
+            //    Footer: './src/components/Footer.astro'
+            //},
+
 			social: {
 				github: 'https://github.com/yuanw/blog',
 			},
