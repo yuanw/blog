@@ -10,7 +10,7 @@ export default defineConfig({
 			title: 'Yuan Wang',
             credits: true,
             plugins: [starlightBlog({
-            	  prefix: 'posts'
+            	  
             }
             )],
             // components: {
