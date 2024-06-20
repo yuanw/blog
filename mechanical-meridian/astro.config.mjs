@@ -4,6 +4,9 @@ import starlightBlog from 'starlight-blog';
 
 // https://astro.build/config
 export default defineConfig({
+ redirects: {
+              "/posts/[...slug].html":"/blog/[...slug]"
+            },
 	integrations: [
 		starlight({
 			title: 'Yuan Wang',
@@ -12,6 +15,7 @@ export default defineConfig({
             // components: {
             //    Footer: './src/components/Footer.astro'
             //},
+
 			social: {
 				github: 'https://github.com/yuanw/blog',
 			},
