@@ -10,7 +10,7 @@ export default defineConfig({
 			title: 'Yuan Wang',
             credits: true,
             plugins: [starlightBlog(
-                        'perfix': 'posts',
+                prefix: 'posts',
             )],
             // components: {
             //    Footer: './src/components/Footer.astro'
