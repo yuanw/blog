@@ -28,11 +28,11 @@ With java multi-line support, and `bind` method has common sql-injection protect
 
 Bind the same parm multiple times  `org.springframework.r2dbc.core.DatabaseClient.sql` wouldn't yield a batch update.
 
-Luckily, `DatabaseClient` has [`inConnectionMany`](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/r2dbc/core/ConnectionAccessor.html#inConnectionMany(java.util.function.Function)) method 
+Luckily, `DatabaseClient` has [`inConnectionMany`](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/r2dbc/core/ConnectionAccessor.html#inConnectionMany(java.util.function.Function)) method.
 
-https://r2dbc.io/spec/1.0.0.RELEASE/api/io/r2dbc/spi/Statement.html
+Combining with [Statement](https://r2dbc.io/spec/1.0.0.RELEASE/api/io/r2dbc/spi/Statement.html), one can do batch in the following fashion.
 
-```java
+```java "statement.add();"
 import org.springframework.r2dbc.core.DatabaseClient;
 import io.r2dbc.spi.Statement;
 import reactor.core.publisher.Flux;
@@ -41,9 +41,10 @@ import reactor.core.publisher.Flux;
 DatabaseClient databaseClient;
 ....
 databaseClient.inConnectionMany(connection -> {
-   Statement statement = connection.createStatement("INSERT INTO t_actor (first_name, last_name ) VALUES (:fName, :lName"));
+   Statement statement = connection.createStatement("INSERT INTO t_actor (first_name, last_name ) VALUES (?fName, ?lName"));
     statement.bind("fName", ...)
         .bind("lName", ...);
+    // statement.add need to called for non-head non-tail element
     statement.add();
     statement.bind("fName", ...)
         .bind("lName", ...);
@@ -51,38 +52,36 @@ databaseClient.inConnectionMany(connection -> {
 });
 ```
 
+`Statement.add` needs to invoked correctly.
+> Save the current binding and create a new one to indicate the statement should be executed again with new bindings provided through subsequent calls to bind and bindNull.
+
+Otherwise, `java.lang.IllegalStateException: Not all parameter values are provided yet.` might occur.
 ## Why not use [Batch](https://r2dbc.io/spec/1.0.0.RELEASE/api/io/r2dbc/spi/Batch.html)
 
 [Batch](https://r2dbc.io/spec/1.0.0.RELEASE/api/io/r2dbc/spi/Batch.html) doesn't support bind. It only can work with string. Unless the batch update only involve constant, which sounds unlikely, sql-injection should be a concern, using Statement should be a safer approach.
 
 
-java.lang.IllegalStateException: Not all parameter values are provided yet.)
+# Compose batches
+
+`Flux.thenMany` could be use to compose two `Flux.from(Statement.execute)`
 
 # Transaction
+
+One can add transaction management around the batch update in the follow fashion.
+
 ```java
-import com.google.common.collect.Streams;
-import io.r2dbc.spi.Result;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.IntStream;
-import lombok.Builder;
 import lombok.NonNull;
+import lombok.Builder;
 import lombok.Value;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.transaction.ReactiveTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.reactive.TransactionalOperator;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.util.function.Tuple2;
-import reactor.util.function.Tuples;
 
+@Value
 @Builder
 class Test  {
-
- 
     @NonNull DatabaseClient databaseClient;
     @NonNull ReactiveTransactionManager tm;
     @Builder.Default int isolationLevel = TransactionDefinition.ISOLATION_REPEATABLE_READ;
@@ -97,49 +96,12 @@ class Test  {
   }
   
   Flux<Result> update() {
-  databaseClient.inConnectionMany(
-                  connection -> {
-                    var statments = connection.createStatement(insertSql());
-                    events.forEach(
-                        event -> {
-                          if (event.getT1() > 0) {
-                            statments.add();
-                          }
-                          statments
-                              .bind("id", event.getT2().getId())
-                              .bind("topic", event.getT2().getTopic())
-                              .bind("auxHeaders", event.getT2().getAuxHeaders());
-
-                          if (event.getT2().getPayload() == null) {
-                            statments.bindNull("payload", String.class);
-                          } else {
-                            statments.bind("payload", event.getT2().getPayload());
-                          }
-                          if (event.getT2().getId() == null) {
-                            statments.bindNull("messageKey", String.class);
-                          } else {
-                            statments.bind("messageKey", event.getT2().getKey());
-                          }
-                        });
-                    Flux<Result> results = Flux.from(statments.execute());
-
-                    if (config.disableOutboxDelete) {
-                      return results;
-                    } else {
-                      var deleteStatements = connection.createStatement(deleteSql());
-
-                      events.forEach(
-                          event -> {
-                            if (event.getT1() > 0) {
-                              deleteStatements.add();
-                            }
-                            deleteStatements.bind("id", event.getT2().getId());
-                          });
-                      return results.thenMany(Flux.from(deleteStatements.execute()));
-                    }
-                  });
+    return TransactionalOperator.create(tm, getTxnDfn())
+        .execute(
+            status -> {
+              return batchOp();
+            });
   }
  
  }
 ```
-https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/r2dbc/core/DatabaseClient.html
