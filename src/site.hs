@@ -4,7 +4,6 @@
 {-# LANGUAGE DerivingVia #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TypeApplications #-}
 
 module Main where
 
@@ -176,20 +175,11 @@ posts =
 
 readPost :: FilePath -> Action Post
 readPost postPath = do
-  date <-
-    parseTimeM False defaultTimeLocale "%Y-%-m-%-d"
-      . take 10
-      . Shake.takeBaseName
-      $ postPath
-  let formattedDate =
-        T.pack $ formatTime @UTCTime defaultTimeLocale "%b %e, %Y" date
-
   (post, html) <- markdownToHtml postPath
   Shake.putInfo $ "Read " <> postPath
   return $
     post
-      { postDate = Just formattedDate
-      , postContent = Just html
+      { postContent = Just html
       , postLink = Just . T.pack $ "/" <> Shake.dropExtension postPath <> "/"
       }
 
