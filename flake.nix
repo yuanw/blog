@@ -1,52 +1,22 @@
 {
   description = "repo for Yuan's blog";
-
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
+    flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
+    nixos-unified.url = "github:srid/nixos-unified";
     haskell-flake.url = "github:srid/haskell-flake";
-    treefmt-nix.url = "github:numtide/treefmt-nix";
-    treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
-    devenv.url = "github:cachix/devenv";
+    fourmolu-nix.url = "github:jedimahdi/fourmolu-nix";
+
+    git-hooks.url = "github:cachix/git-hooks.nix";
+    git-hooks.flake = false;
   };
-  outputs = inputs@{ self, nixpkgs, flake-parts, ... }:
-    flake-parts.lib.mkFlake { inherit inputs; } {
-      systems = [ "x86_64-linux" "aarch64-darwin" ];
-      imports = [
-        inputs.haskell-flake.flakeModule
-        inputs.treefmt-nix.flakeModule
-        inputs.devenv.flakeModule
-        # ./mechanical-meridian/flake-module.nix
-      ];
-      perSystem = { self', lib, config, pkgs, ... }:
 
-        {
-          haskellProjects.default = {
-            #  autoWire = [ "packages" "apps" "checks" ];
-            devShell = {
-              hlsCheck.enable = false;
-            };
-          };
-          treefmt.config = {
-            package = pkgs.treefmt;
-            programs.nixpkgs-fmt.enable = true;
-          };
-          # devenv.shells.default = {
-          #   # https://devenv.sh/reference/options/
-          #   packages = [
-          #     config.treefmt.build.wrapper
-          #     config.haskellProjects.default.outputs.devShell
-          #   ];
-
-          #   # scripts.preview.exec = ''
-          #   #   npx http-server ${config.packages.blog}
-          #   # '';
-          # };
-
-          # packages.default = config.packages.blog;
-
-         packages.default = self'.packages.default;
-
-        };
-    };
+  outputs = inputs:
+    # This will import ./nix/modules/flake/*.nix
+    # cf. https://nixos-unified.org/autowiring.html#flake-parts
+    #
+    # To write your own Nix, add or edit files in ./nix/modules/flake/
+    inputs.nixos-unified.lib.mkFlake
+      { inherit inputs; root = ./.; };
 }
