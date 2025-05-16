@@ -35,8 +35,6 @@
             # https://devenv.sh/reference/options/
             packages = [
               config.treefmt.build.wrapper
-              config.packages.nodejs
-
             ];
 
             scripts.preview.exec = ''
