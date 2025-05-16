@@ -48,9 +48,9 @@ buildTargets = do
   assetPaths <- Shake.getDirectoryFiles "content" assetGlobs
   Shake.need $ map (outputDir </>) assetPaths
 
-  Shake.need $ map indexHtmlOutputPath pagePaths
+  -- Shake.need $ map indexHtmlOutputPath pagePaths
 
-  postPaths <- Shake.getDirectoryFiles "" postGlobs
+  postPaths <- Shake.getDirectoryFiles "content" postGlobs
   Shake.need $ map indexHtmlOutputPath postPaths
 
   Shake.need $ map (outputDir </>) ["archive/index.html", "index.html"]
