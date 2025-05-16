@@ -24,7 +24,7 @@
         runHook postInstall
       '';
       npmDepsHash = "sha256-a6sSEqjVqfX6xRtJodhboB978zXwmaAKwboTXZFuE8k=";
-      
+
       # npmDepsHash = lib.fakeHash; 
 
     };
