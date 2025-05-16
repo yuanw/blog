@@ -9,7 +9,7 @@ import Data.Kind (Type)
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import Data.Text qualified as T
-import Hakyll (Configuration (destinationDirectory, previewPort, providerDirectory), Context, FeedConfiguration (..), Item (..), Tags, applyAsTemplate, buildTags, compile, compressCssCompiler, constField, copyFileCompiler, create, dateField, defaultConfiguration, defaultContext, defaultHakyllWriterOptions, fromCapture, fromList, getResourceBody, hakyllWith, idRoute, listField, loadAll, loadAndApplyTemplate, makeItem, match, pandocCompiler, pandocCompilerWith, recentFirst, relativizeUrls, renderAtom, route, saveSnapshot, setExtension, tagsField, tagsRules, templateBodyCompiler, writePandocWith, (.||.))
+import Hakyll (Compiler, Configuration (destinationDirectory, previewPort, providerDirectory), Context, FeedConfiguration (..), Item (..), Tags, applyAsTemplate, buildTags, compile, compressCssCompiler, constField, copyFileCompiler, create, dateField, defaultConfiguration, defaultContext, defaultHakyllWriterOptions, fromCapture, fromList, getResourceBody, hakyllWith, idRoute, listField, loadAll, loadAndApplyTemplate, makeItem, match, pandocCompiler, pandocCompilerWith, recentFirst, relativizeUrls, renderAtom, route, saveSnapshot, setExtension, tagsField, tagsRules, templateBodyCompiler, writePandocWith, (.||.))
 import Hakyll.Web.Pandoc (defaultHakyllReaderOptions)
 import System.Environment (lookupEnv)
 import Text.Pandoc.Definition (Block (..), Inline (..), Pandoc (..))
