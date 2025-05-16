@@ -45,7 +45,7 @@
 
           # packages.default = config.packages.blog;
 
-packages.default = self'.packages.default;
+         packages.default = self'.packages.default;
 
         };
     };
