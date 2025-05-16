@@ -14,7 +14,7 @@ repl *ARGS:
 run:
     ghcid -T :main
 
-server:
+serve:
 	cabal run blog clean
 	cabal run blog build
 	warp -d _site
