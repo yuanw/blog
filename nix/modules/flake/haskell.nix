@@ -35,7 +35,7 @@
 
       # Add your package overrides here
       settings = {
-        haskell-template = {
+        blog = {
           stan = true;
           # haddock = false;
         };
@@ -56,7 +56,7 @@
     };
 
     # Default package & app.
-    packages.default = self'.packages.haskell-template;
-    apps.default = self'.apps.haskell-template;
+    packages.default = self'.packages.blog;
+    apps.default = self'.apps.blog;
   };
 }
