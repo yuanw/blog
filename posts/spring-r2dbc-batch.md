@@ -31,7 +31,7 @@ Luckily, `DatabaseClient` has [`inConnectionMany`](https://docs.spring.io/spring
 
 Combining with [Statement](https://r2dbc.io/spec/1.0.0.RELEASE/api/io/r2dbc/spi/Statement.html), one can do batch in the following fashion.
 
-```java "statement.add();"
+```java
 import org.springframework.r2dbc.core.DatabaseClient;
 import io.r2dbc.spi.Statement;
 import reactor.core.publisher.Flux;
