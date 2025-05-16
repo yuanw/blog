@@ -46,9 +46,6 @@ buildTargets :: Action ()
 buildTargets = do
   assetPaths <- Shake.getDirectoryFiles "" assetGlobs
   Shake.need $ map (outputDir </>) assetPaths
-
-  -- Shake.need $ map indexHtmlOutputPath pagePaths
-
   postPaths <- Shake.getDirectoryFiles "" postGlobs
   Shake.need $ map indexHtmlOutputPath postPaths
 
@@ -65,13 +62,13 @@ buildTargets = do
 
 -- start snippet paths
 assetGlobs :: [String]
-assetGlobs = ["css/*.css", "images/*.png"]
+assetGlobs = ["css/*.css", "js/*.js", "images/*.png"]
 
 pagePaths :: [String]
-pagePaths = ["about.md", "contact.md"]
+pagePaths = []
 
 postGlobs :: [String]
-postGlobs = ["posts/*.md"]
+postGlobs = ["posts/*.md", "posts/*.org"]
 
 indexHtmlOutputPath :: FilePath -> FilePath
 indexHtmlOutputPath srcPath =
