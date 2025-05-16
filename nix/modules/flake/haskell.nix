@@ -14,9 +14,9 @@
         inherit root;
         fileset = lib.fileset.unions [
           (root + /src)
-          (root + /haskell-template.cabal)
-          (root + /LICENSE)
-          (root + /README.md)
+          (root + /blog.cabal)
+          # (root + /LICENSE)
+          # (root + /README.md)
         ];
       });
 
