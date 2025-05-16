@@ -13,3 +13,8 @@ repl *ARGS:
 # Run ghcid -- auto-recompile and run `main` function
 run:
     ghcid -T :main
+
+server:
+	cabal run blog clean
+	cabal run blog build
+	warp -d _site
