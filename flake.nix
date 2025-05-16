@@ -22,7 +22,7 @@
 
         {
           haskellProjects.default = {
-              autoWire = [ "packages" "apps" "checks" ];
+            #  autoWire = [ "packages" "apps" "checks" ];
             devShell = {
               hlsCheck.enable = false;
             };
@@ -31,19 +31,19 @@
             package = pkgs.treefmt;
             programs.nixpkgs-fmt.enable = true;
           };
-          devenv.shells.default = {
-            # https://devenv.sh/reference/options/
-            packages = [
-              config.treefmt.build.wrapper
-              config.haskellProjects.default.outputs.devShell
-            ];
+          # devenv.shells.default = {
+          #   # https://devenv.sh/reference/options/
+          #   packages = [
+          #     config.treefmt.build.wrapper
+          #     config.haskellProjects.default.outputs.devShell
+          #   ];
 
-            # scripts.preview.exec = ''
-            #   npx http-server ${config.packages.blog}
-            # '';
-          };
+          #   # scripts.preview.exec = ''
+          #   #   npx http-server ${config.packages.blog}
+          #   # '';
+          # };
 
-          packages.default = config.packages.blog;
+          # packages.default = config.packages.blog;
 
 
 
