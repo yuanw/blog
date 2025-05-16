@@ -14,6 +14,7 @@
         nixd
         ghciwatch
         haskellPackages.wai-app-static
+        haskellPackages.hakyll
       ];
     };
   };
