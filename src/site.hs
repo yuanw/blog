@@ -152,9 +152,6 @@ indexHtmlSourcePath =
     . Shake.dropTrailingPathSeparator
     . Shake.dropFileName
 
--- end snippet pages-2
-
--- start snippet posts-1
 data Post = Post
   { postTitle :: Text
   , postAuthor :: Maybe Text
@@ -166,9 +163,6 @@ data Post = Post
   deriving (Show, Generic)
   deriving (FromJSON, ToJSON) via PrefixedSnake "post" Post
 
--- end snippet posts-1
-
--- start snippet posts-2
 posts :: Rules ()
 posts =
   map indexHtmlOutputPath postGlobs |%> \target -> do
@@ -199,9 +193,6 @@ readPost postPath = do
       , postLink = Just . T.pack $ "/" <> Shake.dropExtension postPath <> "/"
       }
 
--- end snippet posts-2
-
--- start snippet archive
 archive :: Rules ()
 archive =
   outputDir </> "archive/index.html" %> \target -> do
@@ -246,9 +237,6 @@ home =
     applyTemplateAndWrite "default.html" page target
     Shake.putInfo $ "Built " <> target
 
--- end snippet home
-
--- start snippet pandoc
 markdownToHtml :: (FromJSON a) => FilePath -> Action (a, Text)
 markdownToHtml filePath = do
   content <- Shake.readFile' filePath
@@ -289,9 +277,6 @@ markdownToHtml filePath = do
       Pandoc.runIO (Pandoc.setVerbosity Pandoc.ERROR >> action)
         >>= either (fail . show) return
 
--- end snippet pandoc
-
--- start snippet mustache
 applyTemplate :: (ToJSON a) => String -> a -> Action Text
 applyTemplate templateName context = do
   tmpl <- readTemplate $ "templates" </> templateName
