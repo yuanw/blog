@@ -45,7 +45,7 @@ outputDir = "_site"
 -- start snippet build-targets
 buildTargets :: Action ()
 buildTargets = do
-  assetPaths <- Shake.getDirectoryFiles "" assetGlobs
+  assetPaths <- Shake.getDirectoryFiles "content" assetGlobs
   Shake.need $ map (outputDir </>) assetPaths
 
   Shake.need $ map indexHtmlOutputPath pagePaths
