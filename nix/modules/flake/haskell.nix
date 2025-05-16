@@ -36,7 +36,7 @@
       # Add your package overrides here
       settings = {
         blog = {
-          stan = true;
+          # stan = true;
           # haddock = false;
         };
         /*
