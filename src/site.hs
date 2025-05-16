@@ -11,7 +11,7 @@ import Control.Monad (forM, void)
 import Data.Aeson.Types (Result (..))
 import Data.Aeson.Types qualified as A
 import Data.HashMap.Strict qualified as HM
-import Data.List (nub, sortOn)
+import Data.List (isSuffixOf, nub, sortOn)
 import Data.Ord qualified as Ord
 import Data.Text (Text)
 import Data.Text qualified as T
@@ -229,7 +229,7 @@ markdownToHtml filePath = do
   content <- Shake.readFile' filePath
   Shake.quietly . Shake.traced "Markdown to HTML" $ do
     pandoc@(Pandoc meta _) <-
-      runPandoc . Pandoc.readMarkdown readerOptions . T.pack $ content
+      runPandoc . (if filePath `isSuffixOf` ".md" then Pandoc.readMarkdown else Pandoc.readOrg) readerOptions . T.pack $ content
     meta' <- fromMeta meta
     html <- runPandoc . Pandoc.writeHtml5String writerOptions $ pandoc
     return (meta', html)
