@@ -4,66 +4,30 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
-    dream2nix.url = "github:nix-community/dream2nix";
-    flake-root.url = "github:srid/flake-root";
+
+    haskell-flake.url = "github:srid/haskell-flake";
     treefmt-nix.url = "github:numtide/treefmt-nix";
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
     devenv.url = "github:cachix/devenv";
   };
-  outputs = inputs@{ self, nixpkgs, flake-parts, dream2nix, ... }:
+  outputs = inputs@{ self, nixpkgs, flake-parts , ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [ "x86_64-linux" "aarch64-darwin" ];
       imports = [
-        inputs.flake-root.flakeModule
+        inputs.haskell-flake.flakeModule
         inputs.treefmt-nix.flakeModule
         inputs.devenv.flakeModule
-        ./mechanical-meridian/flake-module.nix
+       # ./mechanical-meridian/flake-module.nix
       ];
       perSystem = { self', lib, config, pkgs, ... }:
 
         {
-          packages.nodejs = pkgs.nodejs_22;
+        
 
-          packages.dream-blog = dream2nix.lib.evalModules {
-            packageSets.nixpkgs = pkgs;
-            modules = [
-              {
-                imports = [
-                  dream2nix.modules.dream2nix.nodejs-devshell-v3
-                  # dream2nix.modules.dream2nix.nodejs-package-lock-v3
-                  # dream2nix.modules.dream2nix.nodejs-granular-v3
-                ];
-
-                mkDerivation = {
-                  SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";                  src = ./mechanical-meridian;
-                };
-
-                deps = { nixpkgs, ... }: {
-                  inherit
-                    (nixpkgs)
-                    fetchFromGitHub
-                    stdenv
-                    mkShell
-                    rsync
-                    cacert
-                    ;
-                };
-
-                name = "dream-blog";
-                version = "0.1.0";
-              }
-              {
-                paths.projectRoot = ./.;
-                # can be changed to ".git" or "flake.nix" to get rid of .project-root
-                paths.projectRootFile = "flake.nix";
-                paths.package = ./.;
-              }
-            ];
-
-          };
+          
 
           treefmt.config = {
-            inherit (config.flake-root) projectRootFile;
+          
             package = pkgs.treefmt;
             programs.nixpkgs-fmt.enable = true;
           };
