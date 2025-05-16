@@ -25,6 +25,14 @@
 
       # Packages to add on top of `basePackages`
       packages = {
+        pandoc-sidenote = {
+          source = (builtins.fetchGit {
+            url = "https://github.com/jez/pandoc-sidenote";
+            rev = "3658e7da9453fb6ab817d8eef5d1928cbcd3afbf";
+          });
+          cabalFlags.html-sidenotes = true;
+        };
+
         # Add source or Hackage overrides here
         # (Local packages are added automatically)
         /*

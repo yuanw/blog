@@ -1,298 +1,180 @@
-{-# LANGUAGE ApplicativeDo #-}
-{-# LANGUAGE DataKinds #-}
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE DerivingVia #-}
+{-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Main where
-
-import Control.Monad (forM, void)
-import Data.Aeson.Types (Result (..))
-import Data.Aeson.Types qualified as A
-import Data.HashMap.Strict qualified as HM
-import Data.List (isSuffixOf, nub, sortOn)
-import Data.Ord qualified as Ord
+--------------------------------------------------------------------------------
+import Control.Monad.State (State, foldM, get, modify', runState)
+import Data.Functor.Identity (runIdentity)
+import Data.Kind (Type)
+import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import Data.Text qualified as T
-import Data.Time (UTCTime, defaultTimeLocale, formatTime, parseTimeM)
-import Deriving.Aeson
-import Deriving.Aeson.Stock (PrefixedSnake)
-import Development.Shake (Action, Rules, (%>), (|%>), (~>))
-import Development.Shake qualified as Shake
-import Development.Shake.FilePath ((<.>), (</>))
-import Development.Shake.FilePath qualified as Shake
-import Text.Mustache qualified as Mus
-import Text.Mustache.Compile qualified as Mus
-import Text.Pandoc (Block (Plain), Meta (..), MetaValue (..), Pandoc (..))
-import Text.Pandoc qualified as Pandoc
+import Hakyll (Configuration (destinationDirectory, previewPort, providerDirectory), Context, FeedConfiguration (..), Item (..), Tags, applyAsTemplate, buildTags, compile, compressCssCompiler, constField, copyFileCompiler, create, dateField, defaultConfiguration, defaultContext, defaultHakyllWriterOptions, fromCapture, fromList, getResourceBody, hakyllWith, idRoute, listField, loadAll, loadAndApplyTemplate, makeItem, match, pandocCompiler, pandocCompilerWith, recentFirst, relativizeUrls, renderAtom, route, saveSnapshot, setExtension, tagsField, tagsRules, templateBodyCompiler, writePandocWith, (.||.))
+import Hakyll.Web.Pandoc (defaultHakyllReaderOptions)
+import System.Environment (lookupEnv)
+import Text.Pandoc.Definition (Block (..), Inline (..), Pandoc (..))
+import Text.Pandoc.Options (
+  WriterOptions,
+  writerNumberSections,
+  writerTOCDepth,
+  writerTableOfContents,
+  writerTemplate,
+ )
+import Text.Pandoc.Shared (tshow)
+import Text.Pandoc.SideNoteHTML (usingSideNotesHTML)
+import Text.Pandoc.Templates (
+  Template,
+  compileTemplate,
+ )
+import Text.Pandoc.Walk (walkM)
 
-main :: IO ()
-main = Shake.shakeArgs Shake.shakeOptions $ do
-  Shake.withTargetDocs "Build the site" $
-    "build" ~> buildTargets
-  Shake.withTargetDocs "Clean the built site" $
-    "clean" ~> Shake.removeFilesAfter outputDir ["//*"]
+--------------------------------------------------------------------------------
 
-  Shake.withoutTargets buildRules
+myFeedConfiguration :: FeedConfiguration
+myFeedConfiguration =
+  FeedConfiguration
+    { feedTitle = "Yuan Wang's blog"
+    , feedDescription = "Yuan Wang's blog feed"
+    , feedAuthorName = "Yuan Wang"
+    , feedAuthorEmail = "blog@yuanwang.ca"
+    , feedRoot = "https://yuanwang.ca"
+    }
 
-outputDir :: String
-outputDir = "_site"
+config :: Configuration
+config =
+  defaultConfiguration
+    { destinationDirectory = "dist"
+    , previewPort = 5000
+    , providerDirectory = "content"
+    }
 
--- end snippet main
+-- | Adds writer options for Table of Content rendering.
+withTableOfContents :: WriterOptions -> WriterOptions
+withTableOfContents options =
+  options
+    { writerNumberSections = False
+    , writerTableOfContents = True
+    , writerTOCDepth = 2
+    , writerTemplate = Just tocTemplate
+    }
 
--- start snippet build-targets
-buildTargets :: Action ()
-buildTargets = do
-  assetPaths <- Shake.getDirectoryFiles "" assetGlobs
-  Shake.need $ map (outputDir </>) assetPaths
-  postPaths <- Shake.getDirectoryFiles "" postGlobs
-  Shake.need $ map indexHtmlOutputPath postPaths
-
-  Shake.need $ map (outputDir </>) ["archive/index.html", "index.html"]
-
-  posts <- forM postPaths readPost
-  Shake.need
-    [ outputDir </> "tags" </> T.unpack tag </> "index.html"
-    | post <- posts
-    , tag <- postTags post
-    ]
-
--- end snippet build-targets
-
--- start snippet paths
-assetGlobs :: [String]
-assetGlobs = ["css/*.css", "js/*.js", "images/*.png"]
-
-pagePaths :: [String]
-pagePaths = []
-
-postGlobs :: [String]
-postGlobs = ["posts/*.md", "posts/*.org"]
-
-indexHtmlOutputPath :: FilePath -> FilePath
-indexHtmlOutputPath srcPath =
-  outputDir </> Shake.dropExtension srcPath </> "index.html"
-
--- end snippet paths
-
--- start snippet build-targets-parallel
-buildTargetsParallel :: Action ()
-buildTargetsParallel = do
-  (assetPaths, postPaths) <-
-    Shake.getDirectoryFiles "" assetGlobs
-      `Shake.par` Shake.getDirectoryFiles "" postGlobs
-  posts <- Shake.forP postPaths readPost
-
-  void $
-    Shake.parallel
-      [ Shake.need $
-          map
-            (outputDir </>)
-            ( assetPaths
-                <> ["archive/index.html", "index.html"]
-                <> [ "tags" </> T.unpack tag </> "index.html"
-                   | post <- posts
-                   , tag <- postTags post
-                   ]
-            )
-      , Shake.need $ map indexHtmlOutputPath (pagePaths <> postPaths)
+tocTemplate :: Template T.Text
+tocTemplate =
+  either error id . runIdentity . compileTemplate "" $
+    T.unlines
+      [ "<div id=\"toc\" class=\"hidden\"><div class=\"header\">Table of Contents</div>"
+      , "$toc$"
+      , "</div>"
+      , "$body$"
       ]
 
--- end snippet build-targets-parallel
+myWriter :: WriterOptions
+myWriter = defaultHakyllWriterOptions
 
--- start snippet build-rules
-buildRules :: Rules ()
-buildRules = do
-  assets
-  pages
-  posts
-  archive
-  tags
-  home
+myPandocCompiler :: Compiler (Item String)
+myPandocCompiler =
+  pandocCompilerWithTransformM
+    defaultHakyllReaderOptions
+    myWriter
+    (pure . usingSidenotes myWriter <=< addSectionLinks)
 
--- end snippet build-rules
+-- https://frasertweedale.github.io/blog-fp/posts/2020-12-10-hakyll-section-links.html
+addSectionLinks :: Pandoc -> Pandoc
+addSectionLinks = walk \case
+  Header n attr@(idAttr, _, _) inlines ->
+    let link = Link ("", ["floatleft", "sec-link"], []) [Str "§"] ("#" <> idAttr, "")
+     in Header n attr (inlines <> [link])
+  block -> block
 
--- start snippet assets
-assets :: Rules ()
-assets =
-  map (outputDir </>) assetGlobs |%> \target -> do
-    let src = Shake.dropDirectory1 target
-    Shake.copyFileChanged src target
-    Shake.putInfo $ "Copied " <> target <> " from " <> src
+--------------------------------------------------------------------------------
+main :: IO ()
+main = do
+  includeDraft <- lookupEnv "PREVIEW"
+  let previewMode = fromMaybe "FALSE" includeDraft == "TRUE"
+      postsPattern =
+        if previewMode
+          then "posts/*.org" .||. "drafts/*.org" .||. "drafts/*.md" .||. "posts/*.md"
+          else "posts/*.org" .||. "posts/*.md"
+  hakyllWith config $ do
+    match "images/*" $ do
+      route idRoute
+      compile copyFileCompiler
+    match "js/*" $ do
+      route idRoute
+      compile copyFileCompiler
+    match "css/*" $ do
+      route idRoute
+      compile compressCssCompiler
+    match (fromList []) $ do
+      route $ setExtension "html"
+      compile $
+        myPandocCompiler
+          >>= loadAndApplyTemplate "templates/default.html" defaultContext
+          >>= relativizeUrls
+    tags <- buildTags postsPattern (fromCapture "tags/*.html")
+    tagsRules tags $ \tag pat -> do
+      let title = "Posts with \"" ++ tag ++ "\""
+      route idRoute
+      compile $ do
+        posts <- recentFirst =<< loadAll pat
+        let ctx =
+              constField "title" title
+                `mappend` listField "posts" (postCtxWithTags tags) (return posts)
+                `mappend` defaultContext
+        makeItem ""
+          >>= loadAndApplyTemplate "templates/tags.html" ctx
+          >>= loadAndApplyTemplate "templates/default.html" ctx
+          >>= relativizeUrls
+    match postsPattern $ do
+      route $ setExtension "html"
+      compile $
+        pandocCompilerWith defaultHakyllReaderOptions (withTableOfContents defaultHakyllWriterOptions)
+          >>= saveSnapshot "content"
+          >>= loadAndApplyTemplate "templates/post.html" (postCtxWithTags tags)
+          >>= loadAndApplyTemplate "templates/default.html" (postCtxWithTags tags)
+          >>= relativizeUrls
+    create ["CNAME"] $ do
+      route idRoute
+      compile $ makeItem ("yuanwang.ca" :: String)
+    create ["atom.xml"] $ do
+      route idRoute
+      compile $ do
+        let feedCtx = postCtx
+        posts <-
+          fmap (take 10) . recentFirst
+            =<< loadAll postsPattern
+        renderAtom myFeedConfiguration feedCtx posts
+    create ["archive.html"] $ do
+      route idRoute
+      compile $ do
+        posts <- recentFirst =<< loadAll postsPattern
+        let archiveCtx =
+              listField "posts" postCtx (return posts)
+                `mappend` constField "title" "Archives"
+                `mappend` defaultContext
+        makeItem ""
+          >>= loadAndApplyTemplate "templates/archive.html" archiveCtx
+          >>= loadAndApplyTemplate "templates/default.html" archiveCtx
+          >>= relativizeUrls
 
--- end snippet assets
+    match "index.html" $ do
+      route idRoute
+      compile $ do
+        posts <- recentFirst =<< loadAll postsPattern
+        let indexCtx =
+              listField "posts" postCtx (return posts)
+                `mappend` constField "title" "Home"
+                `mappend` defaultContext
+        getResourceBody
+          >>= applyAsTemplate indexCtx
+          >>= loadAndApplyTemplate "templates/default.html" indexCtx
+          >>= relativizeUrls
+    match "templates/*" $ compile templateBodyCompiler
 
--- start snippet pages-1
-data Page = Page {pageTitle :: Text, pageContent :: Text}
-  deriving (Show, Generic)
-  deriving (ToJSON) via PrefixedSnake "page" Page
+--------------------------------------------------------------------------------
+postCtx :: Context String
+postCtx =
+  dateField "date" "%B %e, %Y" <> defaultContext
 
--- end snippet pages-1
-
--- start snippet pages-2
-pages :: Rules ()
-pages =
-  map indexHtmlOutputPath pagePaths |%> \target -> do
-    let src = indexHtmlSourcePath target
-    (meta, html) <- markdownToHtml src
-
-    let page = Page (meta HM.! ("title" :: String)) html
-    applyTemplateAndWrite "default.html" page target
-    Shake.putInfo $ "Built " <> target <> " from " <> src
-
-indexHtmlSourcePath :: FilePath -> FilePath
-indexHtmlSourcePath =
-  Shake.dropDirectory1
-    . (<.> "md")
-    . Shake.dropTrailingPathSeparator
-    . Shake.dropFileName
-
-data Post = Post
-  { postTitle :: Text
-  , postAuthor :: Maybe Text
-  , postTags :: [Text]
-  , postDate :: Maybe Text
-  , postContent :: Maybe Text
-  , postLink :: Maybe Text
-  }
-  deriving (Show, Generic)
-  deriving (FromJSON, ToJSON) via PrefixedSnake "post" Post
-
-posts :: Rules ()
-posts =
-  map indexHtmlOutputPath postGlobs |%> \target -> do
-    let src = indexHtmlSourcePath target
-    post <- readPost src
-    postHtml <- applyTemplate "post.html" post
-
-    let page = Page (postTitle post) postHtml
-    applyTemplateAndWrite "default.html" page target
-    Shake.putInfo $ "Built " <> target <> " from " <> src
-
-readPost :: FilePath -> Action Post
-readPost postPath = do
-  (post, html) <- markdownToHtml postPath
-  Shake.putInfo $ "Read " <> postPath
-  return $
-    post
-      { postContent = Just html
-      , postLink = Just . T.pack $ "/" <> Shake.dropExtension postPath <> "/"
-      }
-
-archive :: Rules ()
-archive =
-  outputDir </> "archive/index.html" %> \target -> do
-    postPaths <- Shake.getDirectoryFiles "" postGlobs
-    posts <- sortOn (Ord.Down . postDate) <$> forM postPaths readPost
-    writeArchive (T.pack "Archive") posts target
-
-writeArchive :: Text -> [Post] -> FilePath -> Action ()
-writeArchive title posts target = do
-  html <- applyTemplate "archive.html" $ HM.singleton ("posts" :: String) posts
-  applyTemplateAndWrite "default.html" (Page title html) target
-  Shake.putInfo $ "Built " <> target
-
--- end snippet archive
-
--- start snippet tags
-tags :: Rules ()
-tags =
-  outputDir </> "tags/*/index.html" %> \target -> do
-    let tag = T.pack $ Shake.splitDirectories target !! 2
-    postPaths <- Shake.getDirectoryFiles "" postGlobs
-    posts <-
-      sortOn (Ord.Down . postDate)
-        . filter ((tag `elem`) . postTags)
-        <$> forM postPaths readPost
-    writeArchive (T.pack "Posts tagged " <> tag) posts target
-
--- end snippet tags
-
--- start snippet home
-home :: Rules ()
-home =
-  outputDir </> "index.html" %> \target -> do
-    postPaths <- Shake.getDirectoryFiles "" postGlobs
-    posts <-
-      take 3
-        . sortOn (Ord.Down . postDate)
-        <$> forM postPaths readPost
-    html <- applyTemplate "home.html" $ HM.singleton ("posts" :: String) posts
-
-    let page = Page (T.pack "Home") html
-    applyTemplateAndWrite "default.html" page target
-    Shake.putInfo $ "Built " <> target
-
-markdownToHtml :: (FromJSON a) => FilePath -> Action (a, Text)
-markdownToHtml filePath = do
-  -- _ <- Shake.traced "Markdown to HTML"
-  Shake.putInfo $ "markdownToHtml " <> filePath
-  content <- Shake.readFile' filePath
-  Shake.quietly . Shake.traced "Markdown to HTML" $ do
-    pandoc@(Pandoc meta _) <-
-      runPandoc . Pandoc.readMarkdown readerOptions . T.pack $ content
-    meta' <- fromMeta meta
-    html <- runPandoc . Pandoc.writeHtml5String writerOptions $ pandoc
-    return (meta', html)
-  where
-    readerOptions =
-      Pandoc.def {Pandoc.readerExtensions = Pandoc.pandocExtensions}
-    writerOptions =
-      Pandoc.def {Pandoc.writerExtensions = Pandoc.pandocExtensions}
-
-    fromMeta (Meta meta) =
-      traverse metaValueToJSON meta
-        >>= ( \case
-                Success res -> pure res
-                Error err -> fail $ "json conversion error:" <> err
-            )
-          . A.fromJSON
-          . A.toJSON
-
-    metaValueToJSON = \case
-      MetaMap m -> A.toJSON <$> traverse metaValueToJSON m
-      MetaList m -> A.toJSONList <$> traverse metaValueToJSON m
-      MetaBool m -> pure $ A.toJSON m
-      MetaString m -> pure $ A.toJSON $ T.strip m
-      MetaInlines m -> metaValueToJSON $ MetaBlocks [Plain m]
-      MetaBlocks m ->
-        fmap (A.toJSON . T.strip)
-          . runPandoc
-          . Pandoc.writePlain Pandoc.def
-          $ Pandoc mempty m
-
-    runPandoc action =
-      Pandoc.runIO (Pandoc.setVerbosity Pandoc.ERROR >> action)
-        >>= either (fail . show) return
-
-applyTemplate :: (ToJSON a) => String -> a -> Action Text
-applyTemplate templateName context = do
-  tmpl <- readTemplate $ "templates" </> templateName
-  case Mus.checkedSubstitute tmpl (A.toJSON context) of
-    ([], text) -> return text
-    (errs, _) ->
-      fail $
-        "Error while substituting template "
-          <> templateName
-          <> ": "
-          <> unlines (map show errs)
-
-applyTemplateAndWrite :: (ToJSON a) => String -> a -> FilePath -> Action ()
-applyTemplateAndWrite templateName context outputPath =
-  applyTemplate templateName context
-    >>= Shake.writeFile' outputPath . T.unpack
-
-readTemplate :: FilePath -> Action Mus.Template
-readTemplate templatePath = do
-  Shake.need [templatePath]
-  eTemplate <-
-    Shake.quietly
-      . Shake.traced "Compile template"
-      $ Mus.localAutomaticCompile templatePath
-  case eTemplate of
-    Right template -> do
-      Shake.need . Mus.getPartials . Mus.ast $ template
-      Shake.putInfo $ "Read " <> templatePath
-      return template
-    Left err -> fail $ show err
+postCtxWithTags :: Tags -> Context String
+postCtxWithTags tags = tagsField "tags" tags <> postCtx

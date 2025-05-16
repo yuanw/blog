@@ -2,6 +2,7 @@
 title: How to send batch SQL update with spring r2dbc
 date: 2024-06-20
 lastUpdated: 2024-06-20
+description: Using Hakyll, github action, and Firebase
 tags:
   - TIL
   - java

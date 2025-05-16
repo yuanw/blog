@@ -2,6 +2,7 @@
 title: setup java IDE with emacs and nix
 date: 2024-06-13
 draft: true
+description: Using Hakyll, github action, and Firebase
 tags: 
   - emacs
 ---

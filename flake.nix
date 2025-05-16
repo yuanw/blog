@@ -7,7 +7,6 @@
     nixos-unified.url = "github:srid/nixos-unified";
     haskell-flake.url = "github:srid/haskell-flake";
     fourmolu-nix.url = "github:jedimahdi/fourmolu-nix";
-
     git-hooks.url = "github:cachix/git-hooks.nix";
     git-hooks.flake = false;
   };
