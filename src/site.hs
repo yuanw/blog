@@ -226,10 +226,12 @@ home =
 
 markdownToHtml :: (FromJSON a) => FilePath -> Action (a, Text)
 markdownToHtml filePath = do
+  -- _ <- Shake.traced "Markdown to HTML"
+  Shake.putInfo $ "markdownToHtml " <> filePath
   content <- Shake.readFile' filePath
   Shake.quietly . Shake.traced "Markdown to HTML" $ do
     pandoc@(Pandoc meta _) <-
-      runPandoc . (if filePath `isSuffixOf` ".md" then Pandoc.readMarkdown else Pandoc.readOrg) readerOptions . T.pack $ content
+      runPandoc . Pandoc.readMarkdown readerOptions . T.pack $ content
     meta' <- fromMeta meta
     html <- runPandoc . Pandoc.writeHtml5String writerOptions $ pandoc
     return (meta', html)
