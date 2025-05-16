@@ -37,9 +37,9 @@
               config.treefmt.build.wrapper
             ];
 
-            scripts.preview.exec = ''
-              npx http-server ${config.packages.blog}
-            '';
+            # scripts.preview.exec = ''
+            #   npx http-server ${config.packages.blog}
+            # '';
           };
 
           packages.default = config.packages.blog;
