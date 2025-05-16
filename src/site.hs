@@ -45,12 +45,12 @@ outputDir = "_site"
 -- start snippet build-targets
 buildTargets :: Action ()
 buildTargets = do
-  assetPaths <- Shake.getDirectoryFiles "content" assetGlobs
+  assetPaths <- Shake.getDirectoryFiles "" assetGlobs
   Shake.need $ map (outputDir </>) assetPaths
 
   -- Shake.need $ map indexHtmlOutputPath pagePaths
 
-  postPaths <- Shake.getDirectoryFiles "content" postGlobs
+  postPaths <- Shake.getDirectoryFiles "" postGlobs
   Shake.need $ map indexHtmlOutputPath postPaths
 
   Shake.need $ map (outputDir </>) ["archive/index.html", "index.html"]
