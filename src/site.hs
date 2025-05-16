@@ -3,7 +3,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 --------------------------------------------------------------------------------
-import Control.Monad.State (State, foldM, get, modify', runState)
+import Control.Monad.State (State, get, modify', runState)
 import Data.Functor.Identity (runIdentity)
 import Data.Kind (Type)
 import Data.Maybe (fromMaybe)
