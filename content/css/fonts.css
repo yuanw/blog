@@ -1,0 +1,61 @@
+@charset "UTF-8";
+
+/* Fonts taken from
+
+     - https://www.huertatipografica.com/en/fonts/alegreya-ht-pro
+     - https://github.com/slotThe/hopf-mono
+
+Originally, this was inspired by and used fonts from
+
+     https://github.com/gwern/gwern.net/tree/master/css
+*/
+
+:root {
+    --proportional-fonts: "Alegreya", serif;
+    --monospace-fonts: "Hopf Mono", monospace;
+    --serif-fonts: "Alegreya", serif;
+}
+
+@font-face {
+    font-family: 'Alegreya';
+    font-weight: normal;
+    font-style: normal;
+    src: url('fonts/Alegreya-Regular.woff2') format('woff2');
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Alegreya';
+    font-weight: normal;
+    font-style: italic;
+    src: url('fonts/Alegreya-Italic.woff2') format('woff2');
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Alegreya';
+    font-weight: bold;
+    font-style: normal;
+    src: url('fonts/Alegreya-Bold.woff2') format('woff2');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Hopf Mono';
+    font-weight: normal;
+    font-style: normal;
+    src: url('fonts/hopf-mono-Regular.woff2') format('woff2');
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Hopf Mono';
+    font-weight: normal;
+    font-style: italic;
+    src: url('fonts/hopf-mono-Italic.woff2') format('woff2');
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Hopf Mono';
+    font-weight: bold;
+    font-style: normal;
+    src: url('fonts/hopf-mono-Bold.woff2') format('woff2');
+    font-display: swap;
+}

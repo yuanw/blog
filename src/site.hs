@@ -71,14 +71,15 @@ tocTemplate =
       ]
 
 myWriter :: WriterOptions
-myWriter = withTableOfContents defaultHakyllWriterOptions
+-- myWriter = withTableOfContents defaultHakyllWriterOptions
+myWriter = defaultHakyllWriterOptions
 
 myPandocCompiler :: Compiler (Item String)
 myPandocCompiler =
   pandocCompilerWithTransform
     defaultHakyllReaderOptions
     myWriter
-    (usingSideNotesHTML myWriter . addSectionLinks)
+    (usingSideNotesHTML myWriter)
 
 -- https://frasertweedale.github.io/blog-fp/posts/2020-12-10-hakyll-section-links.html
 addSectionLinks :: Pandoc -> Pandoc
