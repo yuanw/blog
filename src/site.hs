@@ -3,13 +3,15 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 --------------------------------------------------------------------------------
+
+import Control.Monad ((<=<))
 import Control.Monad.State (State, get, modify', runState)
 import Data.Functor.Identity (runIdentity)
 import Data.Kind (Type)
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import Data.Text qualified as T
-import Hakyll (Compiler, Configuration (destinationDirectory, previewPort, providerDirectory), Context, FeedConfiguration (..), Item (..), Tags, applyAsTemplate, buildTags, compile, compressCssCompiler, constField, copyFileCompiler, create, dateField, defaultConfiguration, defaultContext, defaultHakyllWriterOptions, fromCapture, fromList, getResourceBody, hakyllWith, idRoute, listField, loadAll, loadAndApplyTemplate, makeItem, match, pandocCompiler, pandocCompilerWith, recentFirst, relativizeUrls, renderAtom, route, saveSnapshot, setExtension, tagsField, tagsRules, templateBodyCompiler, writePandocWith, (.||.))
+import Hakyll (Compiler, Configuration (destinationDirectory, previewPort, providerDirectory), Context, FeedConfiguration (..), Item (..), Tags, applyAsTemplate, buildTags, compile, compressCssCompiler, constField, copyFileCompiler, create, dateField, defaultConfiguration, defaultContext, defaultHakyllWriterOptions, fromCapture, fromList, getResourceBody, hakyllWith, idRoute, listField, loadAll, loadAndApplyTemplate, makeItem, match, pandocCompiler, pandocCompilerWith, pandocCompilerWithTransform, recentFirst, relativizeUrls, renderAtom, route, saveSnapshot, setExtension, tagsField, tagsRules, templateBodyCompiler, writePandocWith, (.||.))
 import Hakyll.Web.Pandoc (defaultHakyllReaderOptions)
 import System.Environment (lookupEnv)
 import Text.Pandoc.Definition (Block (..), Inline (..), Pandoc (..))
@@ -26,7 +28,7 @@ import Text.Pandoc.Templates (
   Template,
   compileTemplate,
  )
-import Text.Pandoc.Walk (walkM)
+import Text.Pandoc.Walk (walk, walkM)
 
 --------------------------------------------------------------------------------
 
@@ -69,14 +71,14 @@ tocTemplate =
       ]
 
 myWriter :: WriterOptions
-myWriter = defaultHakyllWriterOptions
+myWriter = withTableOfContents defaultHakyllWriterOptions
 
 myPandocCompiler :: Compiler (Item String)
 myPandocCompiler =
-  pandocCompilerWithTransformM
+  pandocCompilerWithTransform
     defaultHakyllReaderOptions
     myWriter
-    (pure . usingSidenotes myWriter <=< addSectionLinks)
+    (usingSideNotesHTML myWriter . addSectionLinks)
 
 -- https://frasertweedale.github.io/blog-fp/posts/2020-12-10-hakyll-section-links.html
 addSectionLinks :: Pandoc -> Pandoc
@@ -128,7 +130,7 @@ main = do
     match postsPattern $ do
       route $ setExtension "html"
       compile $
-        pandocCompilerWith defaultHakyllReaderOptions (withTableOfContents defaultHakyllWriterOptions)
+        myPandocCompiler
           >>= saveSnapshot "content"
           >>= loadAndApplyTemplate "templates/post.html" (postCtxWithTags tags)
           >>= loadAndApplyTemplate "templates/default.html" (postCtxWithTags tags)
