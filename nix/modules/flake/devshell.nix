@@ -6,7 +6,7 @@
         pname = "shiki";
         version = "3.4.2";
 
-        src = lib.fetchFromGitHub {
+        src = pkgs.fetchFromGitHub {
           owner = "shikijs";
           repo = "shiki";
           rev = "v${version}";
