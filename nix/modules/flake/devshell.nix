@@ -28,7 +28,7 @@
         meta.description = "Haskell development environment";
         # See https://community.flake.parts/haskell-flake/devshell#composing-devshells
         inputsFrom = [
-          inputs.dream2nix.modules.dream2nix.nodejs-devshell-v3
+          #          inputs.dream2nix.modules.dream2nix.nodejs-devshell-v3
           config.haskellProjects.default.outputs.devShell # See ./nix/modules/haskell.nix
           config.pre-commit.devShell # See ./nix/modules/formatter.nix
         ];
@@ -36,6 +36,7 @@
           just
           nixd
           ghciwatch
+          config.packages.nodejs
           haskellPackages.wai-app-static
           haskellPackages.hakyll
         ];
