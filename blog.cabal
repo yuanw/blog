@@ -48,17 +48,14 @@ executable blog
     ViewPatterns
 
   build-depends:
-      aeson
-    , base                  >=4 && <5
+      base                  >=4 && <5
     , deriving-aeson
     , hakyll
     , mtl
-    , mustache
     , pandoc
     , pandoc-sidenote
     , pandoc-types
     , process
-    , shake
     , text
     , time
     , unordered-containers
