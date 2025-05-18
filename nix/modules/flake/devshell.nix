@@ -33,7 +33,7 @@
         packages = with pkgs; [
           just
           nixd
-          shiki
+          carbon-now-cli
           ghciwatch
           haskellPackages.wai-app-static
           haskellPackages.hakyll
