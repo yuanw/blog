@@ -36,7 +36,7 @@
           just
           nixd
           ghciwatch
-          config.packages.nodejs
+          nodejs_22
           haskellPackages.wai-app-static
           haskellPackages.hakyll
         ];
