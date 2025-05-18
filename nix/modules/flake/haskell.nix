@@ -73,10 +73,29 @@
         ]))
 
       ];
-      src = builtins.path { path = ./.; name = "source"; };
+      src = builtins.path { path = ../../../.; name = "source"; };
       buildPhase = ''
+        ls
         ${self'.packages.blog}/bin/blog build;
+        
+
+
+      
+
+        mkdir $out
+
+
       '';
+
+
+      installPhase = ''
+
+
+                mv dist/* $out
+
+
+              '';
+
 
     };
     apps.default = self'.apps.blog;
