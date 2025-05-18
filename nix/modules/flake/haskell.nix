@@ -64,7 +64,21 @@
     };
 
     # Default package & app.
-    packages.default = self'.packages.blog;
+    packages.default = pkgs.stdenv.mkDerivation rec {
+      name = "blog";
+      version = "0.0.3";
+      buildInputs = with pkgs; [
+        (python3.withPackages (p: [
+          p.pygments
+        ]))
+
+      ];
+      src = builtins.path { path = ./.; name = "source"; };
+      buildPhase = ''
+        ${self'.packages.blog}/bin/blog build;
+      '';
+
+    };
     apps.default = self'.apps.blog;
   };
 }
