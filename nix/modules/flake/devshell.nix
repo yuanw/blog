@@ -13,6 +13,11 @@
           hash = "sha256-J7H1oofgosFGxoHzcx+UxaRbqGwqrmk6MYmMISpNB6w=";
         };
 
+        env = {
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = 1;
+        };
+
+
         npmDepsHash = "sha256-/YWsk+GNfudSG0Rof1eCXeoK6dfyzzQqvWBLkpfahE0=";
       };
     in
