@@ -84,6 +84,15 @@ div#content {           /* body width */
     }
 }
 
+#main-nav {
+      margin-top: 10px;
+      list-style: none;
+}
+
+#main-nav li {
+   display: inline-block;
+}
+
 /* Don't split up a citation over multiple lines. */
 div.csl-left-margin {
     display: inline;
