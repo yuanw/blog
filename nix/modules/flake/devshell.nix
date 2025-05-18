@@ -37,6 +37,9 @@
           nixd
           ghciwatch
           nodejs_22
+          (python3.withPackages (p: [
+            p.pygments
+          ]))
           haskellPackages.wai-app-static
           haskellPackages.hakyll
         ];

@@ -57,6 +57,7 @@ executable blog
     , pandoc
     , pandoc-sidenote
     , pandoc-types
+    , process
     , shake
     , text
     , time

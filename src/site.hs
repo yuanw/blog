@@ -11,9 +11,10 @@ import Data.Kind (Type)
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import Data.Text qualified as T
-import Hakyll (Compiler, Configuration (destinationDirectory, previewPort, providerDirectory), Context, FeedConfiguration (..), Item (..), Tags, applyAsTemplate, buildTags, compile, compressCssCompiler, constField, copyFileCompiler, create, dateField, defaultConfiguration, defaultContext, defaultHakyllWriterOptions, fromCapture, fromList, getResourceBody, hakyllWith, idRoute, listField, loadAll, loadAndApplyTemplate, makeItem, match, pandocCompiler, pandocCompilerWith, pandocCompilerWithTransform, recentFirst, relativizeUrls, renderAtom, route, saveSnapshot, setExtension, tagsField, tagsRules, templateBodyCompiler, writePandocWith, (.||.))
+import Hakyll (Compiler, Configuration (destinationDirectory, previewPort, providerDirectory), Context, FeedConfiguration (..), Item (..), Tags, applyAsTemplate, buildTags, compile, compressCssCompiler, constField, copyFileCompiler, create, dateField, defaultConfiguration, defaultContext, defaultHakyllWriterOptions, fromCapture, fromList, getResourceBody, hakyllWith, idRoute, listField, loadAll, loadAndApplyTemplate, makeItem, match, pandocCompiler, pandocCompilerWith, pandocCompilerWithTransform, pandocCompilerWithTransformM, recentFirst, relativizeUrls, renderAtom, route, saveSnapshot, setExtension, tagsField, tagsRules, templateBodyCompiler, unsafeCompiler, writePandocWith, (.||.))
 import Hakyll.Web.Pandoc (defaultHakyllReaderOptions)
 import System.Environment (lookupEnv)
+import System.Process (readProcess)
 import Text.Pandoc.Definition (Block (..), Inline (..), Pandoc (..))
 import Text.Pandoc.Options (
   WriterOptions,
@@ -76,10 +77,10 @@ myWriter = defaultHakyllWriterOptions
 
 myPandocCompiler :: Compiler (Item String)
 myPandocCompiler =
-  pandocCompilerWithTransform
+  pandocCompilerWithTransformM
     defaultHakyllReaderOptions
     myWriter
-    (usingSideNotesHTML myWriter)
+    (pygmentsHighlight . usingSideNotesHTML myWriter)
 
 -- https://frasertweedale.github.io/blog-fp/posts/2020-12-10-hakyll-section-links.html
 addSectionLinks :: Pandoc -> Pandoc
@@ -88,6 +89,15 @@ addSectionLinks = walk \case
     let link = Link ("", ["floatleft", "sec-link"], []) [Str "§"] ("#" <> idAttr, "")
      in Header n attr (inlines <> [link])
   block -> block
+
+pygmentsHighlight :: Pandoc -> Compiler Pandoc
+pygmentsHighlight = walkM \case
+  CodeBlock (_, (T.unpack -> lang) : _, _) (T.unpack -> body) ->
+    RawBlock "html" . T.pack <$> unsafeCompiler (pygs lang body)
+  block -> pure block
+  where
+    pygs :: String -> String -> IO String
+    pygs lang = readProcess "pygmentize" ["-l", lang, "-f", "html"]
 
 --------------------------------------------------------------------------------
 main :: IO ()
