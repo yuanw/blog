@@ -64,7 +64,7 @@
     };
 
     # Default package & app.
-    packages.blogContent = pkgs.stdenv.mkDerivation rec {
+    packages.default = pkgs.stdenv.mkDerivation rec {
       name = "blog";
       version = "0.0.3";
       buildInputs = with pkgs; [
@@ -88,7 +88,7 @@
 
 
     };
-    packages.default = self'.packages.blog;
+    # packages.blog = self'.packages.blog;
     apps.default = self'.apps.blog;
   };
 }
