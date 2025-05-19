@@ -73,14 +73,12 @@
         ]))
 
       ];
+      LANG = "en_US.UTF-8";
       src = builtins.path { path = ../../../.; name = "source"; };
       buildPhase = ''
         ls
-        ${self'.packages.blog}/bin/blog build;
-        
-
-
-      
+        ${self'.packages.blog}/bin/blog rebuild;
+     
 
         mkdir $out
 
