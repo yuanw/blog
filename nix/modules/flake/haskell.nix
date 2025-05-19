@@ -74,6 +74,7 @@
 
       ];
       LANG = "en_US.UTF-8";
+      LOCALE_ARCHIVE = "${pkgs.glibcLocales}/lib/locale/locale-archive";
       src = builtins.path { path = ../../../.; name = "source"; };
       buildPhase = ''
         ls
@@ -82,12 +83,8 @@
       '';
 
       installPhase = ''
-
-
-                mv dist/* $out
-
-
-              '';
+        mv dist/* $out
+      '';
 
 
     };
