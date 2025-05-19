@@ -64,7 +64,7 @@
     };
 
     # Default package & app.
-    packages.default = pkgs.stdenv.mkDerivation rec {
+    packages.blogContent = pkgs.stdenv.mkDerivation rec {
       name = "blog";
       version = "0.0.3";
       buildInputs = with pkgs; [
@@ -78,13 +78,8 @@
       buildPhase = ''
         ls
         ${self'.packages.blog}/bin/blog rebuild;
-     
-
         mkdir $out
-
-
       '';
-
 
       installPhase = ''
 
@@ -96,6 +91,7 @@
 
 
     };
+    packages.default = self'.packages.blog;
     apps.default = self'.apps.blog;
   };
 }
