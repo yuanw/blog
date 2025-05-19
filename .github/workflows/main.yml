@@ -17,11 +17,11 @@ jobs:
         name: yuanw-blog
         signingKey: ${{ secrets.CACHIX_SIGNING_KEY }}
     - name: Nix build
-      run: nix build
+      run: nix build && ./result/bin/blog rebuild
     # NOTE Workaround for artifacts and deploy not liking symlinks to
     # read-only paths.
     - name: "Copy artifacts"
-      run: "mkdir dist && cp -r result/*  dist/ && chmod +w -R dist/"
+      run: chmod +w -R dist/
     - name: Archive Production Artifact
       uses: actions/upload-artifact@master
       with:

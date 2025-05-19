@@ -2,21 +2,30 @@
     <head>
     <meta charset="utf-8">
     <title>$title$</title>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta http-equiv="Content-Type" content="text/html, charset=utf-8"/>
     <meta property="og:title" content="$title$" />
     <meta property="og:type" content="website" />
-    <link rel="stylesheet" href="/css/water.css">
     <script src="/js/highlight.pack.js"></script>
     <script src="/js/frontend.js" charset="utf-8"></script>
-    <link rel="stylesheet" href="/css/darcula.css"/>
-    <script>hljs.initHighlightingOnLoad();</script>
+    
+    <!-- Default appearance -->
+    <!-- <link rel="stylesheet" type="text/css" href="/css/navbar.css"> -->
+    <link rel="stylesheet" type="text/css" href="/css/colours.css">
+    <link rel="stylesheet" type="text/css" href="/css/fonts.css">
+    <link rel="stylesheet" type="text/css" href="/css/default.css">
+    <!-- Syntax highlighting -->
+    <link rel="stylesheet" type="text/css" href="/css/pygments.css">
+    <!-- <link rel="stylesheet" type="text/css" href="/css/katex.css"> -->
+    <!-- Margin and sidenotes -->
+    <link rel="stylesheet" type="text/css" href="/css/sidenotes.css">
+
     </head>
     <body class="min-h-screen">
       <nav class="text-gray-800 w-full flex items-center justify-between py-3 px-4">
         <!-- <div class="font-extrabold text-xl">RealWorld -> ((Maybe Blog), RealWorld)</div> -->
-        <ul class="flex-grow flex justify-end items-center list-none">
+        <ul id="main-nav" class="flex-grow flex justify-end items-center list-none">
           <li><a class="inline-block py-2 px-4 font-bold" href="/">Home</a></li>
           <li><a class="inline-block py-2 px-4 font-bold" href="/archive.html">Archive</a></li>
           <!-- <li>
@@ -36,10 +45,9 @@
               </div>
               <div>
                   <p class="text-center">
-                    Powered by <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+                    Powered by <a href="http://jaspervdj.be/hakyll">Hakyll</a> and Nix
                   </p>
               </div>
             </div>
     </body>
 </html>
-
