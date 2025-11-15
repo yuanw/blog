@@ -36,13 +36,15 @@
           <li role="none"><a role="menuitem" class="inline-block py-2 px-4 font-bold" href="/archive.html" aria-label="Blog archive">Archive</a></li>
         </ul>
       </nav>
-      <main id="main-content" class="article" role="main">
-        $body$
-      </main>
-      <footer role="contentinfo" class="text-center">
-        <p>
-          Powered by <a href="http://jaspervdj.be/hakyll" rel="noopener noreferrer">Hakyll</a> and <a href="https://nixos.org" rel="noopener noreferrer">Nix</a>
-        </p>
-      </footer>
+      <div class="text-space">
+        <main id="main-content" class="article" role="main">
+          $body$
+        </main>
+        <footer id="footer" role="contentinfo">
+          <p>
+            Powered by <a href="http://jaspervdj.be/hakyll" rel="noopener noreferrer">Hakyll</a> and <a href="https://nixos.org" rel="noopener noreferrer">Nix</a>
+          </p>
+        </footer>
+      </div>
     </body>
 </html>

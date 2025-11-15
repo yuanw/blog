@@ -168,6 +168,7 @@ main = do
                 `mappend` constField "title" "Archives"
                 `mappend` defaultContext
         makeItem ""
+          >>= applyAsTemplate archiveCtx
           >>= loadAndApplyTemplate "templates/archive.html" archiveCtx
           >>= loadAndApplyTemplate "templates/default.html" archiveCtx
           >>= relativizeUrls
