@@ -1,21 +1,12 @@
-{-# LANGUAGE BlockArguments #-}
-{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 --------------------------------------------------------------------------------
-
-import Control.Monad ((<=<))
-import Control.Monad.State (State, get, modify', runState)
 import Data.Functor.Identity (runIdentity)
-import Data.Kind (Type)
 import Data.Maybe (fromMaybe)
-import Data.Text (Text)
 import Data.Text qualified as T
-import Hakyll (Compiler, Configuration (destinationDirectory, previewPort, providerDirectory), Context, FeedConfiguration (..), Item (..), Tags, applyAsTemplate, buildTags, compile, compressCssCompiler, constField, copyFileCompiler, create, dateField, defaultConfiguration, defaultContext, defaultHakyllWriterOptions, fromCapture, fromList, getResourceBody, hakyllWith, idRoute, listField, loadAll, loadAndApplyTemplate, makeItem, match, pandocCompiler, pandocCompilerWith, pandocCompilerWithTransform, pandocCompilerWithTransformM, recentFirst, relativizeUrls, renderAtom, route, saveSnapshot, setExtension, tagsField, tagsRules, templateBodyCompiler, unsafeCompiler, writePandocWith, (.||.))
+import Hakyll (Configuration (destinationDirectory, previewPort, providerDirectory), Context, FeedConfiguration (..), Tags, applyAsTemplate, buildTags, compile, compressCssCompiler, constField, copyFileCompiler, create, dateField, defaultConfiguration, defaultContext, defaultHakyllWriterOptions, fromCapture, fromList, getResourceBody, hakyllWith, idRoute, listField, loadAll, loadAndApplyTemplate, makeItem, match, pandocCompiler, pandocCompilerWith, recentFirst, relativizeUrls, renderAtom, route, saveSnapshot, setExtension, tagsField, tagsRules, templateBodyCompiler, (.||.))
 import Hakyll.Web.Pandoc (defaultHakyllReaderOptions)
 import System.Environment (lookupEnv)
-import System.Process (readProcess)
-import Text.Pandoc.Definition (Block (..), Inline (..), Pandoc (..))
 import Text.Pandoc.Options (
   WriterOptions,
   writerNumberSections,
@@ -23,15 +14,10 @@ import Text.Pandoc.Options (
   writerTableOfContents,
   writerTemplate,
  )
-import Text.Pandoc.Shared (tshow)
-import Text.Pandoc.SideNoteHTML (usingSideNotesHTML)
 import Text.Pandoc.Templates (
   Template,
   compileTemplate,
  )
-import Text.Pandoc.Walk (walk, walkM)
-
---------------------------------------------------------------------------------
 
 myFeedConfiguration :: FeedConfiguration
 myFeedConfiguration =
@@ -39,7 +25,7 @@ myFeedConfiguration =
     { feedTitle = "Yuan Wang's blog"
     , feedDescription = "Yuan Wang's blog feed"
     , feedAuthorName = "Yuan Wang"
-    , feedAuthorEmail = "blog@yuanwang.ca"
+    , feedAuthorEmail = "me@yuanwang.ca"
     , feedRoot = "https://yuanwang.ca"
     }
 
@@ -71,36 +57,6 @@ tocTemplate =
       , "$body$"
       ]
 
-myWriter :: WriterOptions
--- myWriter = withTableOfContents defaultHakyllWriterOptions
-myWriter = defaultHakyllWriterOptions
-
-myPandocCompiler :: Compiler (Item String)
-myPandocCompiler =
-  pandocCompilerWithTransformM
-    defaultHakyllReaderOptions
-    myWriter
-    ( pygmentsHighlight
-        . usingSideNotesHTML myWriter
-    )
-
--- https://frasertweedale.github.io/blog-fp/posts/2020-12-10-hakyll-section-links.html
-addSectionLinks :: Pandoc -> Pandoc
-addSectionLinks = walk \case
-  Header n attr@(idAttr, _, _) inlines ->
-    let link = Link ("", ["floatleft", "sec-link"], []) [Str "§"] ("#" <> idAttr, "")
-     in Header n attr (inlines <> [link])
-  block -> block
-
-pygmentsHighlight :: Pandoc -> Compiler Pandoc
-pygmentsHighlight = walkM \case
-  CodeBlock (_, (T.unpack -> lang) : _, _) (T.unpack -> body) ->
-    RawBlock "html" . T.pack <$> unsafeCompiler (pygs lang body)
-  block -> pure block
-  where
-    pygs :: String -> String -> IO String
-    pygs lang = readProcess "pygmentize" ["-l", lang, "-f", "html"]
-
 --------------------------------------------------------------------------------
 main :: IO ()
 main = do
@@ -123,7 +79,7 @@ main = do
     match (fromList []) $ do
       route $ setExtension "html"
       compile $
-        myPandocCompiler
+        pandocCompiler
           >>= loadAndApplyTemplate "templates/default.html" defaultContext
           >>= relativizeUrls
     tags <- buildTags postsPattern (fromCapture "tags/*.html")
@@ -143,7 +99,7 @@ main = do
     match postsPattern $ do
       route $ setExtension "html"
       compile $
-        myPandocCompiler
+        pandocCompilerWith defaultHakyllReaderOptions (withTableOfContents defaultHakyllWriterOptions)
           >>= saveSnapshot "content"
           >>= loadAndApplyTemplate "templates/post.html" (postCtxWithTags tags)
           >>= loadAndApplyTemplate "templates/default.html" (postCtxWithTags tags)
