@@ -159,7 +159,7 @@ main = do
           fmap (take 10) . recentFirst
             =<< loadAll postsPattern
         renderAtom myFeedConfiguration feedCtx posts
-    create ["archive.html"] $ do
+    match "archive.html" $ do
       route idRoute
       compile $ do
         posts <- recentFirst =<< loadAll postsPattern
@@ -167,10 +167,9 @@ main = do
               listField "posts" postCtx (return posts)
                 `mappend` constField "title" "Archives"
                 `mappend` defaultContext
-        makeItem ""
+        getResourceBody
           >>= applyAsTemplate archiveCtx
           >>= loadAndApplyTemplate "templates/archive.html" archiveCtx
-          >>= loadAndApplyTemplate "templates/default.html" archiveCtx
           >>= relativizeUrls
 
     match "index.html" $ do
