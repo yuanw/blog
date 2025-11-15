@@ -7,7 +7,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - uses: cachix/install-nix-action@v31
       with:
         extra_nix_config: |
@@ -35,14 +35,14 @@ jobs:
     if: github.ref == 'refs/heads/master'
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Download Artifact
         uses: actions/download-artifact@master
         with:
           name: dist
           path: dist
       - name: Deploy to Firebase
-        uses: w9jds/firebase-action@v14.3.1
+        uses: w9jds/firebase-action@v14.23.0
         with:
           args: deploy --message '${{github.event.head_commit.message}}' --only hosting
         env:

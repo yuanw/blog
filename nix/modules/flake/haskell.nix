@@ -73,31 +73,22 @@
         ]))
 
       ];
+      LANG = "en_US.UTF-8";
+      LOCALE_ARCHIVE = "${pkgs.glibcLocales}/lib/locale/locale-archive";
       src = builtins.path { path = ../../../.; name = "source"; };
       buildPhase = ''
         ls
-        ${self'.packages.blog}/bin/blog build;
-        
-
-
-      
-
+        ${self'.packages.blog}/bin/blog rebuild;
         mkdir $out
+      '';
 
-
+      installPhase = ''
+        mv dist/* $out
       '';
 
 
-      installPhase = ''
-
-
-                mv dist/* $out
-
-
-              '';
-
-
     };
+    # packages.blog = self'.packages.blog;
     apps.default = self'.apps.blog;
   };
 }

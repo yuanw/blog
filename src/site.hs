@@ -80,7 +80,9 @@ myPandocCompiler =
   pandocCompilerWithTransformM
     defaultHakyllReaderOptions
     myWriter
-    (pygmentsHighlight . usingSideNotesHTML myWriter)
+    ( pygmentsHighlight
+        . usingSideNotesHTML myWriter
+    )
 
 -- https://frasertweedale.github.io/blog-fp/posts/2020-12-10-hakyll-section-links.html
 addSectionLinks :: Pandoc -> Pandoc
