@@ -13,8 +13,8 @@ jobs:
     - uses: cachix/install-nix-action@v31
       with:
         extra_nix_config: |
-          access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}    - uses: cachix/cachix-action@v16
-    - uses: cachix/cachix-action@v16
+          access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}    - uses: cachix/cachix-action@v17
+    - uses: cachix/cachix-action@v17
       with:
         name: yuanw-blog
         signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
