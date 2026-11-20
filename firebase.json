@@ -5,6 +5,138 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
+    ],
+    "redirects": [
+      {
+        "source": "/posts/build-blog-with-nix.html",
+        "destination": "/blog/2020-9-21-build-a-blog-with-nix/",
+        "type": 301
+      },
+      {
+        "source": "/posts/getting-started-with-flakes.html",
+        "destination": "/blog/2021-2-13-getting-started-with-nix-flakes-and-devshell/",
+        "type": 301
+      },
+      {
+        "source": "/posts/push-docker-image-to-gcr-with-nix.html",
+        "destination": "/blog/2021-2-7-push-nixbuilt-container-image-to-gcr-using-github-action/",
+        "type": 301
+      },
+      {
+        "source": "/posts/spring-r2dbc-batch.html",
+        "destination": "/blog/2024-6-20-how-to-send-batch-sql-update-with-spring-r2dbc/",
+        "type": 301
+      },
+      {
+        "source": "/posts/tmux-nix.html",
+        "destination": "/blog/2021-10-19-using-tmux-with-nix/",
+        "type": 301
+      },
+      {
+        "source": "/posts/wire-git-hook-with-treefmt-and-devshell.html",
+        "destination": "/blog/2021-10-19-integrate-git-hooks-with-treefmt-and-devshell/",
+        "type": 301
+      },
+      {
+        "source": "/posts/zip-void-reactor.html",
+        "destination": "/blog/2022-5-7-project-reactor--mono-zip-with-void/",
+        "type": 301
+      },
+      {
+        "source": "/tags/Flakes.html",
+        "destination": "/blog/flakes/",
+        "type": 301
+      },
+      {
+        "source": "/tags/TIL.html",
+        "destination": "/blog/til/",
+        "type": 301
+      },
+      {
+        "source": "/tags/devshell.html",
+        "destination": "/blog/devshell/",
+        "type": 301
+      },
+      {
+        "source": "/tags/emacs.html",
+        "destination": "/blog/emacs/",
+        "type": 301
+      },
+      {
+        "source": "/tags/git-hook.html",
+        "destination": "/blog/git-hook/",
+        "type": 301
+      },
+      {
+        "source": "/tags/github.html",
+        "destination": "/blog/github/",
+        "type": 301
+      },
+      {
+        "source": "/tags/hakyll.html",
+        "destination": "/blog/hakyll/",
+        "type": 301
+      },
+      {
+        "source": "/tags/haskell.html",
+        "destination": "/blog/haskell/",
+        "type": 301
+      },
+      {
+        "source": "/tags/home-manager.html",
+        "destination": "/blog/home-manager/",
+        "type": 301
+      },
+      {
+        "source": "/tags/java.html",
+        "destination": "/blog/java/",
+        "type": 301
+      },
+      {
+        "source": "/tags/nix.html",
+        "destination": "/blog/nix/",
+        "type": 301
+      },
+      {
+        "source": "/tags/nix-darwin.html",
+        "destination": "/blog/nix-darwin/",
+        "type": 301
+      },
+      {
+        "source": "/tags/nixos.html",
+        "destination": "/blog/nixos/",
+        "type": 301
+      },
+      {
+        "source": "/tags/r2dbc.html",
+        "destination": "/blog/r2dbc/",
+        "type": 301
+      },
+      {
+        "source": "/tags/reactor.html",
+        "destination": "/blog/reactor/",
+        "type": 301
+      },
+      {
+        "source": "/tags/skopeo.html",
+        "destination": "/blog/skopeo/",
+        "type": 301
+      },
+      {
+        "source": "/tags/tmux.html",
+        "destination": "/blog/tmux/",
+        "type": 301
+      },
+      {
+        "source": "/archive.html",
+        "destination": "/blog/",
+        "type": 301
+      },
+      {
+        "source": "/images/*",
+        "destination": "/static/images/:splat",
+        "type": 301
+      }
     ]
   }
 }

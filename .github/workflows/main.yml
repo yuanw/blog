@@ -12,12 +12,15 @@ jobs:
       with:
         extra_nix_config: |
           access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+          # The Lean 4.36.0 toolchain comes from the substituters the flake
+          # asks for (lean4math.cachix.org); don't prompt to trust them.
+          accept-flake-config = true
     - uses: cachix/cachix-action@v17
       with:
         name: yuanw-blog
         signingKey: ${{ secrets.CACHIX_SIGNING_KEY }}
     - name: Nix build
-      run: nix build
+      run: nix build .#site
     # NOTE Workaround for artifacts and deploy not liking symlinks to
     # read-only paths.
     - name: "Copy artifacts"

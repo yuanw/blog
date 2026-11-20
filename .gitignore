@@ -41,3 +41,5 @@ _site
 .psci
 output
 .devenv
+
+.lake/

@@ -1,100 +1,87 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to AI coding agents when working with code in this
+repository.
 
 ## Project Overview
 
-This is a personal blog (https://yuanwang.ca/) built with Hakyll, a Haskell static site generator. The project uses Nix flakes for reproducible builds and development environments.
+Personal blog (https://yuanwang.ca/) built with [Verso](https://github.com/leanprover/verso),
+the Lean 4 documentation tool. Posts are Lean files whose body is Markdown; the
+site generator is a Lean executable (`Main.lean`) that Verso runs to emit HTML
+into `_site/`. Nix flakes with [lean-flakes](https://github.com/yuanwang-wf/lean-flakes)
+provide the toolchain — there is no elan, standalone Lean, or Haskell here.
 
 ## Build System
 
-### Nix-based Workflow
-
-The project uses Nix flakes with `haskell-flake` and `nixos-unified`:
-- `nix build` - Build the entire blog site (output in `result/`)
-- `nix develop` - Enter development shell with all dependencies
-
-The build is defined in `nix/modules/flake/haskell.nix`, which:
-- Compiles the Haskell site generator (`blog.cabal`)
-- Includes a custom `pandoc-sidenote` package from source
-- Requires Python with Pygments for syntax highlighting
-- Outputs the static site to `dist/`
-
-### Development Commands
-
-Using `just` (see `justfile`):
-- `just serve` - Clean, build, and serve the site locally with `warp` (serves `_site/`)
-- `just run` - Auto-recompile and run with `ghcid`
-- `just repl` - Start `cabal repl`
-- `just docs` - Run local Hoogle documentation server on port 8888
-
-Direct cabal commands:
-- `cabal run blog build` - Build the static site
-- `cabal run blog clean` - Clean build artifacts
-- `cabal run blog watch` - Watch mode for development
+- `nix develop` (or `direnv allow`) — dev shell with `lean`, `lake` (a wrapper
+  that resolves Lake's deps from the store) and `python3`
+- `lake build` — compile the `Blog` library and the `generate-blog` executable
+- `lake exe generate-blog` — render `./_site`
+- `lake exe generate-blog -- --drafts` — also render posts with `draft := true`
+- `just serve` — build, render, and serve `_site` on port 8000
+- `just drafts` — same, including drafts
+- `nix build .#site` — the rendered site in `result/` (what CI builds)
+- `nix build .#default` — the Lake package from source (Lean + Verso + blog)
+- `nix build .#lake-deps` — just the vendored Lake git dependencies; prints the
+  `got:` hash to paste into `flake.nix`'s `lean.buildArgs.lakeHash` when the
+  manifest changes
+- `./push-cache.sh` — publish the build closure to lean4math.cachix.org
+  (needs `CACHIX_AUTH_TOKEN`)
 
 ## Architecture
 
-### Entry Point
+Everything is a Lake package at the repo root (`lakefile.toml`, package name
+`yuan-blog`).
 
-`src/site.hs` - Single-file Hakyll site generator with custom transformations:
+**`Main.lean`** — the site generator and the only theme:
+- `theme` — the HTML `<head>`/`<header>`/`<footer>`, the font and highlight.js
+  links (jsDelivr), and `/static/style.css`
+- `blog` — the `site` DSL: front page, `static "static" ← "static_files"`, and
+  the `"blog"` archive with the post list. Post order here is the order the
+  archive lists them, so keep it newest-first. `main := blogMain theme blog`
 
-**Key Configuration:**
-- `config`: Hakyll configuration (destination: `dist/`, preview port: 5000, source: `content/`)
-- `postsPattern`: Matches `posts/*.org` and `posts/*.md` (includes `drafts/` when `PREVIEW=TRUE` env var is set)
+**`Blog/`** — the content library (imported by `Blog.lean`):
+- `Blog/Posts/<Name>.lean` — one post per file. `#doc (Post) "Title" =>` with a
+  `%%%` metadata block (`authors`, `date`, `categories`, optional `draft :=
+  true`) followed by Markdown
+- `Blog/Posts.lean` — imports every post and defines the `"Archive"` page
+- `Blog/Categories.lean` — tags as `Post.Category` values, prefixed `tag` (see
+  below)
+- `Blog/Code.lean` — code-fence expanders for non-Lean languages
+- `Blog/Meta.lean` — `breadcrumbs` template helper
+- `Blog/FrontPage.lean` — the front page
 
-**Content Processing Pipeline:**
-1. Pandoc reads Org-mode or Markdown from `content/`
-2. `myPandocCompiler` applies custom transformations:
-   - `usingSideNotesHTML` - Converts footnotes to sidenotes (from `pandoc-sidenote`)
-   - `pygmentsHighlight` - Syntax highlights code blocks via external Pygments call
-3. Templates from `content/templates/` are applied
-4. Output written to `dist/`
+**`static_files/`** — served at `/static/` (currently `style.css` and `images/`).
 
-**Special Features:**
-- Tag support with automatic tag pages (`content/tags/*.html`)
-- Atom feed generation (`atom.xml` with 10 most recent posts)
-- Archive page listing all posts
-- CNAME file generation for custom domain
+## Markdown dialect
 
-### Content Structure
+Verso's doc Markdown is close to CommonMark but not identical, and these bite:
 
-- `content/posts/` - Published posts (.org and .md)
-- `content/drafts/` - Drafts (only built when `PREVIEW=TRUE`)
-- `content/templates/` - Hakyll templates (default.html, post.html, etc.)
-- `content/css/`, `content/js/`, `content/images/` - Static assets
+- no indented code blocks — only fenced
+- no autolinks — `<https://…>` is literal text, bare URLs are plain text; write
+  `[text](url)`
+- `_` inside link text is emphasis; escape it (`\_`) or shorten the link text
+- ```` ```{=html} ```` and raw HTML are not supported
+- empty image alt (`![](x.png)`) fails to parse
+- footnotes (`[^1]`) need a definition and render inline, not in the margin
 
-### Syntax Highlighting
+## Code fences
 
-Code blocks are highlighted using Pygments (not Pandoc's built-in highlighting):
-- `pygmentsHighlight` function in `site.hs:93-100` shells out to `pygmentize`
-- Python with Pygments must be available at build time
-- Configured in both devShell and build derivation
+Verso registers only Lean fences; anything else is an elaboration error unless
+`Blog/Code.lean` defines it, and posts need `import Blog.Code` for the
+registration to apply. The declaration name **is** the fence name, so a fence
+called `nix` collides with a `def nix` category (categories are therefore
+`tag`-prefixed) or with VersoBlog's own `html` directive.
 
-## Code Quality
+## Versions
 
-Pre-commit hooks (via `nix/modules/flake/pre-commit.nix`):
-- `fourmolu` - Haskell formatter with ImportQualifiedPost support
-- `hlint` - Haskell linter
-- `cabal-fmt` - Cabal file formatter
-- `nixpkgs-fmt` - Nix code formatter
-
-Fourmolu settings: 2-space indentation, leading comma style, diff-friendly imports.
+`lean-toolchain`, the Verso rev in `lakefile.toml`/`lake-manifest.json`, and the
+nixpkgs pin in `flake.lock` must agree — lean-flakes asserts the toolchain
+matches the Lean nixpkgs builds. Verso's tag tracks the Lean minor version.
 
 ## CI/CD
 
-GitHub Actions (`.github/workflows/main.yml`):
-1. Build with `nix build` using Cachix for caching
-2. Upload build artifacts
-3. Deploy to Firebase Hosting on `master` branch pushes
-
-## Extension Points
-
-To modify post rendering:
-- Edit `myPandocCompiler` in `site.hs:78-83`
-- Add Pandoc AST transformations (see `addSectionLinks` for example)
-- Modify `myWriter` to enable/disable table of contents
-
-To add new content types:
-- Add new `match` patterns in `main` function (after `site.hs:111`)
-- Define routes and compilation rules following existing patterns
+GitHub Actions (`.github/workflows/main.yml`): `nix build .#site` with the
+public lean4math substituter (`accept-flake-config = true`), upload `dist/`,
+deploy to Firebase Hosting on `master`. `firebase.json` also holds the 301s from
+the old Hakyll URLs.
