@@ -17,7 +17,10 @@ provide the toolchain — there is no elan, standalone Lean, or Haskell here.
   that resolves Lake's deps from the store) and `python3`
 - `lake build` — compile the `Blog` library and the `generate-blog` executable
 - `lake exe generate-blog` — render `./_site`
-- `lake exe generate-blog -- --drafts` — also render posts with `draft := true`
+- `lake exe generate-blog --drafts` — also render posts with `draft := true`
+- `just new MyPost "A title" nix tmux` — scaffold a draft post (`./new-post.sh`):
+  writes `Blog/Posts/<Name>.lean` and registers it in `Blog/Posts.lean`, the
+  `site` in `Main.lean`, and `Blog/Categories.lean` if a tag is new
 - `just serve` — build, render, and serve `_site` on port 8000
 - `just drafts` — same, including drafts
 - `nix build .#site` — the rendered site in `result/` (what CI builds)
@@ -48,6 +51,8 @@ Everything is a Lake package at the repo root (`lakefile.toml`, package name
 - `Blog/Categories.lean` — tags as `Post.Category` values, prefixed `tag` (see
   below)
 - `Blog/Code.lean` — code-fence expanders for non-Lean languages
+- `Blog/Sidenotes.lean` — the `{sidenote}[…]` margin-note role (an `inline_component`
+  that carries its own CSS)
 - `Blog/Meta.lean` — `breadcrumbs` template helper
 - `Blog/FrontPage.lean` — the front page
 
@@ -63,9 +68,17 @@ Verso's doc Markdown is close to CommonMark but not identical, and these bite:
 - `_` inside link text is emphasis; escape it (`\_`) or shorten the link text
 - ```` ```{=html} ```` and raw HTML are not supported
 - empty image alt (`![](x.png)`) fails to parse
-- footnotes (`[^1]`) need a definition and render inline, not in the margin
+- footnotes (`[^1]`) need a definition and render as inline `<details>`; they
+  can't be re-styled as margin notes without patching Verso's renderer
+- a role's content in backticks is *code*; use brackets for markup
+  (`{sidenote}[note with *markdown*]`)
 
 ## Code fences
+
+Components (`inline_component` / `block_component … +directive`) are the way to
+add new authoring syntax; `blogMain`'s component table is elaborated at its
+call site in `Main.lean`, so the defining module must be imported there (via
+`Blog.lean`).
 
 Verso registers only Lean fences; anything else is an elaboration error unless
 `Blog/Code.lean` defines it, and posts need `import Blog.Code` for the

@@ -1,5 +1,13 @@
+# Lets `new` hand its arguments to the script without the shell splitting the
+# title or a multi-word category.
+set positional-arguments
+
 default:
     @just --list
+
+# Scaffold a new draft post: just new MyPost "A title" nix tmux
+new NAME TITLE *TAGS:
+    ./new-post.sh "$@"
 
 # Compile the Lean sources (Blog library + generate-blog)
 compile:

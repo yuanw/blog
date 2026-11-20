@@ -21,9 +21,13 @@ python3 -m http.server -d _site 8000   # http://localhost:8000
 
 ## Write a post
 
-Posts are Lean files under `Blog/Posts/` whose content is Markdown. Copy an
-existing one, then register it in `Blog/Posts.lean` **and** in the `site` in
-`Main.lean` (Verso lists posts in the order they are given, newest first):
+Posts are Lean files under `Blog/Posts/` whose content is Markdown. Scaffold one
+with `just new MyPost "My post title" nix tmux` — the script behind it is
+`./new-post.sh`, and `POST_DATE=2025-01-02 just new ...` backdates it. It writes
+the post, registers it in `Blog/Posts.lean` **and** in the `site` in `Main.lean`
+(Verso lists posts in the order they are given, newest first), and creates any
+category `Blog/Categories.lean` doesn't have yet. New posts start as drafts, so
+preview with `just drafts`, then delete `draft := true` to publish:
 
 ```lean
 import VersoBlog
@@ -37,6 +41,7 @@ open Verso Genre Blog
 %%%
 authors := ["Yuan Wang"]
 date := {year := 2025, month := 1, day := 2}
+draft := true
 categories := [tagNix]
 %%%
 
@@ -66,6 +71,26 @@ meta def sql : CodeBlockExpanderOf Unit
 The declaration name *is* the fence name, so it must not collide with a category
 in `Blog/Categories.lean` (hence the `tag` prefix there) or with VersoBlog's own
 `html` directive.
+
+## Sidenotes
+
+`Blog/Sidenotes.lean` adds a margin note that floats into the right gutter,
+numbered per page, and folds behind its own number on narrow screens:
+
+```markdown
+The sentence I want to annotate {sidenote}[The note, which may contain
+*markdown* — the brackets are parsed as inline Markdown.]
+```
+
+Brackets, not backticks: `` {role}`code` `` is Verso's code form (that's what
+`{lit}`code` uses), so backticked content renders as `<code>` instead of
+markup. Nothing uses the role yet, so `sidenotes.css` isn't linked until the
+first note appears — Verso links a component's assets only on pages that use
+it.
+
+Markdown footnotes (`[^1]`) also work, but Verso renders them as inline
+`<details>` and the renderer doesn't expose a hook for that node, so making
+them margin notes would mean patching Verso.
 
 ## Reproducible build
 
@@ -117,6 +142,5 @@ hash to paste in).
 ## Not included
 
 Verso's blog genre has no RSS/Atom feed, so `/atom.xml` is gone (the old
-Hakyll URL 404s). Sidenotes are gone too; the old `/posts/*.html`,
-`/tags/*.html`, `/archive.html` and `/images/*` URLs survive as 301s in
-`firebase.json`.
+Hakyll URL 404s). The old `/posts/*.html`, `/tags/*.html`, `/archive.html` and
+`/images/*` URLs survive as 301s in `firebase.json`.
