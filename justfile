@@ -1,20 +1,30 @@
+# Lets `new` hand its arguments to the script without the shell splitting the
+# title or a multi-word category.
+set positional-arguments
+
 default:
     @just --list
 
-# Run hoogle
-docs:
-    echo http://127.0.0.1:8888
-    hoogle serve -p 8888 --local
+# Scaffold a new draft post: just new MyPost "A title" nix tmux
+new NAME TITLE *TAGS:
+    ./new-post.sh "$@"
 
-# Run cabal repl
-repl *ARGS:
-    cabal repl {{ ARGS }}
+# Compile the Lean sources (Blog library + generate-blog)
+compile:
+    lake build
 
-# Run ghcid -- auto-recompile and run `main` function
-run:
-    ghcid -T :main
+# Render the site into ./_site
+build: compile
+    lake exe generate-blog
 
-serve:
-	cabal run blog clean
-	cabal run blog build
-	warp -d _site
+# Render the site including drafts (draft := true in the post metadata)
+drafts: compile
+    lake exe generate-blog --drafts
+
+# Render and serve ./_site on http://localhost:8000
+serve: build
+    python3 -m http.server -d _site 8000
+
+# Publish the build closure (Lean, Lake deps, site, dev shell) to cachix
+push-cache:
+    ./push-cache.sh
