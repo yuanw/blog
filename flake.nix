@@ -61,13 +61,13 @@
           cp -r _site "$out"
         '';
       };
-
-      # The Lean 4.36.0 toolchain comes from a nixpkgs PR branch, so only our own
-      # cache (see push-cache.sh) has it. Nix asks once before trusting a new
-      # substituter; `accept-flake-config = true` in nix.conf skips the prompt.
-      flake.nixConfig = {
-        extra-substituters = [ "https://lean4math.cachix.org" ];
-        extra-trusted-public-keys = [ "lean4math.cachix.org-1:lo4ur+c1M7f5i9VqM0YzEdZ1KpzXdlVqmFfrqfxmY5g=" ];
-      };
     };
+
+  # The Lean 4.36.0 toolchain comes from a nixpkgs PR branch, so only our own
+  # cache (see push-cache.sh) has it. Nix asks once before trusting a new
+  # substituter; `accept-flake-config = true` in nix.conf skips the prompt.
+  nixConfig = {
+    extra-substituters = [ "https://lean4math.cachix.org" ];
+    extra-trusted-public-keys = [ "lean4math.cachix.org-1:lo4ur+c1M7f5i9VqM0YzEdZ1KpzXdlVqmFfrqfxmY5g=" ];
+  };
 }
