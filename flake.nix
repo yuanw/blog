@@ -9,7 +9,7 @@
     # PR lands.
     nixpkgs.url = "github:alejo7797/nixpkgs/lean4-4.36";
     flake-parts.url = "github:hercules-ci/flake-parts";
-    lean-flakes.url = "github:yuanwang-wf/lean-flakes";
+    lean-flakes.url = "github:yuanw/lean-flakes";
   };
 
   outputs = inputs @ { self, nixpkgs, flake-parts, ... }:
