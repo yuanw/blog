@@ -2,32 +2,17 @@
   description = "Yuan's blog, built with Verso by lean-flakes (Lean 4.36.0, Lake git deps vendored)";
 
   inputs = {
-    # Lean 4.36.0 is not in nixpkgs yet (master is at 4.35.0); this is the head
-    # of NixOS/nixpkgs#587419, which bumps lean4 and renames leanPackages to
-    # lean4Packages. lean-flakes' module still uses the `leanPackages` alias,
-    # which nixpkgs keeps with a warning. Re-pin to nixpkgs-unstable once that
-    # PR lands.
-    nixpkgs.url = "github:alejo7797/nixpkgs/lean4-4.36";
-    flake-parts.url = "github:hercules-ci/flake-parts";
     lean-flakes.url = "github:yuanw/lean-flakes";
+    nixpkgs.follows = "lean-flakes/nixpkgs";
+    flake-parts.follows = "lean-flakes/flake-parts";
   };
 
-  outputs = inputs @ { self, nixpkgs, flake-parts, ... }:
+  outputs = inputs @ { flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [ "aarch64-darwin" "aarch64-linux" "x86_64-darwin" "x86_64-linux" ];
       imports = [ inputs.lean-flakes.flakeModule ];
 
-      perSystem = { config, system, pkgs, ... }: {
-        # Lean builds its own bootstrap three times over (stage0 -> stage2) and
-        # runs its whole ctest suite: hours we don't need to render a blog.
-        # stage1 already gives a working lean and lake.
-        _module.args.pkgs = import nixpkgs {
-          inherit system;
-          overlays = [ (final: prev: {
-            lean4 = (prev.lean4.override { leanStage = 1; }).overrideAttrs (_: { doCheck = false; });
-          }) ];
-        };
-
+      perSystem = { config, pkgs, ... }: {
         lean = {
           src = ./.;
           # The `name` in lakefile.toml.
